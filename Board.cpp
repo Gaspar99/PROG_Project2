@@ -15,7 +15,7 @@ Board::Board(unsigned int nRows, unsigned int nColumns)
         for (int j = 0; j < nColumns; ++j) {
             // builds a string like "Aa", "Ab", etc
             board.insert(pair<coord, char>(coord(static_cast<const char &>(i + 65),
-                                                                       static_cast<const char &>(j + 97)), '.'));
+                                                 static_cast<const char &>(j + 97)), '.'));
         }
     }
 
@@ -44,7 +44,7 @@ void Board::showBoard()
         cout << setw(2) << left << string(1, char(i + 65)) << right << setw(2); // Prints the firstCoord letter.
         coord firstCoord(i + 65, 'a'); // Builds a firstCoord representing the first Coordinate of firstCoord i
 
-        vector<coord> coordsInLine = generateCoords(nCols, firstCoord, 'H');
+        vector<coord> coordsInLine = generateCoords(nCols, firstCoord, 'H').first;
 
         for (coord c : coordsInLine) {
             if (board[c] == '#' && c != coordsInLine[0]) {
@@ -71,55 +71,75 @@ void Board::showBoard()
 
 int Board::addWord(string word, coord initialCoord, char direction)
 {
-    vector<coord> coordsToModify = generateCoords(word.length(), initialCoord, direction);
+    pair<vector<coord>, vector<coord>> coordsToModify = generateCoords(word.length(), initialCoord, direction);
 
-    // These variables represent the Coordsinates that will be modified with a #
-    coord previousCoord = generateCoords(-1, initialCoord, direction);
-    coord lastCoord = generateCoords(-2, coordsToModify.back(), direction);
-
-    // Checks if all Coordsinates that are going to be modified are empty. If one isn't, return -1
+    // Checks if all Coordinates that are going to be modified are empty. If one isn't, return -1
     // TODO: This behaviour is for testing purposes only, it must be changed to check if a letter matches with an existing one
     //for (const string &coord : coordsToModify) {
     //    if (board[coord] != '.') return -1;
     //}
 
     int i = 0;
-    for (coord Coords : coordsToModify) {
-        board[Coords] = word[i];
+    for (coord c : coordsToModify.first) {
+        board[c] = word[i];
         ++i;
     }
 
-    coordsToModify.clear();
-
-    // Modify map if string returned from generateCoordss is valid (not empty)
-    if (previousCoord.first != '\0') {
-        coordsToModify.push_back(previousCoord);
-    }
-
-    if (lastCoord.first != '\0') {
-        coordsToModify.push_back(lastCoord);
-    }
-
-    for (coord Coords : coordsToModify) {
-        board[Coords] = '#';
-        ++i;
+    for (coord coords : coordsToModify.second) {
+        board[coords] = '#';
     }
 
     // Return 0 means the word was successfully added.
     return 0;
 }
 
-vector<Board::coord> Board::generateCoords(unsigned int length, coord initialCoords, char direction)
+pair<vector<Board::coord>, vector<Board::coord>>
+Board::generateCoords(unsigned int length, coord initialCoords, char direction)
 {
-    vector<coord> CoordsVector;
+    pair<vector<coord>, vector<coord>> coordsToModify;
+
+    switch (direction) {
+    case 'V': {
+        auto newCoord = static_cast<char>(initialCoords.first + length - 1);
+
+        if (newCoord < (nRows + 65)) {
+            coord coord(++newCoord, initialCoords.second);
+            coordsToModify.second.push_back(coord);
+        }
+
+        if (initialCoords.first > 'A') {
+            coord coord(--initialCoords.first, initialCoords.second);
+            coordsToModify.second.push_back(coord);
+        }
+
+        break;
+    }
+    case 'H': {
+        auto newCoord = static_cast<char>(initialCoords.second + length - 1);
+
+        if (newCoord < (nCols + 97)) {
+            coord coord(initialCoords.first, newCoord);
+            coordsToModify.second.push_back(coord);
+        }
+
+        if (initialCoords.second > 'a') {
+            coord coord(initialCoords.first, --initialCoords.second);
+            coordsToModify.second.push_back(coord);
+        }
+
+        break;
+    }
+
+    default:break;
+    }
 
     switch (direction) {
     case 'V': {
         int j = 0;
         for (char i = initialCoords.first; j < length; ++i, ++j) {
-            coord Coords(i, initialCoords.second);
+            coord coord(i, initialCoords.second);
 
-            CoordsVector.push_back(Coords);
+            coordsToModify.first.push_back(coord);
         }
         break;
     }
@@ -127,9 +147,9 @@ vector<Board::coord> Board::generateCoords(unsigned int length, coord initialCoo
     case 'H': {
         int j = 0;
         for (char i = initialCoords.second; j < length; ++i, ++j) {
-            coord line(initialCoords.first, i);
+            coord coord(initialCoords.first, i);
 
-            CoordsVector.push_back(line);
+            coordsToModify.first.push_back(coord);
         }
         break;
     }
@@ -137,57 +157,7 @@ vector<Board::coord> Board::generateCoords(unsigned int length, coord initialCoo
     default:break;
     }
 
-    return CoordsVector;
-}
-
-Board::coord Board::generateCoords(int length, coord initialCoords, char direction)
-{
-    coord coord('\0', '\0');
-
-    if (length == -2) {
-        switch (direction) {
-        case 'V': {
-            if (initialCoords.first < (nRows + 65)) {
-                coord.first = ++initialCoords.first;
-                coord.second = initialCoords.second;
-            }
-
-            break;
-        }
-        case 'H': {
-            if (initialCoords.second < (nCols + 97)) {
-                coord.first = initialCoords.first;
-                coord.second = ++initialCoords.second;
-            }
-            break;
-        }
-
-        default:break;
-        }
-    }
-    else if (length == -1) {
-        switch (direction) {
-        case 'V': {
-            if (initialCoords.first > 'A') {
-                coord.first = --initialCoords.first;
-                coord.second = initialCoords.second;
-            }
-
-            break;
-        }
-        case 'H': {
-            if (initialCoords.second > 'a') {
-                coord.first = initialCoords.first;
-                coord.second = --initialCoords.second;
-            }
-            break;
-        }
-
-        default:break;
-        }
-    }
-
-    return coord;
+    return coordsToModify;
 }
 
 unsigned int Board::getRows() const
@@ -199,7 +169,6 @@ unsigned int Board::getColumns() const
 {
     return nCols;
 }
-
 
 //Potentially unnecessary
 template<class T, class U>

@@ -30,12 +30,11 @@ private:
     unsigned int nRows; // number of rows in the board
     unsigned int nCols; // number of columns in the board
 
-    // Returns a single coordinate. Used for the very special cases where the previous and the next coordinates are needed,
-    // taking into account the direction given by the user.
-    coord generateCoords(int length, pair<char, char> initialCoord, char direction);
-
-    // Returns a vector of coordinates corresponding to those which have to be filled in.
-    vector<coord> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
+    // Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
+    // The second one contains the coordinates of the previous cell and of the cell that comes after the word.
+    // If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
+    // Both vectors are initialized with null characters.
+    pair<vector<coord>, vector<coord>> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
 
     // Template function to get the keys from a map, returns a vector of the type of the keys.
     // May not be needed.
