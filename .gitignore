@@ -4,6 +4,7 @@
 ### C++ ###
 # Prerequisites
 *.d
+main.cpp
 
 # Compiled Object files
 *.slo
@@ -111,6 +112,7 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 build
+CMakeLists.txt
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and

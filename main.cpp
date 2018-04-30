@@ -1,21 +1,30 @@
-#include "Dictionary.h"
 #include <iostream>
-#include <string>
-#include <vector>
-#include <map>
-#include <fstream>
+#include <algorithm>
+#include <unistd.h>
+#include <ctime>
+#include <chrono>
+#include "Board.h"
+#include "colorizer.h"
+
 using namespace std;
+using namespace std::chrono;
+
+//TODO: We're gonna need this eventually
+//Takes a string and puts all its characters in uppercase
+void capitalize(string &word)
+{
+    transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );
+}
 
 int main()
 {
-	Dictionary d1;
-	string dictionaryName;
+    Board b(10,10);
 
-	cout << "Insert the dictionary file name: " ;
-	cin >> dictionaryName;
-	d1.load(dictionaryName);
+    Board::coord a('A', 'a');
 
+    b.showBoard();
 
+    b.showBoard();
 
-	return 0;
+    return 0;
 }
