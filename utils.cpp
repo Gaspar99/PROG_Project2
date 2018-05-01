@@ -1,16 +1,20 @@
-// The following piece of code is being used with permission of the author.
-// PROG - MIEIC
-// JAS
-// Example of a program that prints colored characters on the console (in text mode)
-
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
 #include <windows.h>
-#include "colorizer.h"
+#include <algorithm>
+#include "utils.h"
 
 using namespace std;
 
+void capitalize(string &word)
+{
+    transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );
+}
+
+// PROG - MIEIC
+// JAS
+// Example of a program that prints colored characters on the console (in text mode)
 void clrscr(void)
 {
     COORD coordScreen = {0, 0}; // upper left corner

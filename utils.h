@@ -18,6 +18,9 @@
 #define YELLOW 14
 #define WHITE 15
 
+using namespace std;
+
+void capitalize(string& word);
 void clrscr(void);
 void gotoxy(int x, int y);
 void setcolor(unsigned int color);

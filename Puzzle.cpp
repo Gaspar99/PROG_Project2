@@ -1,6 +1,6 @@
 #include <fstream>
 #include "Puzzle.h"
-#include "colorizer.h"
+#include "utils.h"
 
 using namespace std;
 

@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <cstdarg>
 #include "Board.h"
-#include "colorizer.h"
+#include "utils.h"
 
 using namespace std;
 

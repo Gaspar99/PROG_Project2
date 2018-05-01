@@ -1,4 +1,5 @@
 #include "Dictionary.h"
+#include "utils.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -7,11 +8,6 @@
 #include <sstream>
 
 using namespace std;
-
-void capitalize(string &word)
-{
-    transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );
-}
 
 Dictionary::Dictionary()
 {
