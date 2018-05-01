@@ -82,7 +82,7 @@ void Puzzle::showMenu()
             board.addWord(word, initialCoord, direction, 0);
             clrscr();
 
-            board.showBoard();
+            cout << board;
 
             break;
         }
@@ -90,8 +90,22 @@ void Puzzle::showMenu()
             board.reset();
             clrscr();
 
-            board.showBoard();
+            cout << board;
             break;
+
+        case '3': {
+            ofstream out;
+            string outFileName;
+
+            cout << "Insert name of file to write: ";
+            cin >> outFileName;
+
+            out.open(outFileName);
+            out << board;
+            cout << "Writing finished." << endl;
+
+            break;
+        }
         case 'e':
             exit(0);
 

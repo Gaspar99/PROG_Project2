@@ -17,7 +17,7 @@ public:
     Board(unsigned int nRows, unsigned int nColumns);
 
     // Shows the board on the screen. TODO: change function so that it can also write to a file by modifying the prototype
-    void showBoard();
+    friend ostream& operator<<(ostream &out, Board &board);
     void reset();
 
     // The following function adds a word to the board if mode == 0 and removes it if mode == 1

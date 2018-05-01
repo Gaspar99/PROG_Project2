@@ -35,45 +35,45 @@ void Board::reset()
     }
 }
 
-void Board::showBoard()
+ostream& operator<<(ostream &out, Board &board)
 {
     // Prints the first line of the board, which corresponds to the letters of the columns.
-    for (unsigned int i = 0; i < nCols; ++i) {
+    for (unsigned int i = 0; i < board.nCols; ++i) {
         if (i == 0) {
             setcolor(3);
-            cout << setw(4) << right << string(1, char(i + 97));
+            out << setw(4) << right << string(1, char(i + 97));
         }
         else {
-            cout << setw(2) << string(1, char(i + 97));
+            out << setw(2) << string(1, char(i + 97));
         }
     }
 
-    cout << endl;
+    out << endl;
 
     // Prints the remainder of the lines.
-    for (unsigned int i = 0; i < nRows; ++i) {
+    for (unsigned int i = 0; i < board.nRows; ++i) {
         setcolor(3);
-        cout << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
+        out << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
 
-        for (unsigned int j = 0; j < nCols; ++j) {
-            coord c(char(i + 65), char(j + 97));
+        for (unsigned int j = 0; j < board.nCols; ++j) {
+            Board::coord c(char(i + 65), char(j + 97));
 
-            if (board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
-                cout << " ";
+            if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
+                out << " ";
                 setcolor(0, 15);
-                cout << setw(1) << '#';
+                out << setw(1) << '#';
             }
-            else if (board[c] == '#') {
+            else if (board.board[c] == '#') {
                 setcolor(0, 15);
-                cout << left << setw(1) << '#' << right;
+                out << left << setw(1) << '#' << right;
             }
             else {
                 setcolor(15);
-                cout << setw(2) << board[c];
+                out << setw(2) << board.board[c];
             }
         }
 
-        cout << endl;
+        out << endl;
     }
 }
 
