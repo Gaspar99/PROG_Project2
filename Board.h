@@ -18,6 +18,7 @@ public:
 
     // Shows the board on the screen. TODO: change function so that it can also write to a file by modifying the prototype
     void showBoard();
+    void reset();
 
     // The following function adds a word to the board if mode == 0 and removes it if mode == 1
     int addWord(string word, coord initialCoord, char direction, int mode);

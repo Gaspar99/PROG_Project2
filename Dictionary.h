@@ -12,6 +12,8 @@ class Dictionary
 {
 public:
 	Dictionary();
+	Dictionary(string dictionaryName);
+
 	void load(string dictionaryName);
 	bool isValid(string word);
 private:

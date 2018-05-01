@@ -10,13 +10,18 @@ using namespace std;
 
 void capitalize(string &word)
 {
-	transform(word.begin(), word.end(), word.begin(), toupper);
+    transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );
 }
 
 Dictionary::Dictionary()
 {
 	synonymsList[""] = { "" };
 	validWords = { "" };
+}
+
+Dictionary::Dictionary(string dictionaryName)
+{
+	load(dictionaryName);
 }
 
 void Dictionary::load(string dictionaryName)
@@ -34,6 +39,8 @@ void Dictionary::load(string dictionaryName)
 		cerr << "Opening of dictionary file failed. Does it exist?" << endl;
 		exit(1);
 	}
+
+	cout << "Extracting, this may take a while..." << endl;
 
 	while (getline(dictionary, line)) {
 	

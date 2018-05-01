@@ -8,20 +8,31 @@ using namespace std;
 
 Board::Board(unsigned int nRows, unsigned int nColumns)
 {
+    this->nRows = nRows;
+    this->nCols = nColumns;
+
     // Initializes all fields of the board map with all possible Coordsinates and dots.
     // The board map itself doesn't have any letters until a word is added.
     for (int i = 0; i < nRows; ++i) {
         string line = string(1, char(i + 65));
 
-        for (int j = 0; j < nColumns; ++j) {
+        for (int j = 0; j < nCols; ++j) {
             // builds a string like "Aa", "Ab", etc
             board.insert(pair<coord, char>(coord(static_cast<const char &>(i + 65),
                                                  static_cast<const char &>(j + 97)), '.'));
         }
     }
+}
 
-    this->nRows = nRows;
-    this->nCols = nColumns;
+void Board::reset()
+{
+    for (int i = 0; i < nRows; ++i) {
+        string line = string(1, char(i + 65));
+
+        for (int j = 0; j < nCols; ++j) {
+            board[(coord(static_cast<const char &>(i + 65), static_cast<const char &>(j + 97)))] = '.';
+        }
+    }
 }
 
 void Board::showBoard()
