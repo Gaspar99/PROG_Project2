@@ -31,6 +31,7 @@ public:
 
 	string row(char verCoord, char horCoord);
 	string column(char verCoord, char horCoord);
+	bool nextCoordinate(char &verCoord, char &horCoord);
 
 private:
 	// The board itself is a map with strings as keys representing coordinates followed by a char value representing the

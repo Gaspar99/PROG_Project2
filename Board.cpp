@@ -37,6 +37,47 @@ void Board::reset()
 
 ostream& operator<<(ostream &out, Board &board)
 {
+<<<<<<< HEAD
+	// Prints the first line of the board, which corresponds to the letters of the columns.
+	for (unsigned int i = 0; i < board.nCols; ++i) {
+		if (i == 0) {
+			setcolor(3);
+			out << setw(4) << right << string(1, char(i + 97));
+		}
+		else {
+			out << setw(2) << string(1, char(i + 97));
+		}
+	}
+
+	out << endl;
+
+	// Prints the remainder of the lines.
+	for (unsigned int i = 0; i < board.nRows; ++i) {
+		setcolor(3);
+		out << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
+
+		for (unsigned int j = 0; j < board.nCols; ++j) {
+			Board::coord c(char(i + 65), char(j + 97));
+
+			if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
+				out << " ";
+				setcolor(0, 15);
+				out << setw(1) << '#';
+			}
+			else if (board.board[c] == '#') {
+				setcolor(0, 15);
+				out << left << setw(1) << '#' << right;
+			}
+			else {
+				setcolor(15);
+				out << setw(2) << board.board[c];
+			}
+		}
+
+		out << endl;
+	}
+	return out;
+=======
     // Prints the first line of the board, which corresponds to the letters of the columns.
     for (unsigned int i = 0; i < board.nCols; ++i) {
         if (i == 0) {
@@ -77,6 +118,7 @@ ostream& operator<<(ostream &out, Board &board)
     }
 
     return out;
+>>>>>>> 41c7a30184072594d6a68d9c2c704b78fa1559e8
 }
 
 int Board::addWord(string word, coord initialCoord, char direction, int mode)
@@ -205,4 +247,22 @@ string Board::column(char verCoord, char horCoord)
 	}
 
 	return col;
+}
+
+bool Board::nextCoordinate(char &verCoord, char &horCoord)
+{
+	char lastVerCoord = 65 + nRows - 1;
+	char lastHorCoord = 97 + nCols - 1;
+	if (horCoord == lastHorCoord) {
+		if (verCoord == lastVerCoord) { return false; }
+		else {
+			verCoord++;
+			horCoord = 'a';
+			return true;
+		}
+	}
+	else {
+		horCoord++;
+		return true;
+	}
 }

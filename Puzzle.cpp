@@ -36,6 +36,8 @@ void Puzzle::greetUser()
 
     board = Board(nRows, nCols);
 
+	dictionary.showValidWords();
+
     ///////////////////////////
     //board.showBoard();
     //
@@ -60,8 +62,9 @@ void Puzzle::showMenu()
         cout << string(8, '-') << endl;
         // The option names will be improved in future versions of this program
         cout << "1: Add a word to the board" << endl;
-        cout << "2: Reset board" << endl;
-        cout << "3: Save to file" << endl;
+		cout << "2: Get a list of words suggestions" << endl;
+        cout << "3: Reset board" << endl;
+        cout << "4: Save to file" << endl;
         cout << "e: Exit" << endl;
         cout << "i: More information about each option" << endl;
         cout << "Select an option: " << flush;
@@ -86,14 +89,47 @@ void Puzzle::showMenu()
 
             break;
         }
-        case '2':
-            board.reset();
-            clrscr();
+		case '2': {
+			char verCoord = 'A';
+			char horCoord = 'a';
+			string coordinates = "";
+			string line;
 
-            cout << board;
-            break;
+			coordinates = coordinates + verCoord + horCoord + 'V';
+			line = board.column(verCoord, horCoord);
+			dictionary.storeSuggestions(coordinates, line);
 
-        case '3': {
+			coordinates.clear();
+			coordinates = coordinates + verCoord + horCoord + 'H';
+			line = board.row(verCoord, horCoord);
+			dictionary.storeSuggestions(coordinates, line);
+
+			while (board.nextCoordinate(verCoord, horCoord)) {
+
+				coordinates.clear();
+				coordinates = coordinates + verCoord + horCoord + 'V';
+				line = board.column(verCoord, horCoord);
+				dictionary.storeSuggestions(coordinates, line);
+
+				coordinates.clear();
+				coordinates = coordinates + verCoord + horCoord + 'H';
+				line = board.row(verCoord, horCoord);
+				dictionary.storeSuggestions(coordinates, line);
+			}
+
+			dictionary.showSuggestions();
+			break;
+		}
+
+		case '3': {
+			board.reset();
+			clrscr();
+
+			cout << board;
+			break;
+		}
+
+        case '4': {
             ofstream out;
             string outFileName;
 
