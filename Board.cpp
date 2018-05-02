@@ -75,6 +75,8 @@ ostream& operator<<(ostream &out, Board &board)
 
         out << endl;
     }
+
+    return out;
 }
 
 int Board::addWord(string word, coord initialCoord, char direction, int mode)

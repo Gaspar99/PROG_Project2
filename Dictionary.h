@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -16,6 +15,7 @@ public:
 
 	void load(string dictionaryName);
 	bool isValid(string word);
+
 private:
 	map<string, vector<string>> synonymsList;
 	vector<string> validWords;
