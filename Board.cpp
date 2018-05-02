@@ -171,3 +171,38 @@ vector<T> Board::getKeys(map<T, U> mapObject)
 
     return vector;
 }
+
+void Board::showMap()
+{
+	for (auto it = board.cbegin(); it != board.cend(); ++it) {
+		cout << '(' << it->first.first << "," << it->first.second << ')' << " = " << it->second << endl;
+	}
+}
+
+//Returns the row that follows the coordinates (verCoord, horCoord) - (vertical coordinate, horizontal coordinate)
+string Board::row(char verCoord, char horCoord)
+{
+	string line = "";
+	coord coord(verCoord, horCoord);
+	int max = nCols - (horCoord - 97);
+	for (int i = 0; i < max; i++) {
+		line = line + board.find(coord)->second;
+		coord.second = horCoord++;
+	}
+
+	return line;
+}
+
+//Returns the column that follows the coordinates (verCoord, horCoord) - (vertical coordinate, horizontal coordinate)
+string Board::column(char verCoord, char horCoord)
+{
+	string col = "";
+	coord coord(verCoord, horCoord);
+	int max = nRows - (verCoord - 65);
+	for (int i = 0; i < max; i++) {
+		col = col + board.find(coord)->second;
+		coord.first = verCoord++;
+	}
+
+	return col;
+}
