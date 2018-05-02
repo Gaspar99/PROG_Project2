@@ -7,6 +7,44 @@
 
 using namespace std;
 
+//////////////////////////////////////////////////////////////////////////
+// WildcardMatch
+// str - Input string to match
+// strWild - Match mask that may contain wildcards like ? and *
+//
+// A ? sign matches any character, except an empty string.
+// A * sign matches any string inclusive an empty string.
+// Characters are compared caseless.
+//
+// ADAPTED FROM:
+// https://www.codeproject.com/Articles/188256/A-Simple-Wildcard-Matching-Function
+bool wildcardMatch(const char *str, const char *strWild)
+{
+	// We have a special case where string is empty ("") and the mask is "*".
+	// We need to handle this too. So we can't test on !*str here.
+	// The loop breaks when the match string is exhausted.
+	while (*strWild) {
+		// Single wildcard character
+		if (*strWild == '.') {
+			// Matches any character except empty string
+			if (!*str)
+				return false;
+			// OK next
+			++str;
+			++strWild;
+		}
+		else {
+			// Standard compare of 2 chars. Note that *str might be 0 here,
+			// but then we never get a match on *strWild
+			// that has always a value while inside this loop.
+			if (toupper(*str++) != toupper(*strWild++))
+				return false;
+		}
+	}
+	// Have a match? Only if both are at the end...
+	return !*str && !*strWild;
+}
+
 void capitalize(string &word)
 {
     transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );

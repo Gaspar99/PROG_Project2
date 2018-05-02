@@ -36,8 +36,6 @@ void Puzzle::greetUser()
 
     board = Board(nRows, nCols);
 
-	dictionary.showValidWords();
-
     ///////////////////////////
     //board.showBoard();
     //

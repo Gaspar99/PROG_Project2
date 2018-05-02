@@ -24,14 +24,12 @@ public:
 	int addWord(string word, coord initialCoord, char direction, int mode);
 	int removeWord(string word, coord initialCoord, char direction);
 
-	void showMap();
-
 	unsigned int getRows() const;
 	unsigned int getColumns() const;
 
 	string row(char verCoord, char horCoord);
 	string column(char verCoord, char horCoord);
-	bool nextCoordinate(char &verCoord, char &horCoord);
+	bool nextCoordinates(char &verCoord, char &horCoord);
 
 private:
 	// The board itself is a map with strings as keys representing coordinates followed by a char value representing the

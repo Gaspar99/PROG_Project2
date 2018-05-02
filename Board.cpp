@@ -37,7 +37,6 @@ void Board::reset()
 
 ostream& operator<<(ostream &out, Board &board)
 {
-<<<<<<< HEAD
 	// Prints the first line of the board, which corresponds to the letters of the columns.
 	for (unsigned int i = 0; i < board.nCols; ++i) {
 		if (i == 0) {
@@ -77,7 +76,6 @@ ostream& operator<<(ostream &out, Board &board)
 		out << endl;
 	}
 	return out;
-=======
     // Prints the first line of the board, which corresponds to the letters of the columns.
     for (unsigned int i = 0; i < board.nCols; ++i) {
         if (i == 0) {
@@ -118,7 +116,6 @@ ostream& operator<<(ostream &out, Board &board)
     }
 
     return out;
->>>>>>> 41c7a30184072594d6a68d9c2c704b78fa1559e8
 }
 
 int Board::addWord(string word, coord initialCoord, char direction, int mode)
@@ -214,13 +211,6 @@ vector<T> Board::getKeys(map<T, U> mapObject)
     return vector;
 }
 
-void Board::showMap()
-{
-	for (auto it = board.cbegin(); it != board.cend(); ++it) {
-		cout << '(' << it->first.first << "," << it->first.second << ')' << " = " << it->second << endl;
-	}
-}
-
 //Returns the row that follows the coordinates (verCoord, horCoord) - (vertical coordinate, horizontal coordinate)
 string Board::row(char verCoord, char horCoord)
 {
@@ -249,7 +239,9 @@ string Board::column(char verCoord, char horCoord)
 	return col;
 }
 
-bool Board::nextCoordinate(char &verCoord, char &horCoord)
+//Receives a par of coordinates and changes them to the next coordinates. 
+//If the pair of coordinates received is the last one of the board, it returns false. Otherwise, returns true
+bool Board::nextCoordinates(char &verCoord, char &horCoord)
 {
 	char lastVerCoord = 65 + nRows - 1;
 	char lastHorCoord = 97 + nCols - 1;
