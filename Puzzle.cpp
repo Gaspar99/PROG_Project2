@@ -79,6 +79,7 @@ void Puzzle::showMenu()
             cin >> initialCoord.first >> initialCoord.second >> direction;
             cout << "Insert word to add: ";
             cin >> word;
+			capitalize(word);
 
             board.addWord(word, initialCoord, direction, 0);
             clrscr();
@@ -102,7 +103,7 @@ void Puzzle::showMenu()
 			line = board.row(verCoord, horCoord);
 			dictionary.storeSuggestions(coordinates, line);
 
-			while (board.nextCoordinate(verCoord, horCoord)) {
+			while (board.nextCoordinates(verCoord, horCoord)) {
 
 				coordinates.clear();
 				coordinates = coordinates + verCoord + horCoord + 'V';

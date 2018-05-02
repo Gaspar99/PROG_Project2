@@ -219,7 +219,7 @@ string Board::row(char verCoord, char horCoord)
 	int max = nCols - (horCoord - 97);
 	for (int i = 0; i < max; i++) {
 		line = line + board.find(coord)->second;
-		coord.second = horCoord++;
+		coord.second++;
 	}
 
 	return line;
@@ -233,7 +233,7 @@ string Board::column(char verCoord, char horCoord)
 	int max = nRows - (verCoord - 65);
 	for (int i = 0; i < max; i++) {
 		col = col + board.find(coord)->second;
-		coord.first = verCoord++;
+		coord.first++;
 	}
 
 	return col;
