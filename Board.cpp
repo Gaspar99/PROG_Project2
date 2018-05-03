@@ -182,16 +182,6 @@ int Board::addWord(string word, coord initialCoord, char direction, int mode)
     return 0;
 }
 
-unsigned int Board::getRows() const
-{
-    return nRows;
-}
-
-unsigned int Board::getColumns() const
-{
-    return nCols;
-}
-
 int Board::removeWord(string word, coord initialCoord, char direction)
 {
     return addWord(word, initialCoord, direction, 1);
@@ -210,32 +200,36 @@ vector<T> Board::getKeys(map<T, U> mapObject)
     return vector;
 }
 
-//Returns the row that follows the coordinates (verCoord, horCoord) - (vertical coordinate, horizontal coordinate)
-string Board::row(char verCoord, char horCoord)
+unsigned int Board::getNumOfCols()
+{
+	return nCols;
+}
+//Returns the line (row or column, depending on 'direction') that follows the coordinates (verCoord, horCoord)
+//(verCoord, horCoord - vertical coordinate, horizontal coordinate)
+string Board::getLine(char verCoord, char horCoord, char direction)
 {
 	string line = "";
 	coord coord(verCoord, horCoord);
-	int max = nCols - (horCoord - 97);
-	for (int i = 0; i < max; i++) {
-		line = line + board.find(coord)->second;
-		coord.second++;
+	int i, max;
+
+	if (direction == 'H') {
+		i = (int)horCoord;
+
+		for (i; i < nCols + 97; i++) {
+			line = line + board.find(coord)->second;
+			coord.second++;
+		}
+	}
+	else {
+		i = (int)verCoord;
+
+		for (i; i < nRows + 65; i++) {
+			line = line + board.find(coord)->second;
+			coord.first++;
+		}
 	}
 
 	return line;
-}
-
-//Returns the column that follows the coordinates (verCoord, horCoord) - (vertical coordinate, horizontal coordinate)
-string Board::column(char verCoord, char horCoord)
-{
-	string col = "";
-	coord coord(verCoord, horCoord);
-	int max = nRows - (verCoord - 65);
-	for (int i = 0; i < max; i++) {
-		col = col + board.find(coord)->second;
-		coord.first++;
-	}
-
-	return col;
 }
 
 //Receives a par of coordinates and changes them to the next coordinates. 

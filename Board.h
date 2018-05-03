@@ -23,12 +23,8 @@ public:
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
 	int addWord(string word, coord initialCoord, char direction, int mode);
 	int removeWord(string word, coord initialCoord, char direction);
-
-	unsigned int getRows() const;
-	unsigned int getColumns() const;
-
-	string row(char verCoord, char horCoord);
-	string column(char verCoord, char horCoord);
+	unsigned int getNumOfCols();
+	string getLine(char verCoord, char horCoord, char direction);
 	bool nextCoordinates(char &verCoord, char &horCoord);
 
 private:

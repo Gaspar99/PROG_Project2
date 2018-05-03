@@ -80,6 +80,7 @@ void Puzzle::showMenu()
             cout << "Insert word to add: ";
             cin >> word;
 			capitalize(word);
+			dictionary.isValid(word);
 
             board.addWord(word, initialCoord, direction, 0);
             clrscr();
@@ -89,31 +90,23 @@ void Puzzle::showMenu()
             break;
         }
 		case '2': {
-			char verCoord = 'A';
-			char horCoord = 'a';
+			unsigned int nCols = board.getNumOfCols();
+			char verCoord = (char)64; //Character before 'A'. This way 'boad.nextCoordinates' updates the coordinates to 'A' and 'a'.
+			char horCoord = (char)(97 + nCols - 1);; //Last character of the row. 
+			char direction = 'H';
 			string coordinates = "";
 			string line;
 
-			coordinates = coordinates + verCoord + horCoord + 'V';
-			line = board.column(verCoord, horCoord);
-			dictionary.storeSuggestions(coordinates, line);
+			while (board.nextCoordinates(verCoord, horCoord)) 
+			{
+				for (int i = 0; i < 2; i++) {
+					coordinates = coordinates + verCoord + horCoord + direction;
+					line = board.getLine(verCoord, horCoord, direction);
+					dictionary.storeSuggestions(coordinates, line);
 
-			coordinates.clear();
-			coordinates = coordinates + verCoord + horCoord + 'H';
-			line = board.row(verCoord, horCoord);
-			dictionary.storeSuggestions(coordinates, line);
-
-			while (board.nextCoordinates(verCoord, horCoord)) {
-
-				coordinates.clear();
-				coordinates = coordinates + verCoord + horCoord + 'V';
-				line = board.column(verCoord, horCoord);
-				dictionary.storeSuggestions(coordinates, line);
-
-				coordinates.clear();
-				coordinates = coordinates + verCoord + horCoord + 'H';
-				line = board.row(verCoord, horCoord);
-				dictionary.storeSuggestions(coordinates, line);
+					direction == 'H' ? direction = 'V' : direction = 'H'; //switches between directions
+					coordinates.clear();
+				}
 			}
 
 			dictionary.showSuggestions();
