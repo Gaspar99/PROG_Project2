@@ -16,16 +16,15 @@ public:
 	// Default values for each coordinate is a . character
 	Board(unsigned int nRows, unsigned int nColumns);
 
-	// Allows the board to be shown on screen or written to a text file.
+	// Shows the board on the screen. TODO: change function so that it can also write to a file by modifying the prototype
 	friend ostream& operator<<(ostream &out, Board &board);
 	void reset();
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
-    // Assumes the word can be added to the map.
-	int modifyMap(string word, coord initialCoord, char direction, int mode = 0);
-
-	// The following functions are wrappers for the modifyMap function that help in readability.
+	int addWord(string word, coord initialCoord, char direction, int mode);
 	int removeWord(string word, coord initialCoord, char direction);
+	unsigned int getNumOfCols();
+	string getLine(char verCoord, char horCoord, char direction);
 	int addWord(string word, coord initialCoord, char direction);
 
 	unsigned int getRows() const;
@@ -42,14 +41,14 @@ private:
 	unsigned int nRows; // number of rows in the board
 	unsigned int nCols; // number of columns in the board
 
-    // Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
-    // The second one contains the coordinates of the previous cell and of the cell that comes after the word.
-    // If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
-    pair<vector<coord>, vector<coord>> generateCoords(unsigned int wordLength, coord initialCoord, char direction);
-    bool isNotSurrounded(coord charCoordinate, char charToCheck, char direction);
+						// Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
+						// The second one contains the coordinates of the previous cell and of the cell that comes after the word.
+						// If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
+						// Both vectors are initialized with null characters. Built into addWords.
+						//pair<vector<coord>, vector<coord>> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
 
-    // Template function to get the keys from a map, returns a vector of the type of the keys.
-    // May not be needed.
+						// Template function to get the keys from a map, returns a vector of the type of the keys.
+						// May not be needed.
 	template <class T, class U>
 	vector<T> getKeys(map<T, U> mapObject);
 };

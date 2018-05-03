@@ -11,10 +11,11 @@
 
 using namespace std;
 
-Dictionary::Dictionary() {
-	map<string, vector<string>> synonymsList;
-	set<string> validWords;
-	map<string, vector<string>> suggestions;
+Dictionary::Dictionary() 
+{
+	synonymsList[""] = { "" };
+	validWords = {""};
+	suggestions[""] = {""};
 }
 
 //Opens the dictionary and extracts its content to a map (synonymsList) and to a vector of strings (validWords)
@@ -56,10 +57,17 @@ void Dictionary::load(string dictionaryName)
 
 		while (index != string::npos) {
 			word = line.substr(pos, index - pos);
-			capitalize(word);
-			synonymsList[mainWord].push_back(word);
-			pos = index + 2;
-			index = line.find(",", pos);
+			
+			if (word[0] != '[') {
+				capitalize(word);
+				synonymsList[mainWord].push_back(word);
+				pos = index + 2;
+				index = line.find(",", pos);
+			}
+			else {
+				pos = index + 2;
+				index = line.find(",", pos);
+			}
 		}
 
 		if (line[line.length() - 1] != ',') {
@@ -70,7 +78,7 @@ void Dictionary::load(string dictionaryName)
 	}
 }
 
-//Serches for 'word' in the validWords vector. Returns true if found
+//Searches for 'word' in the validWords vector. Returns true if found
 bool Dictionary::isValid(string word) {
 	bool valid;
 
@@ -117,7 +125,7 @@ void Dictionary::showSuggestions()
 			cout << word << " - ";
 			synonyms = synonymsList.find(word)->second;
 
-			for (int i = 0; i < 5 && i < synonyms.size(); i++)	{ cout << synonyms[i] << ", "; }
+			for (unsigned int i = 0; i < 5 && i < synonyms.size(); i++)	{ cout << synonyms[i] << ", "; }
 			cout << endl;
 		}
 	}
