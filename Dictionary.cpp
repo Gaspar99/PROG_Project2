@@ -7,63 +7,20 @@
 #include <fstream>
 #include "Board.h"
 #include <utility>
+#include <iomanip>
 
 using namespace std;
 
-	//Transforms a string puting all its characters in uppercase
-	void capitalize(string &word)
-{
-	transform(word.begin(), word.end(), word.begin(), toupper);
+Dictionary::Dictionary() {
+	map<string, vector<string>> synonymsList;
+	set<string> validWords;
+	map<string, vector<string>> suggestions;
 }
 
-//////////////////////////////////////////////////////////////////////////
-// WildcardMatch
-// str - Input string to match
-// strWild - Match mask that may contain wildcards like ? and *
-//
-// A ? sign matches any character, except an empty string.
-// A * sign matches any string inclusive an empty string.
-// Characters are compared caseless.
-//
-// ADAPTED FROM:
-// https://www.codeproject.com/Articles/188256/A-Simple-Wildcard-Matching-Function
-bool wildcardMatch(const char *str, const char *strWild)
-{
-	// We have a special case where string is empty ("") and the mask is "*".
-	// We need to handle this too. So we can't test on !*str here.
-	// The loop breaks when the match string is exhausted.
-	while (*strWild) {
-		// Single wildcard character
-		if (*strWild == '.') {
-			// Matches any character except empty string
-			if (!*str)
-				return false;
-			// OK next
-			++str;
-			++strWild;
-		}
-		else {
-			// Standard compare of 2 chars. Note that *str might be 0 here,
-			// but then we never get a match on *strWild
-			// that has always a value while inside this loop.
-			if (toupper(*str++) != toupper(*strWild++))
-				return false;
-		}
-	}
-	// Have a match? Only if both are at the end...
-	return !*str && !*strWild;
-}
-
-Dictionary::Dictionary()
-{
-	synonymsList[""] = { "" };
-	validWords = { "" };
-}
-
-	//Opens the dictionary and extracts its content to a map (synonymsList) and to a vector of strings (validWords)
-	//The keys of the map are the main words and the values are vectors of strings with each string being a synonym of the main word
-	//The validWords vector contains all the main words in the dictionary. This data base is useful to later check if a certain word is valid
-	Dictionary::Dictionary(string dictionaryName)
+//Opens the dictionary and extracts its content to a map (synonymsList) and to a vector of strings (validWords)
+//The keys of the map are the main words and the values are vectors of strings with each string being a synonym of the main word
+//The validWords vector contains all the main words in the dictionary. This data base is useful to later check if a certain word is valid
+Dictionary::Dictionary(string dictionaryName)
 {
 	load(dictionaryName);
 }
@@ -88,21 +45,21 @@ void Dictionary::load(string dictionaryName)
 
 	while (getline(dictionary, line)) {
 
-		index = line.find_first_of(":");
+		index = line.find(":");
 		mainWord = line.substr(0, index);
-		capitalize(word);
+		capitalize(mainWord);
 		synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>()));
-		validWords.push_back(word);
+		validWords.insert(mainWord);
 		pos = index + 2;
 
-		index = line.find_first_of(",", pos);
+		index = line.find(",", pos);
 
 		while (index != string::npos) {
 			word = line.substr(pos, index - pos);
 			capitalize(word);
 			synonymsList[mainWord].push_back(word);
 			pos = index + 2;
-			index = line.find_first_of(",", pos);
+			index = line.find(",", pos);
 		}
 
 		if (line[line.length() - 1] != ',') {
@@ -117,7 +74,6 @@ void Dictionary::load(string dictionaryName)
 bool Dictionary::isValid(string word) {
 	bool valid;
 
-	sort(validWords.begin(), validWords.end());
 	valid = binary_search(validWords.begin(), validWords.end(), word);
 
 	if (valid) { return true; }
@@ -126,17 +82,43 @@ bool Dictionary::isValid(string word) {
 
 //Looks for valid words that match with 'line' and then elimates the last element of 'line'
 //to check all possible matches for the current coordinates
-void Dictionary::wordsSuggestions(string coordinates, string line)
+//If there is a match, this method stores the word in a map in wich the key is a string with the coordinates of the first letter of the word,
+//and the value is a vector of strings with each string being a possible word to start on those coordinates
+void Dictionary::storeSuggestions(string coordinates, string line)
 {
+
 	while (!line.empty()) {
 
-		for (string s : validWords) {
-			if (wildcardMatch(s.c_str(), line.c_str())) {
+		for (string word : validWords) {
+		
+			if (wildcardMatch(word.c_str(), line.c_str())) {
 				suggestions.insert(pair<string, vector<string>>(coordinates, vector<string>()));
-				suggestions[coordinates].push_back(line);
+				suggestions[coordinates].push_back(word);
 			}
 		}
-		line.erase(line.size() - 1);
+		line.erase(line.length() - 1);
 	}
 }
 
+//This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
+//It also prints, at maximum, 4 synonyms of each one of those words
+void Dictionary::showSuggestions()
+{
+	vector<string> synonyms;
+	vector<string> mainWords;
+
+	for (auto it = suggestions.cbegin(); it != suggestions.cend(); ++it) {
+
+		cout << "Coordinates: " << it->first << " - Words:" << endl;
+		mainWords = it->second;
+
+		for (string word : mainWords) {
+			cout << setw(32);
+			cout << word << " - ";
+			synonyms = synonymsList.find(word)->second;
+
+			for (int i = 0; i < 5 && i < synonyms.size(); i++)	{ cout << synonyms[i] << ", "; }
+			cout << endl;
+		}
+	}
+}

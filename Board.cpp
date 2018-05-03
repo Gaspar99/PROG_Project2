@@ -36,6 +36,45 @@ void Board::reset()
 
 ostream& operator<<(ostream &out, Board &board)
 {
+	// Prints the first line of the board, which corresponds to the letters of the columns.
+	for (unsigned int i = 0; i < board.nCols; ++i) {
+		if (i == 0) {
+			setcolor(3);
+			out << setw(4) << right << string(1, char(i + 97));
+		}
+		else {
+			out << setw(2) << string(1, char(i + 97));
+		}
+	}
+
+	out << endl;
+
+	// Prints the remainder of the lines.
+	for (unsigned int i = 0; i < board.nRows; ++i) {
+		setcolor(3);
+		out << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
+
+		for (unsigned int j = 0; j < board.nCols; ++j) {
+			Board::coord c(char(i + 65), char(j + 97));
+
+			if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
+				out << " ";
+				setcolor(0, 15);
+				out << setw(1) << '#';
+			}
+			else if (board.board[c] == '#') {
+				setcolor(0, 15);
+				out << left << setw(1) << '#' << right;
+			}
+			else {
+				setcolor(15);
+				out << setw(2) << board.board[c];
+			}
+		}
+
+		out << endl;
+	}
+	return out;
     // Prints the first line of the board, which corresponds to the letters of the columns.
     for (unsigned int i = 0; i < board.nCols; ++i) {
         if (i == 0) {
@@ -171,13 +210,6 @@ vector<T> Board::getKeys(map<T, U> mapObject)
     return vector;
 }
 
-void Board::showMap()
-{
-	for (auto it = board.cbegin(); it != board.cend(); ++it) {
-		cout << '(' << it->first.first << "," << it->first.second << ')' << " = " << it->second << endl;
-	}
-}
-
 //Returns the row that follows the coordinates (verCoord, horCoord) - (vertical coordinate, horizontal coordinate)
 string Board::row(char verCoord, char horCoord)
 {
@@ -186,7 +218,7 @@ string Board::row(char verCoord, char horCoord)
 	int max = nCols - (horCoord - 97);
 	for (int i = 0; i < max; i++) {
 		line = line + board.find(coord)->second;
-		coord.second = horCoord++;
+		coord.second++;
 	}
 
 	return line;
@@ -200,8 +232,28 @@ string Board::column(char verCoord, char horCoord)
 	int max = nRows - (verCoord - 65);
 	for (int i = 0; i < max; i++) {
 		col = col + board.find(coord)->second;
-		coord.first = verCoord++;
+		coord.first++;
 	}
 
 	return col;
+}
+
+//Receives a par of coordinates and changes them to the next coordinates. 
+//If the pair of coordinates received is the last one of the board, it returns false. Otherwise, returns true
+bool Board::nextCoordinates(char &verCoord, char &horCoord)
+{
+	char lastVerCoord = 65 + nRows - 1;
+	char lastHorCoord = 97 + nCols - 1;
+	if (horCoord == lastHorCoord) {
+		if (verCoord == lastVerCoord) { return false; }
+		else {
+			verCoord++;
+			horCoord = 'a';
+			return true;
+		}
+	}
+	else {
+		horCoord++;
+		return true;
+	}
 }
