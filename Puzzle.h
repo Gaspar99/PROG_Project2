@@ -19,6 +19,14 @@ private:
     Board board;
     Dictionary dictionary;
     map<string, string> currentWords;
+    string dictionaryFile;
+
+    void handleAddWord();
+    void handleWrite();
+
+    void handleSuggestWords();
+    void handleReset();
+    void parseCoordinates(char first, char second, char direction);
 };
 
 

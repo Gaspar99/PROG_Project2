@@ -21,8 +21,12 @@ public:
 	void reset();
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
+    // Assumes the word can be added to the map.
 	int modifyMap(string word, coord initialCoord, char direction, int mode = 0);
+
+	// The following functions are wrappers for the modifyMap function that help in readability.
 	int removeWord(string word, coord initialCoord, char direction);
+	int addWord(string word, coord initialCoord, char direction);
 
 	unsigned int getRows() const;
 	unsigned int getColumns() const;
