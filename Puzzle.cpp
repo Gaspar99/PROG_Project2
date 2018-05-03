@@ -47,7 +47,7 @@ void Puzzle::greetUser()
     //cin >> coordinate.first >> coordinate.second >> direction;
     //cout << "Word? ";
     //cin >> word;
-    //board.addWord(word, coordinate, direction, 0);
+    //board.modifyMap(word, coordinate, direction, 0);
     //board.showBoard();
 }
 void Puzzle::showMenu()
@@ -81,7 +81,7 @@ void Puzzle::showMenu()
             cin >> word;
 			capitalize(word);
 
-            board.addWord(word, initialCoord, direction, 0);
+            board.modifyMap(word, initialCoord, direction);
             clrscr();
 
             cout << board;

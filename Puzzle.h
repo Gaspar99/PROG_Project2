@@ -18,6 +18,7 @@ public:
 private:
     Board board;
     Dictionary dictionary;
+    map<string, string> currentWords;
 };
 
 
