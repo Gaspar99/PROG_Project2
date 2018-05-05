@@ -42,18 +42,18 @@ void Dictionary::load(string dictionaryName)
 		exit(1);
 	}
 
-	cout << "Extracting, this may take a while..." << endl;
+	cout << "Extracting..." << endl;
 
 	while (getline(dictionary, line)) {
 
-		index = line.find(":");
-		mainWord = line.substr(0, index);
+		index = line.find(":"); //searches for ':' in line, to get the string before it
+		mainWord = line.substr(0, index); 
 		capitalize(mainWord);
-		synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>()));
+		synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>())); 
 		validWords.insert(mainWord);
 		pos = index + 2;
 
-		index = line.find(",", pos);
+		index = line.find(",", pos); 
 
 		while (index != string::npos) {
 			word = line.substr(pos, index - pos);
@@ -61,13 +61,10 @@ void Dictionary::load(string dictionaryName)
 			if (word[0] != '[') {
 				capitalize(word);
 				synonymsList[mainWord].push_back(word);
-				pos = index + 2;
-				index = line.find(",", pos);
 			}
-			else {
-				pos = index + 2;
-				index = line.find(",", pos);
-			}
+
+			pos = index + 2;
+			index = line.find(",", pos);
 		}
 
 		if (line[line.length() - 1] != ',') {
@@ -129,4 +126,9 @@ void Dictionary::showSuggestions()
 			cout << endl;
 		}
 	}
+}
+
+void Dictionary::clearSuggestions()
+{
+	suggestions.clear();
 }

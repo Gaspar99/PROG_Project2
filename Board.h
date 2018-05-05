@@ -24,14 +24,11 @@ public:
     int modifyMap(string word, coord initialCoord, char direction, int mode = 0);
 	int addWord(string word, coord initialCoord, char direction);
 	int removeWord(string word, coord initialCoord, char direction);
+
 	unsigned int getNumOfCols();
+	unsigned int getNumOfRows();
 	string getLine(char verCoord, char horCoord, char direction);
 
-	unsigned int getRows() const;
-	unsigned int getColumns() const;
-
-	string row(char verCoord, char horCoord);
-	string column(char verCoord, char horCoord);
 	bool nextCoordinates(char &verCoord, char &horCoord);
 
 private:
