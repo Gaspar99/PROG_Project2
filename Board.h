@@ -21,11 +21,11 @@ public:
 	void reset();
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
-	int addWord(string word, coord initialCoord, char direction, int mode);
+    int modifyMap(string word, coord initialCoord, char direction, int mode = 0);
+	int addWord(string word, coord initialCoord, char direction);
 	int removeWord(string word, coord initialCoord, char direction);
 	unsigned int getNumOfCols();
 	string getLine(char verCoord, char horCoord, char direction);
-	int addWord(string word, coord initialCoord, char direction);
 
 	unsigned int getRows() const;
 	unsigned int getColumns() const;
@@ -41,16 +41,17 @@ private:
 	unsigned int nRows; // number of rows in the board
 	unsigned int nCols; // number of columns in the board
 
-						// Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
-						// The second one contains the coordinates of the previous cell and of the cell that comes after the word.
-						// If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
-						// Both vectors are initialized with null characters. Built into addWords.
-						//pair<vector<coord>, vector<coord>> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
+    // Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
+    // The second one contains the coordinates of the previous cell and of the cell that comes after the word.
+    // If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
+    // Both vectors are initialized with null characters. Built into addWords.
+    pair<vector<coord>, vector<coord>> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
 
-						// Template function to get the keys from a map, returns a vector of the type of the keys.
-						// May not be needed.
+    // Template function to get the keys from a map, returns a vector of the type of the keys.
+    // May not be needed.
 	template <class T, class U>
 	vector<T> getKeys(map<T, U> mapObject);
+    bool isNotSurrounded(coord coordinate, char charToCheck, char direction);
 };
 
 #endif //PROG_PROJECT2_BOARD_H

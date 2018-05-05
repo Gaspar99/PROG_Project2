@@ -26,7 +26,7 @@ private:
 
     void handleSuggestWords();
     void handleReset();
-    void parseCoordinates(char first, char second, char direction);
+    bool parseCoordinates(char xCoord, char yCoord, char direction);
 };
 
 

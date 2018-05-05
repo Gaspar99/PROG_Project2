@@ -97,6 +97,9 @@ void Puzzle::handleAddWord()
     cout << "Insert Line, Column and Direction (LCD): ";
     cin >> initialCoord.first >> initialCoord.second >> direction;
 
+    cin.clear();
+    cin.ignore(1000, '\n');
+
     parseCoordinates(initialCoord.first, initialCoord.second, direction);
 
     cout << "Insert word to add: ";
@@ -163,9 +166,14 @@ void Puzzle::handleWrite()
     cout << "Writing finished." << endl;
 }
 
-void Puzzle::parseCoordinates(char first, char second, char direction)
+bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
 {
-    toupper(first);
-    toupper(second);
+    toupper(xCoord);
+    toupper(yCoord);
     toupper(direction);
+
+    if (xCoord > board.getRows() + 65 || yCoord > board.getColumns() + 65) {
+        cout << "Invalid coordinates" << endl;
+        return false;
+    }
 }
