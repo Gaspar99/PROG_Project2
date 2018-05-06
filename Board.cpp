@@ -91,16 +91,6 @@ int Board::modifyMap(string word, coord initialCoord, char direction, int mode)
     return 0;
 }
 
-unsigned int Board::getNumberOfRows() const
-{
-    return nRows;
-}
-
-unsigned int Board::getNumberOfColumns() const
-{
-    return nCols;
-}
-
 int Board::removeWord(string word, coord initialCoord, char direction)
 {
     return modifyMap(word, initialCoord, direction);
