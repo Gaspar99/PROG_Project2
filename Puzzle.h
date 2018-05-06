@@ -21,12 +21,17 @@ private:
     map<string, string> currentWords;
     string dictionaryFile;
 
+	void createPuzzle();
+
     void handleAddWord();
     void handleWrite();
+	void handleInsertedWord(string word, char verCoord, char horCoord, char direction);
 
-    void handleSuggestWords();
+	void handlSuggestWords(char verCoord, char horCoord, char direction);
+    void handleSuggestAllWords();
     void handleReset();
     bool parseCoordinates(char xCoord, char yCoord, char direction);
+	void showInstructions();
 };
 
 

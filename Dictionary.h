@@ -20,6 +20,7 @@ public:
 	bool isValid(string word);
 	void storeSuggestions(string coordinates, string line);
 	void showSuggestions();
+	void clearSuggestions();
 private:
 	map<string, vector<string>> synonymsList;
 	set<string> validWords;

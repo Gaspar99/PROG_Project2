@@ -25,11 +25,10 @@ public:
 	int addWord(string word, coord initialCoord, char direction);
 	int removeWord(string word, coord initialCoord, char direction);
 
-	unsigned int getNumberOfRows() const;
-	unsigned int getNumberOfColumns() const;
+	unsigned int getNumOfCols();
+	unsigned int getNumOfRows();
+	string getLine(char verCoord, char horCoord, char direction);
 
-	string row(char verCoord, char horCoord); // Returns a row from the board as a string
-	string column(char verCoord, char horCoord); // Returns a columns form the board as a string
 	bool nextCoordinates(char &verCoord, char &horCoord);
 
 private:
