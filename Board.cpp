@@ -16,7 +16,7 @@ Board::Board(unsigned int nRows, unsigned int nColumns)
         for (int j = 0; j < nCols; ++j) {
             // builds a string like "Aa", "Ab", etc
             board.insert(pair<coord, char>(coord(static_cast<const char &>(i + 65),
-                                                 static_cast<const char &>(j + 97)), '.'));
+                                                 static_cast<const char &>(j + 65)), '.'));
         }
     }
 }
@@ -25,7 +25,7 @@ void Board::reset()
 {
     for (int i = 0; i < nRows; ++i) {
         for (int j = 0; j < nCols; ++j) {
-            board[(coord(static_cast<const char &>(i + 65), static_cast<const char &>(j + 97)))] = '.';
+            board[(coord(static_cast<const char &>(i + 97), static_cast<const char &>(j + 97)))] = '.';
         }
     }
 }
@@ -91,12 +91,12 @@ int Board::modifyMap(string word, coord initialCoord, char direction, int mode)
     return 0;
 }
 
-unsigned int Board::getRows() const
+unsigned int Board::getNumberOfRows() const
 {
     return nRows;
 }
 
-unsigned int Board::getColumns() const
+unsigned int Board::getNumberOfColumns() const
 {
     return nCols;
 }

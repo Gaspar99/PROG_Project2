@@ -172,7 +172,7 @@ bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
     toupper(yCoord);
     toupper(direction);
 
-    if (xCoord > board.getRows() + 65 || yCoord > board.getColumns() + 65) {
+    if (xCoord > board.getNumberOfRows() + 65 || yCoord > board.getNumberOfColumns() + 65) {
         cout << "Invalid coordinates" << endl;
         return false;
     }
