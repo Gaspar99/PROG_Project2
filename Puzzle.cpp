@@ -244,7 +244,7 @@ void Puzzle::handleWrite()
 // parseCoordinates returns true if the coordinate input by the user is inside the board and false if it is out of bounds
 bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
 {
-    return !(isdigit(xCoord) || isdigit(yCoord)) && (direction == 'V' || direction == 'H') &&
+    return !(isdigit(xCoord) || isdigit(yCoord)) && (toupper(direction) == 'V' || toupper(direction) == 'H') &&
             (toupper(xCoord) < board.getNumOfRows() + 65 || toupper(yCoord) < board.getNumOfCols() + 65);
 }
 
