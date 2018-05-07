@@ -51,7 +51,7 @@ ostream &operator<<(ostream &out, Board &board)
         out << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
 
         for (unsigned int j = 0; j < board.nCols; ++j) {
-            Board::coord c(char(i + 65), char(j + 97));
+            Board::coord c(char(i + 65), char(j + 65));
 
             if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
                 out << " ";

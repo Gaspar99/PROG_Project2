@@ -45,6 +45,9 @@ bool wildcardMatch(const char *str, const char *strWild)
 	return !*str && !*strWild;
 }
 
+char to_upper(int ch) {
+    return static_cast<unsigned char>(toupper(ch));
+}
 void capitalize(string &word)
 {
     transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );

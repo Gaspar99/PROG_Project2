@@ -20,6 +20,7 @@
 
 using namespace std;
 
+char to_upper(int ch);
 bool wildcardMatch(const char *str, const char *strWild);
 void capitalize(string& word);
 void clrscr(void);

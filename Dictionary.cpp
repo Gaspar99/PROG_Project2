@@ -81,8 +81,7 @@ bool Dictionary::isValid(string word) {
 
 	valid = binary_search(validWords.begin(), validWords.end(), word);
 
-	if (valid) { return true; }
-	else { return false; }
+    return valid;
 }
 
 //Looks for valid words that match with 'line' and then elimates the last element of 'line'

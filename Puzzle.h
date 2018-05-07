@@ -25,7 +25,7 @@ private:
 
     void handleAddWord();
     void handleWrite();
-	void handleInsertedWord(string word, char verCoord, char horCoord, char direction);
+	void insertWord(string word, char verCoord, char horCoord, char direction);
 
 	void handlSuggestWords(char verCoord, char horCoord, char direction);
     void handleSuggestAllWords();
