@@ -27,11 +27,12 @@ private:
     void handleWrite();
 	void insertWord(string word, char verCoord, char horCoord, char direction);
 
-	void handlSuggestWords(char verCoord, char horCoord, char direction);
+	void handleSuggestWords(char verCoord, char horCoord, char direction);
     void handleSuggestAllWords();
     void handleReset();
     bool parseCoordinates(char xCoord, char yCoord, char direction);
 	void showInstructions();
+    bool wordInMap(string word);
 };
 
 

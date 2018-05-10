@@ -11,8 +11,14 @@ using namespace std::chrono;
 int main()
 {
 	Puzzle puzzle1;
-	puzzle1.greetUser();
-	puzzle1.showMenu();
+
+    setcolor(WHITE);
+    puzzle1.greetUser();
+
+    while(true) {
+        puzzle1.showMenu();
+        exit(0);
+    }
 
     return 0;
 }

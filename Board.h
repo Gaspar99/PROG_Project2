@@ -23,7 +23,7 @@ public:
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
     int modifyMap(string word, coord initialCoord, char direction, int mode = 0);
 	int addWord(string word, coord initialCoord, char direction);
-	int removeWord(string word, coord initialCoord, char direction);
+	int removeWord(coord initialCoord, char direction);
 
 	unsigned int getNumOfCols();
 	unsigned int getNumOfRows();
@@ -31,6 +31,7 @@ public:
 
 	bool nextCoordinates(char &verCoord, char &horCoord);
 
+    bool isNotFull();
 private:
 	// The board itself is a map with strings as keys representing coordinates followed by a char value representing the
 	// value of the corresponding cell.
@@ -48,7 +49,7 @@ private:
     // May not be needed.
 	template <class T, class U>
 	vector<T> getKeys(map<T, U> mapObject);
-    bool isNotSurrounded(coord coordinate, char charToCheck, char direction);
+    bool isNotSurrounded(coord coordinate, char direction);
 };
 
 #endif //PROG_PROJECT2_BOARD_H

@@ -48,6 +48,11 @@ bool wildcardMatch(const char *str, const char *strWild)
 char to_upper(int ch) {
     return static_cast<unsigned char>(toupper(ch));
 }
+
+char to_lower(int ch) {
+    return static_cast<unsigned char>(tolower(ch));
+}
+
 void capitalize(string &word)
 {
     transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );

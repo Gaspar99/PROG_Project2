@@ -80,21 +80,59 @@ int Board::modifyMap(string word, coord initialCoord, char direction, int mode)
     pair<vector<coord>, vector<coord>> coordsToModify = generateCoords(wordLength, initialCoord, direction);
 
     for (int i = 0; i < wordLength; ++i) {
-        board[coordsToModify.first[i]] = word[i];
+        coord currentCoord = coordsToModify.first[i];
+
+        if (isNotSurrounded(currentCoord, direction))
+            board[currentCoord] = word[i];
     }
 
     for (int i = 0; i < wordLength; ++i) {
-        board[coordsToModify.second[i]] = '#';
+        coord currentCoord(coordsToModify.second[i]);
+
+        if (isNotSurrounded(currentCoord, direction) && mode == 0)
+            board[coordsToModify.second[i]] = '#';
+        else if (isNotSurrounded(currentCoord, direction) && mode == 1)
+            board[coordsToModify.second[i]] = '.';
     }
 
     // Return 0 means the word was successfully added.
     return 0;
 }
 
-int Board::removeWord(string word, coord initialCoord, char direction)
+int Board::removeWord(coord initialCoord, char direction)
 {
-    return modifyMap(word, initialCoord, direction);
+    switch (direction) {
+    case 'H': {
+        unsigned int i = 0;
+
+        while (initialCoord.second + i <= (nCols + 65)) {
+            coord next(initialCoord.first, static_cast<const char &>(initialCoord.second + i));
+            if (board[next] == '#') break;
+            ++i;
+        }
+
+        string word = string(i, '.');
+
+        return modifyMap(word, initialCoord, direction, 1);
+    }
+
+    case 'V': {
+        unsigned int i = 0;
+
+        while (initialCoord.first + i <= (nRows + 65)) {
+            coord next(static_cast<const char &>(initialCoord.first + i), initialCoord.second);
+            if (board[next] == '#') break;
+            ++i;
+        }
+
+        string word = string(i, '.');
+
+        return modifyMap(word, initialCoord, direction, 1);
+    }
+    default:break;
+    }
 }
+
 
 int Board::addWord(string word, Board::coord initialCoord, char direction)
 {
@@ -152,7 +190,7 @@ Board::generateCoords(unsigned int wordLength, coord initialCoord, char directio
             limitCoords.push_back(coord);
         }
 
-        if (initialCoord.second > 'a') {
+        if (initialCoord.second > 'A') {
             coord coord(initialCoord.first, --initialCoord.second);
             limitCoords.push_back(coord);
         }
@@ -165,21 +203,21 @@ Board::generateCoords(unsigned int wordLength, coord initialCoord, char directio
     return pair<vector<coord>, vector<coord>>(wordCoords, limitCoords);
 }
 
-bool Board::isNotSurrounded(coord coordinate, char charToCheck, char direction)
+bool Board::isNotSurrounded(coord coordinate, char direction)
 {
     switch (direction) {
     case 'V': {
         char left = --coordinate.second;
-        char right = ++coordinate.second;
+        auto right = static_cast<char>(coordinate.second + 1);
 
-        return (left != '.' || right != '.');
+        return left != '.' || right != '.';
     }
 
     case 'H': {
         char top = ++coordinate.first;
-        char bottom = --coordinate.first;
+        char bottom = static_cast<char>(coordinate.first - 2);
 
-        return (top != '.' || bottom != '.');
+        return top != '.' || bottom != '.';
     }
     default: break;
     }
@@ -252,4 +290,12 @@ bool Board::nextCoordinates(char &verCoord, char &horCoord)
         horCoord++;
         return true;
     }
+}
+bool Board::isNotFull()
+{
+    for (const auto &it : board)
+        if (it.second == '.')
+            return true;
+
+    return false;
 }

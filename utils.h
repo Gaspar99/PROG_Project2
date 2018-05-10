@@ -21,6 +21,7 @@
 using namespace std;
 
 char to_upper(int ch);
+char to_lower(int ch);
 bool wildcardMatch(const char *str, const char *strWild);
 void capitalize(string& word);
 void clrscr(void);
