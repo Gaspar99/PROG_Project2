@@ -207,17 +207,21 @@ bool Board::isNotSurrounded(coord coordinate, char direction)
 {
     switch (direction) {
     case 'V': {
-        char left = --coordinate.second;
-        auto right = static_cast<char>(coordinate.second + 1);
+        coord left(coordinate.first, static_cast<const char &>(coordinate.second - 1));
+        coord right(coordinate.first, static_cast<const char &>(coordinate.second + 1));
+        //auto left = static_cast<char>(coordinate.second - 1);
+        //auto right = static_cast<char>(coordinate.second + 1);
 
-        return left != '.' || right != '.';
+        return board[left] == '.' && board[right] == '.';
     }
 
     case 'H': {
-        char top = ++coordinate.first;
-        char bottom = static_cast<char>(coordinate.first - 2);
+        coord top(static_cast<const char &>(coordinate.first + 1), coordinate.second);
+        coord bottom(static_cast<const char &>(coordinate.first - 1), coordinate.second);
+        //auto top = static_cast<char>(coordinate.first + 1);
+        //auto bottom = static_cast<char>(coordinate.first - 1);
 
-        return top != '.' || bottom != '.';
+        return board[top] == '.' && board[bottom] == '.';
     }
     default: break;
     }
