@@ -85,10 +85,8 @@ void Puzzle::createPuzzle()
 
 void Puzzle::handleAddWord()
 {
-    //TODO: Check if input is valid
     Board::coord initialCoord;
     char direction;
-    string word;
 
     while (board.isNotFull()) {
         cout << "Position (LCD / CTRL-Z = STOP) ?: ";
@@ -104,6 +102,8 @@ void Puzzle::handleAddWord()
 
         if (parseCoordinates(initialCoord.first, initialCoord.second, direction)) // Check if coordinates are in the board
         {
+            string word;
+
             cout << "Insert a valid word ('e' for additional options) ";
             cin >> word;
 
@@ -112,7 +112,16 @@ void Puzzle::handleAddWord()
             initialCoord.second = to_upper(initialCoord.second);
             direction = to_upper(direction);
 
-            insertWord(word, initialCoord.first, initialCoord.second, direction);
+            string line = board.getLine(initialCoord.first, initialCoord.second, direction);
+
+            if (wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str()) || word == "-" || word == "E" || word == "?" || word == "?A" || word == "R" ) {
+                insertWord(word, initialCoord.first, initialCoord.second, direction);
+
+            } else {
+                setcolor(LIGHTRED);
+                cerr << word << " does not match any letters on the line" << endl;
+                setcolor(WHITE);
+            }
         }
         else {
             setcolor(LIGHTRED);
@@ -145,7 +154,6 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
             setcolor(WHITE);
 
         } else {
-
             currentWords.insert(pair<string, string>(coord, word));
 
             board.addWord(word, initialCoord, direction);

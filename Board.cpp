@@ -253,26 +253,50 @@ unsigned int Board::getNumOfCols()
 //(verCoord, horCoord - vertical coordinate, horizontal coordinate)
 string Board::getLine(char verCoord, char horCoord, char direction)
 {
-	string line = "";
-	coord coord(verCoord, horCoord);
-	int i, max;
+    string line;
+    coord coordinate(verCoord, horCoord);
+    vector<coord> coordsToModify;
 
-	if (direction == 'H') {
-		i = (int)horCoord;
+    switch (direction) {
+    case 'H':
+        coordsToModify = generateCoords(nCols - horCoord + 65, coordinate, 'H').first;
 
-		for (i; i < nCols + 97; i++) {
-			line = line + board.find(coord)->second;
-			coord.second++;
-		}
-	}
-	else {
-		i = (int)verCoord;
+        for (coord c : coordsToModify) {
+            line.push_back(board[c]);
+        }
 
-		for (i; i < nRows + 65; i++) {
-			line = line + board.find(coord)->second;
-			coord.first++;
-		}
-	}
+        return line;
+    case 'V':
+        coordsToModify = generateCoords(nRows - verCoord + 65, coordinate, 'V').first;
+
+        for (coord c : coordsToModify) {
+            line.push_back(board[c]);
+        }
+
+        return line;
+
+    default:break;
+    }
+	//string line;
+	//coord coord(verCoord, horCoord);
+	//int i;
+    //
+	//if (direction == 'H') {
+	//	i = (int)horCoord;
+    //
+	//	for (i; i < nCols + 65; i++) {
+	//		line.push_back(board.find(coord)->second);
+	//		++coord.second;
+	//	}
+	//}
+	//else {
+	//	i = (int)verCoord;
+    //
+	//	for (i; i < nRows + 65; i++) {
+	//		line.push_back(board.find(coord)->second);
+	//		++coord.first;
+	//	}
+	//}
 
 	return line;
 }
@@ -280,8 +304,8 @@ string Board::getLine(char verCoord, char horCoord, char direction)
 //If the pair of coordinates received is the last one of the board, it returns false. Otherwise, returns true
 bool Board::nextCoordinates(char &verCoord, char &horCoord)
 {
-    char lastVerCoord = 65 + nRows - 1;
-    char lastHorCoord = 97 + nCols - 1;
+    auto lastVerCoord = static_cast<char>(65 + nRows - 1);
+    auto lastHorCoord = static_cast<char>(97 + nCols - 1);
     if (horCoord == lastHorCoord) {
         if (verCoord == lastVerCoord) { return false; }
         else {
