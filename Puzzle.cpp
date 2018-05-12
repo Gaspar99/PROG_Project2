@@ -236,17 +236,19 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 void Puzzle::handleSuggestAllWords()
 {
     unsigned int nCols = board.getNumOfCols();
-    char verCoord =
-        (char) 64; //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
-    char horCoord = (char) (97 + nCols - 1);; //Last character of the row.
+    auto verCoord = static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
+    auto horCoord = static_cast<char>(97 + nCols - 1);; //Last character of the row.
     char direction = 'H';
-    string coordinates = "";
+    string coordinates;
 	string line, word;
 	Board::coord initialCoord(verCoord, horCoord);
 
     while (board.nextCoordinates(verCoord, horCoord)) {
         for (int i = 0; i < 2; i++) {
-            coordinates = coordinates + verCoord + horCoord + direction;
+            coordinates.push_back(verCoord);
+            coordinates.push_back(horCoord);
+            coordinates.push_back(direction);
+            
             line = board.getLine(verCoord, horCoord, direction);
             dictionary.storeSuggestions(coordinates, line);
 
