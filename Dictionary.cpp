@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 #include "Board.h"
 #include "Dictionary.h"
 #include "utils.h"

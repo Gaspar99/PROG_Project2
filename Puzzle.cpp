@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <limits>
 #include "Puzzle.h"
 #include "utils.h"
 
@@ -71,7 +72,6 @@ void Puzzle::createPuzzle()
     this->dictionaryFile = inputFileName;
 
     dictionary = Dictionary(inputFileName);
-
     cout << "Board size (lines columns) ? ";
     cin >> nRows >> nCols;
 
@@ -300,16 +300,13 @@ void Puzzle::handleWrite()
 
         if (option == "yes") {
             board.finish();
+            break;
+
         } else if (option != "no") {
             setcolor(LIGHTRED);
             cerr << "Insert a valid option." << endl;
             setcolor(WHITE);
 
-        } else if (cin.fail() && cin.eof()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            handleWrite();
-            exit(0);
         }
     } while (option != "yes" || option != "no");
 
@@ -332,19 +329,11 @@ void Puzzle::handleWrite()
         cin >> option;
 
         if (option == "yes") {
-            board.reset();
+            handleReset();
             showMenu();
         }
         else if (option == "no") {
             exit(0);
-        }
-        else if (cin.fail() && cin.eof()) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-
-            setcolor(LIGHTRED);
-            cerr << "Insert a valid option." << endl;
-            setcolor(WHITE);
         }
         else {
             setcolor(LIGHTRED);
