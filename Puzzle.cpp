@@ -10,9 +10,6 @@ Puzzle::Puzzle() : board(0, 0) {}
 
 void Puzzle::greetUser()
 {
-    unsigned int nRows;
-    unsigned int nCols;
-
     string inputFileName;
     string greeting = "CROWSSWORDS PUZZLE CREATOR";
 
@@ -80,7 +77,9 @@ void Puzzle::createPuzzle()
 
     board = Board(nRows, nCols);
 
+    board.setWriteMode(1);
     cout << board;
+
     handleAddWord();
 }
 
@@ -196,11 +195,14 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
         handleReset();
     }
     else {
+        board.setWriteMode(1);
         cout << board;
+
         cerr << "Invalid word, nothing added." << endl;
         return;
     }
 
+    board.setWriteMode(1);
     cout << board;
 }
 
@@ -270,14 +272,14 @@ void Puzzle::handleReset()
 {
     board.reset();
     currentWords.clear();
+    board.setWriteMode(1);
 
     cout << board;
 }
 
 void Puzzle::handleWrite()
 {
-    // TODO: Store the resulting board in a text file. The name of the file must have a name in the format bXXX.txt,
-    // TODO: where XXX represents the number of the board, always with 3 digits, starting in "001".
+    string option;
     ofstream outStream;
     static unsigned int boardVersion = 1;
 
@@ -286,11 +288,22 @@ void Puzzle::handleWrite()
 
     string fileName = outFileName.str();
 
+    cout << "Is the board finished? (yes/no): ";
+    cin >> option;
+
+    if (option == "yes") {
+        board.finish();
+    } else if (option != "no") {
+        cout << "Insert a valid option." << endl;
+    }
+
     cout << "Writing to " << fileName << endl;
 
     outStream.open(fileName);
     outStream << "Words taken from: " << dictionaryFile << endl;
-    writeBoard(outStream, board);
+
+    board.setWriteMode(0);
+    outStream << board;
 
     for (auto &it : currentWords) {
         outStream << setw(4) << left << it.first << it.second << endl;

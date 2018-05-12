@@ -11,7 +11,6 @@ class Board
 {
     // Shows the board on the screen.
     friend ostream& operator<<(ostream &out, Board &board);
-    friend void writeBoard(ostream &out, Board& board);
 
 public:
 	typedef pair<char, char> coord;
@@ -35,12 +34,16 @@ public:
 
     bool isNotFull();
 
+    void setWriteMode(int mode);
+
+    void finish();
 private:
 	// The board itself is a map with strings as keys representing coordinates followed by a char value representing the
 	// value of the corresponding cell.
 	map<coord, char> board;
 	unsigned int nRows; // number of rows in the board
 	unsigned int nCols; // number of columns in the board
+    int writeMode; // defines whether the board is to be written to a file (0) or to the screen (1)
 
     // Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
     // The second one contains the coordinates of the previous cell and of the cell that comes after the word.

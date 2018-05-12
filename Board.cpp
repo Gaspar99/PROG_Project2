@@ -33,13 +33,15 @@ void Board::reset()
 ostream &operator<<(ostream &out, Board &board)
 {
     // Prints the first line of the board, which corresponds to the letters of the columns.
-    for (unsigned int i = 0; i < board.nCols; ++i) {
-        if (i == 0) {
-            setcolor(3);
-            out << setw(4) << right << string(1, char(i + 97));
-        }
-        else {
-            out << setw(2) << string(1, char(i + 97));
+    if (board.writeMode) {
+        for (unsigned int i = 0; i < board.nCols; ++i) {
+            if (i == 0) {
+                setcolor(3);
+                out << setw(4) << right << string(1, char(i + 97));
+            }
+            else {
+                out << setw(2) << string(1, char(i + 97));
+            }
         }
     }
 
@@ -47,8 +49,10 @@ ostream &operator<<(ostream &out, Board &board)
 
     // Prints the remainder of the lines.
     for (unsigned int i = 0; i < board.nRows; ++i) {
-        setcolor(3);
-        out << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
+        if (board.writeMode) {
+            setcolor(3);
+            out << setw(2) << left << string(1, char(i + 65)) << right << setw(1); // Prints the firstCoord letter.
+        }
 
         for (unsigned int j = 0; j < board.nCols; ++j) {
             Board::coord c(char(i + 65), char(j + 65));
@@ -72,31 +76,6 @@ ostream &operator<<(ostream &out, Board &board)
     }
 
     return out;
-}
-
-void writeBoard(ostream &out, Board& board)
-{
-    for (unsigned int i = 0; i < board.nRows; ++i) {
-        for (unsigned int j = 0; j < board.nCols; ++j) {
-            Board::coord c(char(i + 65), char(j + 65));
-
-            if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
-                out << " ";
-                setcolor(0, 15);
-                out << setw(1) << '#';
-            }
-            else if (board.board[c] == '#') {
-                setcolor(0, 15);
-                out << left << setw(1) << '#' << right;
-            }
-            else {
-                setcolor(15);
-                out << setw(2) << board.board[c];
-            }
-        }
-
-        out << endl;
-    }
 }
 
 bool Board::modifyMap(string word, coord initialCoord, char direction, int mode)
@@ -234,19 +213,15 @@ bool Board::isNotSurrounded(coord coordinate, char direction)
     case 'V': {
         coord left(coordinate.first, static_cast<const char &>(coordinate.second - 1));
         coord right(coordinate.first, static_cast<const char &>(coordinate.second + 1));
-        //auto left = static_cast<char>(coordinate.second - 1);
-        //auto right = static_cast<char>(coordinate.second + 1);
 
-        return board[left] == '.' && board[right] == '.';
+        return board[left] == '.' && (board[right] == '.' || board[right] == '\0') || (board[right] == '.' && board[left] == '\0');
     }
 
     case 'H': {
         coord top(static_cast<const char &>(coordinate.first + 1), coordinate.second);
         coord bottom(static_cast<const char &>(coordinate.first - 1), coordinate.second);
-        //auto top = static_cast<char>(coordinate.first + 1);
-        //auto bottom = static_cast<char>(coordinate.first - 1);
 
-        return board[top] == '.' && board[bottom] == '.';
+        return board[top] == '.' && (board[bottom] == '.' || board[bottom] == '\0') || (board[bottom] == '.' && board[top] == '\0');
     }
     default: break;
     }
@@ -319,4 +294,16 @@ bool Board::isNotFull()
             return true;
 
     return false;
+}
+
+void Board::setWriteMode(int mode)
+{
+    writeMode = mode;
+}
+
+void Board::finish()
+{
+    for (auto &it : board)
+        if (it.second == '.')
+            it.second = '#';
 }
