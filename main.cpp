@@ -19,6 +19,4 @@ int main()
         puzzle1.showMenu();
         exit(0);
     }
-
-    return 0;
 }

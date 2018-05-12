@@ -32,6 +32,12 @@ private:
     void handleReset();
     bool parseCoordinates(char xCoord, char yCoord, char direction);
 	void showInstructions();
+<<<<<<< HEAD
+=======
+    bool wordInMap(string word);
+    bool notFits(string word, char verCoord, char horC, char direction);
+    bool matches(string word, string line);
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 };
 
 

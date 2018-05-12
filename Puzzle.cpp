@@ -1,5 +1,7 @@
 #include <fstream>
 #include <iomanip>
+#include <sstream>
+#include <limits>
 #include "Puzzle.h"
 #include "utils.h"
 
@@ -70,22 +72,21 @@ void Puzzle::createPuzzle()
     this->dictionaryFile = inputFileName;
 
     dictionary = Dictionary(inputFileName);
-
     cout << "Board size (lines columns) ? ";
     cin >> nRows >> nCols;
 
     board = Board(nRows, nCols);
 
+    board.setWriteMode(1);
     cout << board;
+
     handleAddWord();
 }
 
 void Puzzle::handleAddWord()
 {
-    //TODO: Check if input is valid
     Board::coord initialCoord;
     char direction;
-    string word;
 
     while (board.isNotFull()) {
         cout << "Position (LCD / CTRL-Z = STOP) ?: ";
@@ -101,6 +102,8 @@ void Puzzle::handleAddWord()
 
         if (parseCoordinates(initialCoord.first, initialCoord.second, direction)) // Check if coordinates are in the board
         {
+            string word;
+
             cout << "Insert a valid word ('e' for additional options) ";
             cin >> word;
 
@@ -126,10 +129,13 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
     Board::coord initialCoord(verCoord, horCoord);
 
+    string line = board.getLine(initialCoord.first, initialCoord.second, direction);
+
     coord.push_back(verCoord);
     coord.push_back(to_lower(horCoord));
     coord.push_back(direction);
 
+<<<<<<< HEAD
     if (isalpha(word[0]) && dictionary.isValid(word)) {// Check if the word is in the dictionary
         // Check if the word is bigger than the number of lines or columns of the board depending on the direction
         if ((direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) || (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65))) {
@@ -137,15 +143,40 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
             return;
 
         } else if (dictionary.isCurrentWord(word)) {
+=======
+    // Check if the word is in the dictionary
+    if (isalpha(word[0]) && dictionary.isValid(word)) {
+        // Check if the word matches any letters currently on the board
+        if (matches(word, line)) {
+            // Check if the word doesnt fit in the board
+            if (notFits(word, verCoord, horCoord, direction)) {
+                setcolor(LIGHTRED);
+                cout << word << " is too long." << endl;
+                setcolor(WHITE);
+
+            } else if (wordInMap(word)) {
+                setcolor(LIGHTRED);
+                cout << word << " was already inserted" << endl;
+                setcolor(WHITE);
+
+            } else {
+                currentWords.insert(pair<string, string>(coord, word));
+                board.addWord(word, initialCoord, direction);
+            }
+        } else {
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
             setcolor(LIGHTRED);
-            cout << word << " was already inserted" << endl;
+            cerr << word << " does not match any letters on the line" << endl;
             setcolor(WHITE);
+<<<<<<< HEAD
 
         } else {
 
 			dictionary.currentWords_insert(coord, word);
 
             board.addWord(word, initialCoord, direction);
+=======
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
         }
     }
 
@@ -178,11 +209,17 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
         handleReset();
     }
     else {
+        board.setWriteMode(1);
         cout << board;
+
+        setcolor(LIGHTRED);
         cerr << "Invalid word, nothing added." << endl;
+        setcolor(WHITE);
+
         return;
     }
 
+    board.setWriteMode(1);
     cout << board;
 }
 
@@ -224,18 +261,35 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 void Puzzle::handleSuggestAllWords() 
 {
     unsigned int nCols = board.getNumOfCols();
+<<<<<<< HEAD
     char verCoord =
        (char) 64; //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
     char horCoord = (char) (97 + nCols - 1);; //Last character of the row.
     string coordinates = "";
 	string word;
+=======
+    auto verCoord = static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
+    auto horCoord = static_cast<char>(97 + nCols - 1);; //Last character of the row.
+    char direction = 'H';
+    string coordinates;
+	string line, word;
+	Board::coord initialCoord(verCoord, horCoord);
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
     while (board.nextCoordinates(verCoord, horCoord)) {
 		char direction = 'H';
 		
         for (int i = 0; i < 2; i++) {
+<<<<<<< HEAD
             coordinates = coordinates + verCoord + horCoord + direction;
             string line = board.getLine(verCoord, horCoord, direction);
+=======
+            coordinates.push_back(verCoord);
+            coordinates.push_back(horCoord);
+            coordinates.push_back(direction);
+
+            line = board.getLine(verCoord, horCoord, direction);
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
             dictionary.storeSuggestions(coordinates, line);
 
             direction == 'H' ? direction = 'V' : direction = 'H'; //switches between directions
@@ -251,35 +305,91 @@ void Puzzle::handleSuggestAllWords()
 void Puzzle::handleReset()
 {
     board.reset();
+<<<<<<< HEAD
 	dictionary.currentWords_clear();
 
+=======
+    currentWords.clear();
+
+    board.setWriteMode(1);
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
     cout << board;
 }
 
 void Puzzle::handleWrite()
 {
-    // TODO: Store the resulting board in a text file. The name of the file must have a name in the format bXXX.txt,
-    // TODO: where XXX represents the number of the board, always with 3 digits, starting in "001".
+    string option;
     ofstream outStream;
-    string outFileName;
+    static unsigned int boardID = 0;
+    ++boardID;
 
+    ostringstream outFileName;
+    outFileName << setw(3) << setfill('0') << boardID << ".txt";
+
+    string fileName = outFileName.str();
+
+    do {
+        cout << "Is the board finished? (yes/no): ";
+        cin >> option;
+
+        if (option == "yes") {
+            board.finish();
+            break;
+
+        } else if (option != "no") {
+            setcolor(LIGHTRED);
+            cerr << "Insert a valid option." << endl;
+            setcolor(WHITE);
+
+        }
+    } while (option != "yes" || option != "no");
+
+<<<<<<< HEAD
 	unsigned int nRows = board.getNumOfRows();
 	unsigned int nCols = board.getNumOfCols();
 
     cout << "Insert name of file to write: ";
     cin >> outFileName;
+=======
+    cout << "Writing to " << fileName << endl;
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
-    outStream.open(outFileName);
+    outStream.open(fileName);
     outStream << "Words taken from: " << dictionaryFile << endl;
+<<<<<<< HEAD
 	outStream << nRows << " " << nCols << endl;
+=======
+
+    board.setWriteMode(0);
+    outStream << board << endl;
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
 	outStream << board;
 
 	dictionary.currentWords_send(outStream);
 
     cout << "Writing finished." << endl;
+
+    do {
+        cout << "Back to menu? (yes/no): ";
+        cin >> option;
+
+        if (option == "yes") {
+            handleReset();
+            showMenu();
+        }
+        else if (option == "no") {
+            exit(0);
+        }
+        else {
+            setcolor(LIGHTRED);
+            cerr << "Insert a valid option." << endl;
+            setcolor(WHITE);
+        }
+    } while (option != "yes" || option != "no");
 }
 
+<<<<<<< HEAD
 void Puzzle::loadPuzzle()
 {
 	ifstream boardFile, dictionaryFile;
@@ -325,6 +435,8 @@ void Puzzle::loadPuzzle()
 	cout << board;
 	handleAddWord();
 }
+=======
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
 // parseCoordinates returns true if the coordinate input by the user is inside the board and false if it is out of bounds
 bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
@@ -364,3 +476,27 @@ void Puzzle::showInstructions()
         << "Finally, when you are finished with the puzzle you can insert 'CTRL-Z' to end the creation and save the puzzle."
         << endl;
 }
+<<<<<<< HEAD
+=======
+
+bool Puzzle::wordInMap(string word)
+{
+    for (const auto &it : currentWords) {
+        if (it.second == word)
+            return true;
+    }
+
+    return false;
+}
+
+bool Puzzle::notFits(string word, char verCoord, char horCoord, char direction)
+{
+    return (direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) ||
+        (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65));
+}
+
+bool Puzzle::matches(string word, string line)
+{
+    return wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str());
+}
+>>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
