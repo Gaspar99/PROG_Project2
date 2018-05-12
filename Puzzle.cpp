@@ -72,6 +72,7 @@ void Puzzle::createPuzzle()
     this->dictionaryFile = inputFileName;
 
     dictionary = Dictionary(inputFileName);
+
     cout << "Board size (lines columns) ? ";
     cin >> nRows >> nCols;
 
@@ -135,15 +136,6 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
     coord.push_back(to_lower(horCoord));
     coord.push_back(direction);
 
-<<<<<<< HEAD
-    if (isalpha(word[0]) && dictionary.isValid(word)) {// Check if the word is in the dictionary
-        // Check if the word is bigger than the number of lines or columns of the board depending on the direction
-        if ((direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) || (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65))) {
-            cout << word << " is too long." << endl;
-            return;
-
-        } else if (dictionary.isCurrentWord(word)) {
-=======
     // Check if the word is in the dictionary
     if (isalpha(word[0]) && dictionary.isValid(word)) {
         // Check if the word matches any letters currently on the board
@@ -154,30 +146,22 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
                 cout << word << " is too long." << endl;
                 setcolor(WHITE);
 
-            } else if (wordInMap(word)) {
+            } else if (dictionary.isCurrentWord(word)) {
                 setcolor(LIGHTRED);
                 cout << word << " was already inserted" << endl;
                 setcolor(WHITE);
 
             } else {
-                currentWords.insert(pair<string, string>(coord, word));
-                board.addWord(word, initialCoord, direction);
+				dictionary.currentWords_insert(coord, word);
+				board.addWord(word, initialCoord, direction);
             }
         } else {
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
+
             setcolor(LIGHTRED);
             cerr << word << " does not match any letters on the line" << endl;
             setcolor(WHITE);
-<<<<<<< HEAD
 
-        } else {
-
-			dictionary.currentWords_insert(coord, word);
-
-            board.addWord(word, initialCoord, direction);
-=======
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
-        }
+        } 
     }
 
     else if (word == "E") {
@@ -261,35 +245,26 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 void Puzzle::handleSuggestAllWords() 
 {
     unsigned int nCols = board.getNumOfCols();
-<<<<<<< HEAD
-    char verCoord =
-       (char) 64; //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
-    char horCoord = (char) (97 + nCols - 1);; //Last character of the row.
-    string coordinates = "";
-	string word;
-=======
+   
+	string coordinates, word, line;
+	
     auto verCoord = static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
     auto horCoord = static_cast<char>(97 + nCols - 1);; //Last character of the row.
     char direction = 'H';
-    string coordinates;
-	string line, word;
+    
 	Board::coord initialCoord(verCoord, horCoord);
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
     while (board.nextCoordinates(verCoord, horCoord)) {
 		char direction = 'H';
 		
         for (int i = 0; i < 2; i++) {
-<<<<<<< HEAD
-            coordinates = coordinates + verCoord + horCoord + direction;
-            string line = board.getLine(verCoord, horCoord, direction);
-=======
+
             coordinates.push_back(verCoord);
             coordinates.push_back(horCoord);
             coordinates.push_back(direction);
 
             line = board.getLine(verCoord, horCoord, direction);
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
+
             dictionary.storeSuggestions(coordinates, line);
 
             direction == 'H' ? direction = 'V' : direction = 'H'; //switches between directions
@@ -305,14 +280,9 @@ void Puzzle::handleSuggestAllWords()
 void Puzzle::handleReset()
 {
     board.reset();
-<<<<<<< HEAD
 	dictionary.currentWords_clear();
 
-=======
-    currentWords.clear();
-
     board.setWriteMode(1);
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
     cout << board;
 }
 
@@ -344,27 +314,18 @@ void Puzzle::handleWrite()
         }
     } while (option != "yes" || option != "no");
 
-<<<<<<< HEAD
 	unsigned int nRows = board.getNumOfRows();
 	unsigned int nCols = board.getNumOfCols();
 
-    cout << "Insert name of file to write: ";
-    cin >> outFileName;
-=======
     cout << "Writing to " << fileName << endl;
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
     outStream.open(fileName);
     outStream << "Words taken from: " << dictionaryFile << endl;
-<<<<<<< HEAD
+
 	outStream << nRows << " " << nCols << endl;
-=======
 
     board.setWriteMode(0);
     outStream << board << endl;
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
-
-	outStream << board;
 
 	dictionary.currentWords_send(outStream);
 
@@ -389,7 +350,6 @@ void Puzzle::handleWrite()
     } while (option != "yes" || option != "no");
 }
 
-<<<<<<< HEAD
 void Puzzle::loadPuzzle()
 {
 	ifstream boardFile, dictionaryFile;
@@ -435,8 +395,6 @@ void Puzzle::loadPuzzle()
 	cout << board;
 	handleAddWord();
 }
-=======
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
 // parseCoordinates returns true if the coordinate input by the user is inside the board and false if it is out of bounds
 bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
@@ -476,18 +434,6 @@ void Puzzle::showInstructions()
         << "Finally, when you are finished with the puzzle you can insert 'CTRL-Z' to end the creation and save the puzzle."
         << endl;
 }
-<<<<<<< HEAD
-=======
-
-bool Puzzle::wordInMap(string word)
-{
-    for (const auto &it : currentWords) {
-        if (it.second == word)
-            return true;
-    }
-
-    return false;
-}
 
 bool Puzzle::notFits(string word, char verCoord, char horCoord, char direction)
 {
@@ -499,4 +445,3 @@ bool Puzzle::matches(string word, string line)
 {
     return wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str());
 }
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d

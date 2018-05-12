@@ -1,14 +1,10 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-<<<<<<< HEAD
-#include "Puzzle.h"
-=======
 #include <algorithm>
 #include "Board.h"
 #include "Dictionary.h"
 #include "utils.h"
->>>>>>> 2a7b17a2dede453aa5929fe4086c0544244f961d
 
 using namespace std;
 
