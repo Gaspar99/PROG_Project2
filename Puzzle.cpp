@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iomanip>
+#include <sstream>
 #include "Puzzle.h"
 #include "utils.h"
 
@@ -141,7 +142,9 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
         if (matches(word, line)) {
             // Check if the word doesnt fit in the board
             if (notFits(word, verCoord, horCoord, direction)) {
+                setcolor(LIGHTRED);
                 cout << word << " is too long." << endl;
+                setcolor(WHITE);
 
             } else if (wordInMap(word)) {
                 setcolor(LIGHTRED);
@@ -150,7 +153,6 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
             } else {
                 currentWords.insert(pair<string, string>(coord, word));
-
                 board.addWord(word, initialCoord, direction);
             }
         } else {
@@ -269,7 +271,6 @@ void Puzzle::handleReset()
     board.reset();
     currentWords.clear();
 
-
     cout << board;
 }
 
@@ -278,14 +279,18 @@ void Puzzle::handleWrite()
     // TODO: Store the resulting board in a text file. The name of the file must have a name in the format bXXX.txt,
     // TODO: where XXX represents the number of the board, always with 3 digits, starting in "001".
     ofstream outStream;
-    string outFileName;
+    static unsigned int boardVersion = 1;
 
-    cout << "Insert name of file to write: ";
-    cin >> outFileName;
+    ostringstream outFileName;
+    outFileName << setw(3) << setfill('0') << boardVersion << ".txt";
 
-    outStream.open(outFileName);
+    string fileName = outFileName.str();
+
+    cout << "Writing to " << fileName << endl;
+
+    outStream.open(fileName);
     outStream << "Words taken from: " << dictionaryFile << endl;
-    outStream << board;
+    writeBoard(outStream, board);
 
     for (auto &it : currentWords) {
         outStream << setw(4) << left << it.first << it.second << endl;
@@ -332,6 +337,7 @@ void Puzzle::showInstructions()
         << "Finally, when you are finished with the puzzle you can insert 'CTRL-Z' to end the creation and save the puzzle."
         << endl;
 }
+
 bool Puzzle::wordInMap(string word)
 {
     for (const auto &it : currentWords) {

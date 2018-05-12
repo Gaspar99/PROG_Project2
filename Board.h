@@ -9,6 +9,10 @@ using namespace std;
 
 class Board
 {
+    // Shows the board on the screen.
+    friend ostream& operator<<(ostream &out, Board &board);
+    friend void writeBoard(ostream &out, Board& board);
+
 public:
 	typedef pair<char, char> coord;
 
@@ -16,14 +20,12 @@ public:
 	// Default values for each coordinate is a . character
 	Board(unsigned int nRows, unsigned int nColumns);
 
-	// Shows the board on the screen. TODO: change function so that it can also write to a file by modifying the prototype
-	friend ostream& operator<<(ostream &out, Board &board);
 	void reset();
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
-    int modifyMap(string word, coord initialCoord, char direction, int mode = 0);
+    bool modifyMap(string word, coord initialCoord, char direction, int mode = 0);
 	int addWord(string word, coord initialCoord, char direction);
-	int removeWord(coord initialCoord, char direction);
+	bool removeWord(coord initialCoord, char direction);
 
 	unsigned int getNumOfCols();
 	unsigned int getNumOfRows();
@@ -32,6 +34,7 @@ public:
 	bool nextCoordinates(char &verCoord, char &horCoord);
 
     bool isNotFull();
+
 private:
 	// The board itself is a map with strings as keys representing coordinates followed by a char value representing the
 	// value of the corresponding cell.
@@ -45,10 +48,6 @@ private:
     // Both vectors are initialized with null characters. Built into addWords.
     pair<vector<coord>, vector<coord>> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
 
-    // Template function to get the keys from a map, returns a vector of the type of the keys.
-    // May not be needed.
-	template <class T, class U>
-	vector<T> getKeys(map<T, U> mapObject);
     bool isNotSurrounded(coord coordinate, char direction);
 };
 

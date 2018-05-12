@@ -74,7 +74,32 @@ ostream &operator<<(ostream &out, Board &board)
     return out;
 }
 
-int Board::modifyMap(string word, coord initialCoord, char direction, int mode)
+void writeBoard(ostream &out, Board& board)
+{
+    for (unsigned int i = 0; i < board.nRows; ++i) {
+        for (unsigned int j = 0; j < board.nCols; ++j) {
+            Board::coord c(char(i + 65), char(j + 65));
+
+            if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
+                out << " ";
+                setcolor(0, 15);
+                out << setw(1) << '#';
+            }
+            else if (board.board[c] == '#') {
+                setcolor(0, 15);
+                out << left << setw(1) << '#' << right;
+            }
+            else {
+                setcolor(15);
+                out << setw(2) << board.board[c];
+            }
+        }
+
+        out << endl;
+    }
+}
+
+bool Board::modifyMap(string word, coord initialCoord, char direction, int mode)
 {
     size_t wordLength = word.length();
     pair<vector<coord>, vector<coord>> coordsToModify = generateCoords(wordLength, initialCoord, direction);
@@ -95,11 +120,11 @@ int Board::modifyMap(string word, coord initialCoord, char direction, int mode)
             board[coordsToModify.second[i]] = '.';
     }
 
-    // Return 0 means the word was successfully added.
-    return 0;
+    // Return true means the word was successfully added.
+    return true;
 }
 
-int Board::removeWord(coord initialCoord, char direction)
+bool Board::removeWord(coord initialCoord, char direction)
 {
     switch (direction) {
     case 'H': {
@@ -228,18 +253,6 @@ bool Board::isNotSurrounded(coord coordinate, char direction)
 
     return false;
 }
-//Potentially unnecessary
-template<class T, class U>
-vector<T> Board::getKeys(map<T, U> mapObject)
-{
-    vector<T> vector;
-
-    for (const auto &it : mapObject) {
-        vector.push_back(it.first);
-    }
-
-    return vector;
-}
 
 unsigned int Board::getNumOfRows()
 {
@@ -277,26 +290,6 @@ string Board::getLine(char verCoord, char horCoord, char direction)
 
     default:break;
     }
-	//string line;
-	//coord coord(verCoord, horCoord);
-	//int i;
-    //
-	//if (direction == 'H') {
-	//	i = (int)horCoord;
-    //
-	//	for (i; i < nCols + 65; i++) {
-	//		line.push_back(board.find(coord)->second);
-	//		++coord.second;
-	//	}
-	//}
-	//else {
-	//	i = (int)verCoord;
-    //
-	//	for (i; i < nRows + 65; i++) {
-	//		line.push_back(board.find(coord)->second);
-	//		++coord.first;
-	//	}
-	//}
 
 	return line;
 }
