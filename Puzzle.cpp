@@ -198,7 +198,10 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
         board.setWriteMode(1);
         cout << board;
 
+        setcolor(LIGHTRED);
         cerr << "Invalid word, nothing added." << endl;
+        setcolor(WHITE);
+
         return;
     }
 
@@ -272,8 +275,8 @@ void Puzzle::handleReset()
 {
     board.reset();
     currentWords.clear();
-    board.setWriteMode(1);
 
+    board.setWriteMode(1);
     cout << board;
 }
 
@@ -281,21 +284,32 @@ void Puzzle::handleWrite()
 {
     string option;
     ofstream outStream;
-    static unsigned int boardVersion = 1;
+    static unsigned int boardID = 0;
+    ++boardID;
 
     ostringstream outFileName;
-    outFileName << setw(3) << setfill('0') << boardVersion << ".txt";
+    outFileName << setw(3) << setfill('0') << boardID << ".txt";
 
     string fileName = outFileName.str();
 
-    cout << "Is the board finished? (yes/no): ";
-    cin >> option;
+    do {
+        cout << "Is the board finished? (yes/no): ";
+        cin >> option;
 
-    if (option == "yes") {
-        board.finish();
-    } else if (option != "no") {
-        cout << "Insert a valid option." << endl;
-    }
+        if (option == "yes") {
+            board.finish();
+        } else if (option != "no") {
+            setcolor(LIGHTRED);
+            cerr << "Insert a valid option." << endl;
+            setcolor(WHITE);
+
+        } else if (cin.fail() && cin.eof()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            handleWrite();
+            exit(0);
+        }
+    } while (option != "yes" || option != "no");
 
     cout << "Writing to " << fileName << endl;
 
@@ -303,14 +317,41 @@ void Puzzle::handleWrite()
     outStream << "Words taken from: " << dictionaryFile << endl;
 
     board.setWriteMode(0);
-    outStream << board;
+    outStream << board << endl;
 
     for (auto &it : currentWords) {
         outStream << setw(4) << left << it.first << it.second << endl;
     }
 
     cout << "Writing finished." << endl;
+
+    do {
+        cout << "Create new board? (yes/no): ";
+        cin >> option;
+
+        if (option == "yes") {
+            board.reset();
+            handleAddWord();
+        }
+        else if (option == "no") {
+            showMenu();
+        }
+        else if (cin.fail() && cin.eof()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+
+            setcolor(LIGHTRED);
+            cerr << "Insert a valid option." << endl;
+            setcolor(WHITE);
+        }
+        else {
+            setcolor(LIGHTRED);
+            cerr << "Insert a valid option." << endl;
+            setcolor(WHITE);
+        }
+    } while (option != "yes" || option != "no");
 }
+
 
 // parseCoordinates returns true if the coordinate input by the user is inside the board and false if it is out of bounds
 bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
