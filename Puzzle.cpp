@@ -112,16 +112,7 @@ void Puzzle::handleAddWord()
             initialCoord.second = to_upper(initialCoord.second);
             direction = to_upper(direction);
 
-            string line = board.getLine(initialCoord.first, initialCoord.second, direction);
-
-            if (wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str()) || word == "-" || word == "E" || word == "?" || word == "?A" || word == "R" ) {
-                insertWord(word, initialCoord.first, initialCoord.second, direction);
-
-            } else {
-                setcolor(LIGHTRED);
-                cerr << word << " does not match any letters on the line" << endl;
-                setcolor(WHITE);
-            }
+            insertWord(word, initialCoord.first, initialCoord.second, direction);
         }
         else {
             setcolor(LIGHTRED);
@@ -138,25 +129,34 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
     Board::coord initialCoord(verCoord, horCoord);
 
+    string line = board.getLine(initialCoord.first, initialCoord.second, direction);
+
     coord.push_back(verCoord);
     coord.push_back(to_lower(horCoord));
     coord.push_back(direction);
 
-    if (isalpha(word[0]) && dictionary.isValid(word)) {// Check if the word is in the dictionary
-        // Check if the word is bigger than the number of lines or columns of the board depending on the direction
-        if ((direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) || (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65))) {
-            cout << word << " is too long." << endl;
-            return;
+    // Check if the word is in the dictionary
+    if (isalpha(word[0]) && dictionary.isValid(word)) {
+        // Check if the word matches any letters currently on the board
+        if (matches(word, line)) {
+            // Check if the word doesnt fit in the board
+            if (notFits(word, verCoord, horCoord, direction)) {
+                cout << word << " is too long." << endl;
 
-        } else if (wordInMap(word)) {
-            setcolor(LIGHTRED);
-            cout << word << " was already inserted" << endl;
-            setcolor(WHITE);
+            } else if (wordInMap(word)) {
+                setcolor(LIGHTRED);
+                cout << word << " was already inserted" << endl;
+                setcolor(WHITE);
 
+            } else {
+                currentWords.insert(pair<string, string>(coord, word));
+
+                board.addWord(word, initialCoord, direction);
+            }
         } else {
-            currentWords.insert(pair<string, string>(coord, word));
-
-            board.addWord(word, initialCoord, direction);
+            setcolor(LIGHTRED);
+            cerr << word << " does not match any letters on the line" << endl;
+            setcolor(WHITE);
         }
     }
 
@@ -340,4 +340,15 @@ bool Puzzle::wordInMap(string word)
     }
 
     return false;
+}
+
+bool Puzzle::notFits(string word, char verCoord, char horCoord, char direction)
+{
+    return (direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) ||
+        (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65));
+}
+
+bool Puzzle::matches(string word, string line)
+{
+    return wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str());
 }

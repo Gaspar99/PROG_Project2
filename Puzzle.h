@@ -33,6 +33,8 @@ private:
     bool parseCoordinates(char xCoord, char yCoord, char direction);
 	void showInstructions();
     bool wordInMap(string word);
+    bool notFits(string word, char verCoord, char horC, char direction);
+    bool matches(string word, string line);
 };
 
 
