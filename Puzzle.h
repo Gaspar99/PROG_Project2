@@ -18,10 +18,10 @@ public:
 private:
     Board board;
     Dictionary dictionary;
-    map<string, string> currentWords;
     string dictionaryFile;
 
 	void createPuzzle();
+	void loadPuzzle();
 
     void handleAddWord();
     void handleWrite();
@@ -32,7 +32,6 @@ private:
     void handleReset();
     bool parseCoordinates(char xCoord, char yCoord, char direction);
 	void showInstructions();
-    bool wordInMap(string word);
 };
 
 

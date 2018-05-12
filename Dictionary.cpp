@@ -8,6 +8,7 @@
 #include "Board.h"
 #include <utility>
 #include <iomanip>
+#include "Puzzle.h"
 
 using namespace std;
 
@@ -96,12 +97,16 @@ void Dictionary::storeSuggestions(string coordinates, string line)
 		for (string word : validWords) {
 		
 			if (wildcardMatch(word.c_str(), line.c_str())) {
-				suggestions.insert(pair<string, vector<string>>(coordinates, vector<string>()));
-				suggestions[coordinates].push_back(word);
+
+				if (!isCurrentWord(word)) {
+
+					suggestions.insert(pair<string, vector<string>>(coordinates, vector<string>()));
+					suggestions[coordinates].push_back(word);
+				}
 			}
 		}
 		line.erase(line.length() - 1);
-	}
+	} 
 }
 
 //This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
@@ -130,4 +135,44 @@ void Dictionary::showSuggestions()
 void Dictionary::clearSuggestions()
 {
 	suggestions.clear();
+}
+
+bool Dictionary::suggestions_is_empty()
+{
+	if (suggestions.empty()) {
+		return true;
+	}
+	else { return false; }
+}
+
+void Dictionary::currentWords_insert(string coord, string word)
+{
+	currentWords.insert(pair<string, string>(coord, word));
+}
+
+void Dictionary::currentWords_erase(string coord)
+{
+	currentWords.erase(coord);
+}
+
+void Dictionary::currentWords_clear()
+{
+	currentWords.clear();
+}
+
+bool Dictionary::isCurrentWord(string word)
+{
+	for (const auto &it : currentWords) {
+		if (it.second == word)
+			return true;
+	}
+
+	return false;
+}
+
+void Dictionary::currentWords_send(ofstream &outStream)
+{
+	for (auto &it : currentWords) {
+		outStream << setw(4) << left << it.first << it.second << endl;
+	}
 }
