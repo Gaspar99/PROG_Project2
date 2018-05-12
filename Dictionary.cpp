@@ -1,13 +1,9 @@
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include "Board.h"
 #include "Dictionary.h"
 #include "utils.h"
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
-#include <fstream>
-#include "Board.h"
-#include <utility>
-#include <iomanip>
 
 using namespace std;
 
@@ -32,13 +28,15 @@ void Dictionary::load(string dictionaryName)
 	string line;
 	string mainWord;
 	string word;
-	int pos = 0;
-	int index = 0;
+	unsigned int pos = 0;
+	unsigned int index = 0;
 
 	dictionary.open(dictionaryName);
 
 	if (!dictionary.is_open()) {
+	    setcolor(LIGHTRED);
 		cerr << "Opening of dictionary file failed. Does it exist?" << endl;
+		setcolor(WHITE);
 		exit(1);
 	}
 
@@ -46,14 +44,14 @@ void Dictionary::load(string dictionaryName)
 
 	while (getline(dictionary, line)) {
 
-		index = line.find(":"); //searches for ':' in line, to get the string before it
+		index = line.find(':'); //searches for ':' in line, to get the string before it
 		mainWord = line.substr(0, index); 
 		capitalize(mainWord);
 		synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>())); 
 		validWords.insert(mainWord);
 		pos = index + 2;
 
-		index = line.find(",", pos); 
+		index = line.find(',', pos);
 
 		while (index != string::npos) {
 			word = line.substr(pos, index - pos);
@@ -64,7 +62,7 @@ void Dictionary::load(string dictionaryName)
 			}
 
 			pos = index + 2;
-			index = line.find(",", pos);
+			index = line.find(',', pos);
 		}
 
 		if (line[line.length() - 1] != ',') {
@@ -84,16 +82,16 @@ bool Dictionary::isValid(string word) {
     return valid;
 }
 
-//Looks for valid words that match with 'line' and then elimates the last element of 'line'
+//Looks for valid words that match with 'line' and then eliminates the last element of 'line'
 //to check all possible matches for the current coordinates
-//If there is a match, this method stores the word in a map in wich the key is a string with the coordinates of the first letter of the word,
+//If there is a match, this method stores the word in a map in which the key is a string with the coordinates of the first letter of the word,
 //and the value is a vector of strings with each string being a possible word to start on those coordinates
 void Dictionary::storeSuggestions(string coordinates, string line)
 {
 
 	while (!line.empty()) {
 
-		for (string word : validWords) {
+		for (const string &word : validWords) {
 		
 			if (wildcardMatch(word.c_str(), line.c_str())) {
 				suggestions.insert(pair<string, vector<string>>(coordinates, vector<string>()));
@@ -111,12 +109,12 @@ void Dictionary::showSuggestions()
 	vector<string> synonyms;
 	vector<string> mainWords;
 
-	for (auto it = suggestions.cbegin(); it != suggestions.cend(); ++it) {
+	for (const auto &suggestion : suggestions) {
 
-		cout << "Coordinates: " << it->first << " - Words:" << endl;
-		mainWords = it->second;
+		cout << "Coordinates: " << suggestion.first << " - Words:" << endl;
+		mainWords = suggestion.second;
 
-		for (string word : mainWords) {
+		for (const string &word : mainWords) {
 			cout << setw(32);
 			cout << word << " - ";
 			synonyms = synonymsList.find(word)->second;

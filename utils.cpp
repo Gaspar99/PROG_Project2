@@ -61,7 +61,7 @@ void capitalize(string &word)
 // PROG - MIEIC
 // JAS
 // Example of a program that prints colored characters on the console (in text mode)
-void clrscr(void)
+void clrscr()
 {
     COORD coordScreen = {0, 0}; // upper left corner
     DWORD cCharsWritten;
@@ -96,6 +96,5 @@ void setcolor(unsigned int color, unsigned int background_color)
     HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
     if (background_color == BLACK) SetConsoleTextAttribute(hCon, color);
     else
-        SetConsoleTextAttribute(hCon,
-                                color | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
+        SetConsoleTextAttribute(hCon, color | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_RED);
 }

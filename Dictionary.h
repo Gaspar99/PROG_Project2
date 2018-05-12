@@ -4,9 +4,8 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include "Board.h"
 #include <set>
+#include "Board.h"
 
 using namespace std;
 

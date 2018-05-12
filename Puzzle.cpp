@@ -248,7 +248,7 @@ void Puzzle::handleSuggestAllWords()
             coordinates.push_back(verCoord);
             coordinates.push_back(horCoord);
             coordinates.push_back(direction);
-            
+
             line = board.getLine(verCoord, horCoord, direction);
             dictionary.storeSuggestions(coordinates, line);
 
@@ -328,15 +328,15 @@ void Puzzle::handleWrite()
     cout << "Writing finished." << endl;
 
     do {
-        cout << "Create new board? (yes/no): ";
+        cout << "Back to menu? (yes/no): ";
         cin >> option;
 
         if (option == "yes") {
             board.reset();
-            handleAddWord();
+            showMenu();
         }
         else if (option == "no") {
-            showMenu();
+            exit(0);
         }
         else if (cin.fail() && cin.eof()) {
             cin.clear();
