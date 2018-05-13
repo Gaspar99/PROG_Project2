@@ -138,12 +138,12 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
     // Check if the word is in the dictionary
     if (isalpha(word[0]) && dictionary.isValid(word)) {
-        // Check if the word matches any letters currently on the board
-        if (matches(word, line)) {
-            // Check if the word doesnt fit in the board
-            if (notFits(word, verCoord, horCoord, direction)) {
+        // Check if the word fits in the board
+        if (fits(word, verCoord, horCoord, direction)) {
+            // Check if the word doesnt match any letters currently on the board
+            if (!matches(word, line)) {
                 setcolor(LIGHTRED);
-                cout << word << " is too long." << endl;
+                cerr << word << " does not match any letters on the line" << endl;
                 setcolor(WHITE);
 
             } else if (dictionary.isCurrentWord(word)) {
@@ -156,11 +156,9 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 				board.addWord(word, initialCoord, direction);
             }
         } else {
-
             setcolor(LIGHTRED);
-            cerr << word << " does not match any letters on the line" << endl;
+            cout << word << " is too long." << endl;
             setcolor(WHITE);
-
         } 
     }
 
@@ -465,10 +463,10 @@ void Puzzle::showInstructions()
         << endl;
 }
 
-bool Puzzle::notFits(string word, char verCoord, char horCoord, char direction)
+bool Puzzle::fits(string word, char verCoord, char horCoord, char direction)
 {
-    return (direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) ||
-        (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65));
+    return !((direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) ||
+        (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65)));
 }
 
 bool Puzzle::matches(string word, string line)

@@ -214,14 +214,16 @@ bool Board::isNotSurrounded(coord coordinate, char direction)
         coord left(coordinate.first, static_cast<const char &>(coordinate.second - 1));
         coord right(coordinate.first, static_cast<const char &>(coordinate.second + 1));
 
-        return board[left] == '.' && (board[right] == '.' || board[right] == '\0') || (board[right] == '.' && board[left] == '\0');
+        return (board[left] == '.' || board[right] == '.') || (board[left] == '#' && board[right] == '#');
+        //return board[left] == '.' && (board[right] == '.' || board[right] == '\0') || (board[right] == '.' && board[left] == '\0');
     }
 
     case 'H': {
         coord top(static_cast<const char &>(coordinate.first + 1), coordinate.second);
         coord bottom(static_cast<const char &>(coordinate.first - 1), coordinate.second);
 
-        return board[top] == '.' && (board[bottom] == '.' || board[bottom] == '\0') || (board[bottom] == '.' && board[top] == '\0');
+        return (board[top] == '.' || board[bottom] == '.') || (board[top] == '#' && board[bottom] == '#');
+        //return board[top] == '.' && (board[bottom] == '.' || board[bottom] == '\0') || (board[bottom] == '.' && board[top] == '\0');
     }
     default: break;
     }
