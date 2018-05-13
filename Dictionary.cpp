@@ -171,6 +171,6 @@ bool Dictionary::isCurrentWord(string word)
 void Dictionary::currentWords_send(ofstream &outStream)
 {
 	for (auto &it : currentWords) {
-		outStream << setw(4) << left << it.first << it.second << endl;
+		outStream << endl << setw(4) << left << it.first << it.second;
 	}
 }
