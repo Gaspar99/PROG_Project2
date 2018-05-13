@@ -105,7 +105,7 @@ void Puzzle::handleAddWord()
         {
             string word;
 
-            cout << "Insert a valid word ('e' for additional options) ";
+            cout << "Insert a valid word ('e' for additional options): ";
             cin >> word;
 
             capitalize(word);
@@ -226,17 +226,20 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 		cin >> word;
 		capitalize(word);
 
+		//insertWord(word, verCoord, horCoord, direction);
+
 		if (dictionary.isValid(word)) {
-			Board::coord initialCoord(verCoord, horCoord);
-			board.addWord(word, initialCoord, direction);
+			Board::coord initialCoord(verCoord, to_upper(horCoord));
+
 			dictionary.currentWords_insert(coordinates, word);
+			board.addWord(word, initialCoord, direction);
 		}
 		else {
 			setcolor(LIGHTRED);
 			cout << "Invalid word." << endl;
 			setcolor(WHITE);
 		}
-
+		
 		dictionary.clearSuggestions();
 	}
 	else {
@@ -253,7 +256,7 @@ void Puzzle::handleSuggestAllWords()
 	string coordinates, word, line;
 	
     auto verCoord = static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
-    auto horCoord = static_cast<char>(97 + nCols - 1);; //Last character of the row.
+    auto horCoord = static_cast<char>(64 + nCols - 1);; //Last character of the row in uppercase
     char direction = 'H';
     
 	Board::coord initialCoord(verCoord, horCoord);
@@ -264,9 +267,10 @@ void Puzzle::handleSuggestAllWords()
         for (int i = 0; i < 2; i++) {
 
             coordinates.push_back(verCoord);
-            coordinates.push_back(horCoord);
+            coordinates.push_back(to_lower(horCoord));
             coordinates.push_back(direction);
 
+			horCoord = to_upper(horCoord);
             line = board.getLine(verCoord, horCoord, direction);
 
             dictionary.storeSuggestions(coordinates, line);
@@ -385,7 +389,7 @@ void Puzzle::loadPuzzle()
 	dictionary = Dictionary(dictionaryFileName);
 
 	boardFile >> nRows >> nCols;
-	Board board(nRows, nCols);
+	board = Board(nRows, nCols);
 
 	//ignores the lines with the board
 	for (unsigned int i = 0; i < nRows + 3; i++) {

@@ -273,12 +273,12 @@ string Board::getLine(char verCoord, char horCoord, char direction)
 bool Board::nextCoordinates(char &verCoord, char &horCoord)
 {
     auto lastVerCoord = static_cast<char>(65 + nRows - 1);
-    auto lastHorCoord = static_cast<char>(97 + nCols - 1);
+    auto lastHorCoord = static_cast<char>(65 + nCols - 1);
     if (horCoord == lastHorCoord) {
         if (verCoord == lastVerCoord) { return false; }
         else {
             verCoord++;
-            horCoord = 'a';
+            horCoord = 'A';
             return true;
         }
     }
