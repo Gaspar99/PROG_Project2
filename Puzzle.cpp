@@ -230,13 +230,17 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 			dictionary.currentWords_insert(coordinates, word);
 		}
 		else {
+			setcolor(LIGHTRED);
 			cout << "Invalid word." << endl;
+			setcolor(WHITE);
 		}
 
 		dictionary.clearSuggestions();
 	}
 	else {
+		setcolor(LIGHTRED);
 		cout << "You can not form any valid word on the position " << coordinates << endl;
+		setcolor(WHITE);
 	}
 }
 
@@ -310,7 +314,7 @@ void Puzzle::handleWrite()
             setcolor(WHITE);
 
         }
-    } while (option != "yes" || option != "no");
+    } while (option != "yes" || option != "no"); //should not be && instead of || ?
 
 	unsigned int nRows = board.getNumOfRows();
 	unsigned int nCols = board.getNumOfCols();
@@ -351,7 +355,11 @@ void Puzzle::handleWrite()
 void Puzzle::loadPuzzle()
 {
 	ifstream boardFile, dictionaryFile;
-	string boardFileName, dictionaryFileName, line;
+	string boardFileName, dictionaryFileName, line, word;
+	Board::coord initialCoord;
+	char direction;
+	string option;
+
 	unsigned int nRows, nCols;
 
 	cout << "Insert name of file to load board: ";
@@ -360,7 +368,9 @@ void Puzzle::loadPuzzle()
 	boardFile.open(boardFileName);
 
 	if (!boardFile.is_open()) {
+		setcolor(LIGHTRED);
 		cerr << "Opening of board file failed. Does it exist? ";
+		setcolor(WHITE);
 		exit(1);
 	}
 	
@@ -375,23 +385,39 @@ void Puzzle::loadPuzzle()
 	boardFile >> nRows >> nCols;
 	Board board(nRows, nCols);
 
-	for (int i = 0; i < nRows + 1; i++) {
+	//ignores the lines with the board
+	for (unsigned int i = 0; i < nRows + 3; i++) {
 		boardFile.ignore(1000, '\n');
 	}
 
-	while (getline(boardFile, line)) {
+	while (!boardFile.eof()) {
 
-		if (!line.empty()) {
-			Board::coord initialCoord(line[0], line[1]);
-			char direction = line[2];
-			string word = line.substr(4, line.length() - 4);
+		boardFile >> initialCoord.first >> initialCoord.second >> direction >> word;
 
-			board.addWord(word, initialCoord, direction);
-		}
+		initialCoord.second = to_upper(initialCoord.second);
+
+		board.addWord(word, initialCoord, direction);
 	}
 
+	board.setWriteMode(1);
 	cout << board;
-	handleAddWord();
+
+	do {
+		cout << "Do you wish to continue the creation of this board? (yes/no): ";
+		cin >> option;
+
+		if (option == "yes") {
+			handleAddWord();
+		}
+		else if (option == "no") {
+			exit(0);
+		}
+		else {
+			setcolor(LIGHTRED);
+			cerr << "Insert a valid option." << endl;
+			setcolor(WHITE);
+		}
+	} while (option != "yes" || option != "no");
 }
 
 // parseCoordinates returns true if the coordinate input by the user is inside the board and false if it is out of bounds
