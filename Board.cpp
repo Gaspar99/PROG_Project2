@@ -86,17 +86,17 @@ bool Board::modifyMap(string word, coord initialCoord, char direction, int mode)
     for (int i = 0; i < wordLength; ++i) {
         coord currentCoord = coordsToModify.first[i];
 
-        if (isNotSurrounded(currentCoord, direction))
+        if (!isalpha(board[currentCoord]))
             board[currentCoord] = word[i];
     }
 
-    for (int i = 0; i < coordsToModify.second.size(); ++i) {
-        coord currentCoord(coordsToModify.second[i]);
+    for (const auto &i : coordsToModify.second) {
+        coord currentCoord(i);
 
-        if (isNotSurrounded(currentCoord, direction) && mode == 0)
-            board[coordsToModify.second[i]] = '#';
-        else if (isNotSurrounded(currentCoord, direction) && mode == 1)
-            board[coordsToModify.second[i]] = '.';
+        if (board[currentCoord] != '#' && mode == 0)
+            board[i] = '#';
+        else if (!isalpha(board[currentCoord]) && mode == 1)
+            board[i] = '.';
     }
 
     // Return true means the word was successfully added.
@@ -205,30 +205,6 @@ Board::generateCoords(unsigned int wordLength, coord initialCoord, char directio
     }
 
     return pair<vector<coord>, vector<coord>>(wordCoords, limitCoords);
-}
-
-bool Board::isNotSurrounded(coord coordinate, char direction)
-{
-    switch (direction) {
-    case 'V': {
-        coord left(coordinate.first, static_cast<const char &>(coordinate.second - 1));
-        coord right(coordinate.first, static_cast<const char &>(coordinate.second + 1));
-
-        return (board[left] == '.' || board[right] == '.') || (board[left] == '#' && board[right] == '#');
-        //return board[left] == '.' && (board[right] == '.' || board[right] == '\0') || (board[right] == '.' && board[left] == '\0');
-    }
-
-    case 'H': {
-        coord top(static_cast<const char &>(coordinate.first + 1), coordinate.second);
-        coord bottom(static_cast<const char &>(coordinate.first - 1), coordinate.second);
-
-        return (board[top] == '.' || board[bottom] == '.') || (board[top] == '#' && board[bottom] == '#');
-        //return board[top] == '.' && (board[bottom] == '.' || board[bottom] == '\0') || (board[bottom] == '.' && board[top] == '\0');
-    }
-    default: break;
-    }
-
-    return false;
 }
 
 unsigned int Board::getNumOfRows()
