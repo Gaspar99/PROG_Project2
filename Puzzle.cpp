@@ -254,7 +254,7 @@ void Puzzle::handleSuggestAllWords()
 	string coordinates, word, line;
 	
     auto verCoord = static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
-    auto horCoord = static_cast<char>(64 + nCols - 1);; //Last character of the row in uppercase
+    auto horCoord = static_cast<char>(65 + nCols - 1);; //Last character of the row in uppercase
     char direction = 'H';
     
 	Board::coord initialCoord(verCoord, horCoord);
@@ -362,7 +362,7 @@ void Puzzle::loadPuzzle()
 	string boardFileName, dictionaryFileName, line, word;
 	Board::coord initialCoord;
 	char direction;
-	string option;
+	string option, coord;
 
 	unsigned int nRows, nCols;
 
@@ -398,8 +398,19 @@ void Puzzle::loadPuzzle()
 
 		boardFile >> initialCoord.first >> initialCoord.second >> direction >> word;
 
+		if (boardFile.fail()) {
+			boardFile.clear();
+			boardFile.ignore(1000, '\n');
+			break;
+		}
+
 		initialCoord.second = to_upper(initialCoord.second);
 
+		coord.push_back(initialCoord.first);
+		coord.push_back(to_lower(initialCoord.second));
+		coord.push_back(direction);
+
+		dictionary.currentWords_insert(coord, word);
 		board.addWord(word, initialCoord, direction);
 	}
 

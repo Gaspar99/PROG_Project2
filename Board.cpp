@@ -90,7 +90,7 @@ bool Board::modifyMap(string word, coord initialCoord, char direction, int mode)
             board[currentCoord] = word[i];
     }
 
-    for (int i = 0; i < wordLength; ++i) {
+    for (int i = 0; i < coordsToModify.second.size(); ++i) {
         coord currentCoord(coordsToModify.second[i]);
 
         if (isNotSurrounded(currentCoord, direction) && mode == 0)
