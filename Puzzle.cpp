@@ -294,15 +294,13 @@ void Puzzle::handleReset()
 
 void Puzzle::handleWrite()
 {
-	dictionary.showCurrentWords();
-
     string option;
     ofstream outStream;
     static unsigned int boardID = 0;
     ++boardID;
 
     ostringstream outFileName;
-    outFileName << setw(3) << setfill('0') << boardID << ".txt";
+    outFileName << 'b' << setw(3) << setfill('0') << boardID << ".txt";
 
     string fileName = outFileName.str();
 

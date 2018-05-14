@@ -85,17 +85,18 @@ bool Board::modifyMap(string word, coord initialCoord, char direction, int mode)
 
     for (int i = 0; i < wordLength; ++i) {
         coord currentCoord = coordsToModify.first[i];
+        char& currentLetter = board[currentCoord];
 
-        if (!isalpha(board[currentCoord]))
-            board[currentCoord] = word[i];
+        if (!isalpha(currentLetter))
+            currentLetter = word[i];
     }
 
     for (const auto &i : coordsToModify.second) {
-        coord currentCoord(i);
+        char& currentLetter = board[i];
 
-        if (board[currentCoord] != '#' && mode == 0)
+        if (!isalpha(currentLetter) && currentLetter != '#' && mode == 0)
             board[i] = '#';
-        else if (!isalpha(board[currentCoord]) && mode == 1)
+        else if (!isalpha(currentLetter) && mode == 1)
             board[i] = '.';
     }
 
