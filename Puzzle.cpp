@@ -294,6 +294,8 @@ void Puzzle::handleReset()
 
 void Puzzle::handleWrite()
 {
+	dictionary.showCurrentWords();
+
     string option;
     ofstream outStream;
     static unsigned int boardID = 0;
@@ -404,14 +406,15 @@ void Puzzle::loadPuzzle()
 			break;
 		}
 
-		initialCoord.second = to_upper(initialCoord.second);
-
 		coord.push_back(initialCoord.first);
 		coord.push_back(to_lower(initialCoord.second));
 		coord.push_back(direction);
 
+		initialCoord.second = to_upper(initialCoord.second);
 		dictionary.currentWords_insert(coord, word);
 		board.addWord(word, initialCoord, direction);
+
+		coord.clear();
 	}
 
 	board.setWriteMode(1);
