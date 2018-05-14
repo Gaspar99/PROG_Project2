@@ -326,9 +326,7 @@ void Puzzle::handleWrite()
     cout << "Writing to " << fileName << endl;
 
     outStream.open(fileName);
-    outStream << "Words taken from: " << dictionaryFile << endl;
-
-	outStream << nRows << " " << nCols << endl;
+    outStream << dictionaryFile << endl;
 
     board.setWriteMode(0);
     outStream << board << endl;
@@ -364,7 +362,7 @@ void Puzzle::loadPuzzle()
 	char direction;
 	string option, coord;
 
-	unsigned int nRows, nCols;
+	unsigned int nRows = 0;
 
 	cout << "Insert name of file to load board: ";
 	cin >> boardFileName;
@@ -378,20 +376,22 @@ void Puzzle::loadPuzzle()
 		exit(1);
 	}
 	
-	getline(boardFile, line);
-	int pos = line.find(':');
-	dictionaryFileName = line.substr(pos + 2, line.length() - pos - 2);
+	getline(boardFile, dictionaryFileName);
 
 	this->dictionaryFile = dictionaryFileName;
 
 	dictionary = Dictionary(dictionaryFileName);
 
-	boardFile >> nRows >> nCols;
-	board = Board(nRows, nCols);
+	boardFile.ignore(1000, '\n'); //ignores the second line of the file
 
-	//ignores the lines with the board
-	for (unsigned int i = 0; i < nRows + 3; i++) {
-		boardFile.ignore(1000, '\n');
+	while (getline(boardFile, line)) {
+		if (line.empty()) { //reached the end of the board
+			break;
+		}
+		else {
+			static unsigned int nCols = line.length() / 2;
+			nRows++;
+		}
 	}
 
 	while (!boardFile.eof()) {
