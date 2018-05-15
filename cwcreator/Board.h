@@ -37,6 +37,7 @@ public:
     void setWriteMode(int mode);
 
     void finish();
+    char getValueAt(coord coordinate);
 private:
 	// The board itself is a map with strings as keys representing coordinates followed by a char value representing the
 	// value of the corresponding cell.

@@ -286,3 +286,7 @@ void Board::finish()
         if (it.second == '.')
             it.second = '#';
 }
+char Board::getValueAt(Board::coord coordinate)
+{
+    return board[coordinate];
+}

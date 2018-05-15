@@ -477,8 +477,24 @@ void Puzzle::showInstructions()
 
 bool Puzzle::fits(string word, char verCoord, char horCoord, char direction)
 {
-    return !((direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) ||
-        (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65)));
+    Board::coord coordinate(verCoord, horCoord);
+    switch (direction) {
+    case 'V': {
+        Board::coord previous(static_cast<const char &>(coordinate.first - 1), coordinate.second);
+        Board::coord after(static_cast<const char &>(coordinate.first + word.length()), coordinate.second);
+
+        return word.length() <= (board.getNumOfRows() - verCoord + 65) &&
+            (!isalpha(board.getValueAt(after)) && !isalpha(board.getValueAt(previous)));
+    }
+    case 'H': {
+        Board::coord previous(coordinate.first, static_cast<const char &>(coordinate.second - 1));
+        Board::coord after(coordinate.first, static_cast<const char &>(coordinate.second + word.length()));
+
+        return word.length() <= (board.getNumOfRows() - verCoord + 65) &&
+            (!isalpha(board.getValueAt(after)) && !isalpha(board.getValueAt(previous)));
+    }
+    default: break;
+    }
 }
 
 bool Puzzle::matches(string word, string line)
