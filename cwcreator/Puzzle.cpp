@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <limits>
 #include "Puzzle.h"
 #include "utils.h"
 
@@ -51,7 +52,7 @@ void Puzzle::showMenu()
         cerr << endl << "Please insert a valid option!" << endl;
         setcolor(WHITE);
         cin.clear();
-        cin.ignore(1000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 }
 
@@ -72,8 +73,16 @@ void Puzzle::createPuzzle()
 
     dictionary = Dictionary(inputFileName);
 
-    cout << "Board size (lines columns) ? ";
-    cin >> nRows >> nCols;
+    while (cout << "Board size (lines columns) ? " && !(cin >> nRows >> nCols)) {
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            nRows = 0;
+            nCols = 0;
+
+            cout << "Please insert numeric values only." << endl;
+        }
+    }
 
     board = Board(nRows, nCols);
 
@@ -95,7 +104,7 @@ void Puzzle::handleAddWord()
 
         if (cin.fail() && cin.eof()) {
             cin.clear();
-            cin.ignore(1000, '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             handleWrite();
             exit(0);
         }
