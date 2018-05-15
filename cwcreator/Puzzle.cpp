@@ -317,10 +317,7 @@ void Puzzle::handleWrite()
             setcolor(WHITE);
 
         }
-    } while (option != "yes" || option != "no"); //should not be && instead of || ?
-
-	unsigned int nRows = board.getNumOfRows();
-	unsigned int nCols = board.getNumOfCols();
+    } while (option != "yes" && option != "no");
 
     cout << "Writing to " << fileName << endl;
 
@@ -483,14 +480,14 @@ bool Puzzle::fits(string word, char verCoord, char horCoord, char direction)
         Board::coord after(static_cast<const char &>(coordinate.first + word.length()), coordinate.second);
 
         return word.length() <= (board.getNumOfRows() - verCoord + 65) &&
-            (!isalpha(board.getValueAt(after)) && !isalpha(board.getValueAt(previous)));
+            ((!isalpha(board.getValueAt(after)) || !isalpha(board.getValueAt(previous))) || (board.getValueAt(after) == '\0' && board.getValueAt(previous) == '\0'));
     }
     case 'H': {
         Board::coord previous(coordinate.first, static_cast<const char &>(coordinate.second - 1));
         Board::coord after(coordinate.first, static_cast<const char &>(coordinate.second + word.length()));
 
-        return word.length() <= (board.getNumOfRows() - verCoord + 65) &&
-            (!isalpha(board.getValueAt(after)) && !isalpha(board.getValueAt(previous)));
+        return word.length() <= (board.getNumOfRows() - horCoord + 65) &&
+            (!isalpha(board.getValueAt(after)) || !isalpha(board.getValueAt(previous)) || board.getValueAt(after) == '\0' || board.getValueAt(previous) == '\0');
     }
     default: break;
     }
