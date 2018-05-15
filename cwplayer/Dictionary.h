@@ -18,7 +18,7 @@ public:
 	void load(string dictionaryName);
 	bool isValid(string word);
 	void storeSuggestions(string coordinates, string line);
-	void showSuggestions();
+	void showClues();
 	void clearSuggestions();
 	bool suggestions_is_empty();
 	void currentWords_insert(string coord, string word);
@@ -26,6 +26,7 @@ public:
 	void currentWords_clear();
 	void currentWords_send(ofstream &outStream);
 	bool isCurrentWord(string word);
+	unsigned int currentWords_size();
 private:
 	map<string, vector<string>> synonymsList;
 	set<string> validWords;
