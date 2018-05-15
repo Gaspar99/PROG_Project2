@@ -5,6 +5,7 @@
 #include "Board.h"
 #include "Dictionary.h"
 #include "utils.h"
+#include "Player.h"
 
 using namespace std;
 
@@ -109,23 +110,37 @@ void Dictionary::storeSuggestions(string coordinates, string line)
 
 //This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
 //It also prints, at maximum, 4 synonyms of each one of those words
-void Dictionary::showSuggestions()
+void Dictionary::showClues()
 {
 	vector<string> synonyms;
-	vector<string> mainWords;
+	string coord, word;
+	size_t index;
 
-	for (const auto &suggestion : suggestions) {
+	cout << "HORIZONTAL:" << endl;
+	for (const auto &it : currentWords) {
 
-		cout << "Coordinates: " << suggestion.first << " - Words:" << endl;
-		mainWords = suggestion.second;
+		if (it.first[2] == 'H') {
+			coord = it.first.substr(0, 2);
+			word = it.second;
 
-		for (const string &word : mainWords) {
-			cout << setw(32);
-			cout << word << " - ";
 			synonyms = synonymsList.find(word)->second;
+			index = rand() % synonyms.size();
 
-			for (unsigned int i = 0; i < 5 && i < synonyms.size(); i++)	{ cout << synonyms[i] << ", "; }
-			cout << endl;
+			cout << coord << " - " << synonyms[index] << endl;
+		}
+	}
+
+	cout << "VERTICAL: " << endl;
+	for (const auto &it : currentWords) {
+
+		if (it.first[2] == 'V') {
+			coord = it.first.substr(0, 2);
+			word = it.second;
+
+			synonyms = synonymsList.find(word)->second;
+			index = rand() % synonyms.size();
+
+			cout << coord << " - " << synonyms[index] << endl;
 		}
 	}
 }
@@ -173,4 +188,9 @@ void Dictionary::currentWords_send(ofstream &outStream)
 	for (auto &it : currentWords) {
 		outStream << it.first << " " << it.second << endl;
 	}
+}
+
+unsigned int Dictionary::currentWords_size()
+{
+	return currentWords.size();
 }

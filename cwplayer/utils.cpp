@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <algorithm>
 #include "utils.h"
+#include "Player.h"
 
 using namespace std;
 
