@@ -17,21 +17,14 @@ public:
 
 	void load(string dictionaryName);
 	bool isValid(string word);
-	void storeSuggestions(string coordinates, string line);
 	void showClues();
-	void clearSuggestions();
-	bool suggestions_is_empty();
-	void currentWords_insert(string coord, string word);
-	void currentWords_erase(string coord);
-	void currentWords_clear();
-	void currentWords_send(ofstream &outStream);
-	bool isCurrentWord(string word);
-	unsigned int currentWords_size();
+	void boardWords_insert(string coord, string word);
+	void showAnotherClue(string coord);
 private:
 	map<string, vector<string>> synonymsList;
 	set<string> validWords;
-	map<string, vector<string>> suggestions;
-	map<string, string> currentWords;
+	map<string, string> boardWords;
+	map<string, string> clues;
 };
 
 #endif 

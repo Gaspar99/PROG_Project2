@@ -26,7 +26,6 @@ void Puzzle::greetUser()
 
 	cout << "Hello " << playerName << "!" << endl;
 
-	showInstructions();
     cout << endl;
 }
 
@@ -45,7 +44,10 @@ void Puzzle::showMenu()
 
     switch (option) {
     case '1': {
+		showInstructions();
 		loadBoard();
+		dictionary.showClues();
+		player.setStartTime();
 		handleAddWord();
         break;
     }
@@ -66,9 +68,10 @@ void Puzzle::handleAddWord()
 	char direction;
 	string option;
 
-	dictionary.showClues();
+	bool anotherChange = true;
 
-    while (!boardIsFull()) {
+    while (anotherChange) {
+		setcolor(WHITE);
         cout << "Position (LCD format) ?: ";
 
         cin >> initialCoord.first >> initialCoord.second >> direction;
@@ -82,6 +85,10 @@ void Puzzle::handleAddWord()
             exit(0);
         }
 
+		initialCoord.first = to_upper(initialCoord.first); // to_upper is defined in utils.h
+		initialCoord.second = to_upper(initialCoord.second);
+		direction = to_upper(direction);
+
         if (parseCoordinates(initialCoord.first, initialCoord.second, direction)) // Check if coordinates are in the board
         {
             string word;
@@ -90,9 +97,6 @@ void Puzzle::handleAddWord()
             cin >> word;
 
             capitalize(word);
-            initialCoord.first = to_upper(initialCoord.first); // to_upper is defined in utils.h
-            initialCoord.second = to_upper(initialCoord.second);
-            direction = to_upper(direction);
 
             insertWord(word, initialCoord.first, initialCoord.second, direction);
         }
@@ -101,31 +105,44 @@ void Puzzle::handleAddWord()
             cerr << "Invalid position." << endl;
             setcolor(WHITE);
         }
+
+		if (boardIsFull()) {
+			cout << "Board is complete. Do you wish to make any changes (yes/no) ? ";
+
+			do
+			{
+				cin >> option;
+				if (option == "yes") {
+					handleAddWord();
+				}
+				else if (option == "no") {
+					anotherChange = false;
+					cout << "Doing a final checking of the words." << endl;
+
+					if (finalChecking() == "1") {
+						cout << "Every word on the board is valid." << endl;
+						checkInsertedWords();
+					}
+					else {
+						cout << "The word " << finalChecking() << " is not valid.";
+					}
+					
+				}
+				else {
+					setcolor(LIGHTRED);
+					cerr << "Insert a valid option (yes/no): ";
+					setcolor(WHITE);
+				}
+			} while (option != "yes" && option != "no");
+		}
     }
-
-	cout << "Board is complete. Do you wish to make any changes (yes/no) ? ";
-
-	do
-	{
-		cin >> option;
-		if (option == "yes") {
-			handleAddWord();
-		}
-		else if (option == "no") {
-			//checkInsertedWords();
-		}
-		else {
-			setcolor(LIGHTRED);
-			cerr << "Insert a valid option (yes/no): ";
-			setcolor(WHITE);
-		}
-	} while (option != "yes" || option != "no");
 }
 
 void Puzzle::insertWord(string word, char verCoord, char horCoord, char direction)
 {
 	string newWord;
     string coord;
+	int fitsResult;
 
     Board::coord initialCoord(verCoord, horCoord);
 
@@ -136,9 +153,10 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
     coord.push_back(direction);
 
     // Check if the word is in the dictionary
-    if (isalpha(word[0])) {
-        // Check if the word fits in the board
-        if (fits(word, verCoord, horCoord, direction)) {
+    if (isalpha(word[0]) && dictionary.isValid(word)) {
+        // Check if the word has the same length of the word in the board
+		fitsResult = fits(word, coord);
+        if (fitsResult == 0) {
             // Check if the word doesnt match any letters currently on the board
             if (!matches(word, line)) {
                 setcolor(LIGHTRED);
@@ -148,17 +166,24 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 				insertedWords.insert(pair<string, string>(coord, word));
 				board.addWord(word, initialCoord, direction);
             }
-        } else {
-            setcolor(LIGHTRED);
-            cout << word << " is too long." << endl;
-            setcolor(WHITE);
-        } 
+
+		}
+		else if (fitsResult == -1) {
+			setcolor(LIGHTRED);
+			cerr << word << " is too short." << endl;
+			setcolor(WHITE);
+		}
+		else {
+			setcolor(LIGHTRED);
+			cout << word << " is too long." << endl;
+			setcolor(WHITE);
+		}
     }
 
     else if (word == "E") {
 		cout << "Insert '-' to remove a word;" << endl;
 		cout << "Insert 'R' to reset the board;" << endl;
-		cout << "Insert '?' to get another synonym for the position " << coord << endl;
+		cout << "Insert '?' to get another random synonym different from the previous." << endl;
 		cout << endl << "Option (or valid word) ? ";
 		cin >> newWord;
 		capitalize(newWord);
@@ -166,18 +191,21 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 		insertWord(newWord, verCoord, horCoord, direction);
 	}
     else if (word == "-") {
-        board.removeWord(initialCoord, direction);
+		string insertedWord = insertedWords.find(coord)->second;
+        board.removeWord(initialCoord, direction, insertedWord);
 		insertedWords.erase(coord);
     }
 
     else if (word == "?") {
-		//dictionary.showAnotherClue();
+		player.increaseCounter();
+		dictionary.showAnotherClue(coord);
     }
 
     else if (word == "R") {
         handleReset();
     }
     else {
+		setcolor(WHITE);
         cout << board;
 
         setcolor(LIGHTRED);
@@ -187,6 +215,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
         return;
     }
 
+	setcolor(WHITE);
     cout << board;
 }
 
@@ -195,6 +224,7 @@ void Puzzle::handleReset()
 {
     board.reset();
 
+	setcolor(WHITE);
     cout << board;
 }
 
@@ -255,60 +285,78 @@ void Puzzle::loadBoard()
 		coord.push_back(to_lower(initialCoord.second));
 		coord.push_back(direction);
 
-		dictionary.currentWords_insert(coord, word);
+		boardWords.insert(pair<string, string>(coord, word));
+		dictionary.boardWords_insert(coord, word);
 
 		initialCoord.second = to_upper(initialCoord.second);
-		board.insertBlackCells(word, initialCoord, direction);
+		board.insertWhiteCells(word, initialCoord, direction);
 
 		coord.clear();
 	}
 
+	setcolor(WHITE);
 	cout << board;
 }
 
-// parseCoordinates returns true if the coordinate input by the user is inside the board and false if it is out of bounds
-bool Puzzle::parseCoordinates(char xCoord, char yCoord, char direction)
+// parseCoordinates returns true if there is a word in the coordinate inputed by the user 
+bool Puzzle::parseCoordinates(char verCoord, char horCoord, char direction)
 {
-    return !(isdigit(xCoord) || isdigit(yCoord)) && (toupper(direction) == 'V' || toupper(direction) == 'H') &&
-            (toupper(xCoord) < board.getNumOfRows() + 65 || toupper(yCoord) < board.getNumOfCols() + 65);
+	string coord;
+	coord.push_back(verCoord);
+	coord.push_back(to_lower(horCoord));
+	coord.push_back(direction);
+
+	if (boardWords.find(coord) == boardWords.end()) {
+		return false;
+	}
+	else return true;
 }
 
 void Puzzle::showInstructions()
 {
     cout << "INSTRUCTIONS:" << endl;
     cout
-        << "In this Crosswords Puzzle Creator, you are able to create a new puzzle from scratch and save it so you can continue its creation later on."
+        << "In this Crosswords Puzzle Game, you are asked for the name of the file containing the board that you will try to solve."
         << endl;
     cout
-        << "If you choose to create a new puzzle, you will be first asked for the number of rows and columns you want your board to have."
+        << "An empty board will be shown to you containing only white and black cells."
         << endl;
-    cout << "Then you will be asked for the position of the first letter of the word you want to insert on the board."
+    cout << "A list of clues will be presented containing the position of each word and a correponding random synonym."
          << endl;
+	cout << "This list is divided into two section: Horizontal words and Vertical words."
+		<< endl;
     cout << "For the position, you must write three characters (LCD - Line, Column and Direction) :" << endl;
     cout << setw(3) << "The first one is the vertical coordinate and the second one is the horizontal coordinate."
          << endl;
     cout << setw(3) << "The third one indicates the direction that you want to insert the word. Horizontal or Vertical."
          << endl;
     cout
-        << "You are then asked for the word itself. You have a few options to help you with the creation of the puzzle. Insert:"
+        << "You are then asked for the word itself. You have a few options to help you. Insert:"
         << endl;
     cout << setw(3) << "A valid word to put it on the board." << endl;
     cout << setw(3) << "The character '-' to remove the word that currently ocuppies the position you chose." << endl;
-    cout << setw(3) << "The character '?' to receive a list of valid words you can put on the position you chose."
-         << endl;
-    cout << setw(3)
-         << "The characters '?A' to receive a list of all possible words, and some of theirs synonyms, you can put on all positions."
+    cout << setw(3) << "The character '?' to get another synonym for the word on the position you chose."
          << endl;
     cout << setw(3) << "The character 'R' to reset the puzzle." << endl;
     cout
-        << "Finally, when you are finished with the puzzle you can insert 'CTRL-Z' to end the creation and save the puzzle."
+        << "When the board is full you will be asked if you want to make another change. If no the game will check if you won!"
         << endl;
+	cout << endl;
 }
 
-bool Puzzle::fits(string word, char verCoord, char horCoord, char direction)
+int Puzzle::fits(string word, string coord)
 {
-    return !((direction == 'V' && word.length() > (board.getNumOfRows() - verCoord + 65)) ||
-        (direction == 'H' && word.length() > (board.getNumOfCols() - horCoord + 65)));
+	string boardWord;
+
+	boardWord = boardWords.find(coord)->second;
+
+	if (word.length() == boardWord.length())
+		return 0;
+
+	else if (word.length() < boardWord.length())
+		return -1;
+	else
+		return 1;
 }
 
 bool Puzzle::matches(string word, string line)
@@ -318,13 +366,36 @@ bool Puzzle::matches(string word, string line)
 
 bool Puzzle::boardIsFull()
 {
-	if (insertedWords.size() == dictionary.currentWords_size()) {
-		return true;
-	}
-	else {
-		return false;
-	}
-
+	return insertedWords.size() == boardWords.size();
 }
 
+void Puzzle::checkInsertedWords()
+{
+	if (equalMaps()) {
+		player.setEndTime();
+		player.congratulate();
+		player.saveData();
+	}
+}
 
+string Puzzle::finalChecking()
+{
+	string word;
+	for (const auto &it : insertedWords) 
+	{
+		word = it.second;
+		if (!dictionary.isValid(word)) {
+			return word;
+		}
+	}
+	return "1"; //return "1" means that every word on the board is valid 
+}
+
+bool Puzzle::equalMaps()
+{
+	for (const auto &it : boardWords) {
+		if (it.second != insertedWords.find(it.first)->second)
+			return false;
+	}
+	return true;
+}

@@ -29,4 +29,5 @@ void gotoxy(int x, int y);
 void setcolor(unsigned int color);
 void setcolor(unsigned int color, unsigned int background_color);
 
+
 #endif //PROG_PROJECT2_COLORIZER_H

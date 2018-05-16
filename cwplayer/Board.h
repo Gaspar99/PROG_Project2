@@ -24,12 +24,13 @@ public:
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
     bool modifyMap(string word, coord initialCoord, char direction, int mode = 0);
 	int addWord(string word, coord initialCoord, char direction);
-	bool removeWord(coord initialCoord, char direction);
+	bool removeWord(coord initialCoord, char direction, string insertedWord);
 
-	void insertBlackCells(string word, coord initialCoord, char);
+	void insertWhiteCells(string word, coord initialCoord, char);
 
 	unsigned int getNumOfCols();
 	unsigned int getNumOfRows();
+
 	string getLine(char verCoord, char horCoord, char direction);
 
 private:
@@ -43,7 +44,7 @@ private:
     // The second one contains the coordinates of the previous cell and of the cell that comes after the word.
     // If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
     // Both vectors are initialized with null characters. Built into addWords.
-    pair<vector<coord>, vector<coord>> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
+    vector<coord> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
 
     bool isNotSurrounded(coord coordinate, char direction);
 };

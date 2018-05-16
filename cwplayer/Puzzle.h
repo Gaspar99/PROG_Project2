@@ -22,6 +22,7 @@ private:
 	Player player;
     string dictionaryFile;
 	map<string, string> insertedWords;
+	map<string, string> boardWords;
 
 	void loadBoard();
 
@@ -30,11 +31,14 @@ private:
 
 	bool boardIsFull();
     void handleReset();
-    bool parseCoordinates(char xCoord, char yCoord, char direction);
+    bool parseCoordinates(char verCoord, char horCoord, char direction);
 	void showInstructions();
+	void checkInsertedWords();
+	string finalChecking();
 
-    bool fits(string word, char verCoord, char horC, char direction);
+    int fits(string word, string coord);
     bool matches(string word, string line);
+	bool equalMaps();
 };
 
 

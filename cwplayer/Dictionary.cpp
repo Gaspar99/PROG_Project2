@@ -13,7 +13,6 @@ Dictionary::Dictionary()
 {
 	synonymsList[""] = { "" };
 	validWords = {""};
-	suggestions[""] = {""};
 }
 
 //Opens the dictionary and extracts its content to a map (synonymsList) and to a vector of strings (validWords)
@@ -44,35 +43,35 @@ void Dictionary::load(string dictionaryName)
 
 	cout << "Extracting..." << endl;
 
-	while (getline(dictionary, line)) {
+while (getline(dictionary, line)) {
 
-		index = line.find(':'); //searches for ':' in line, to get the string before it
-		mainWord = line.substr(0, index); 
-		capitalize(mainWord);
-		synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>())); 
-		validWords.insert(mainWord);
-		pos = index + 2;
+	index = line.find(':'); //searches for ':' in line, to get the string before it
+	mainWord = line.substr(0, index);
+	capitalize(mainWord);
+	synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>()));
+	validWords.insert(mainWord);
+	pos = index + 2;
 
-		index = line.find(',', pos);
+	index = line.find(',', pos);
 
-		while (index != string::npos) {
-			word = line.substr(pos, index - pos);
-			
-			if (word[0] != '[') {
-				capitalize(word);
-				synonymsList[mainWord].push_back(word);
-			}
+	while (index != string::npos) {
+		word = line.substr(pos, index - pos);
 
-			pos = index + 2;
-			index = line.find(',', pos);
-		}
-
-		if (line[line.length() - 1] != ',') {
-			word = line.substr(pos, line.length() - pos);
+		if (word[0] != '[') {
 			capitalize(word);
 			synonymsList[mainWord].push_back(word);
 		}
+
+		pos = index + 2;
+		index = line.find(',', pos);
 	}
+
+	if (line[line.length() - 1] != ',') {
+		word = line.substr(pos, line.length() - pos);
+		capitalize(word);
+		synonymsList[mainWord].push_back(word);
+	}
+}
 }
 
 //Searches for 'word' in the validWords vector. Returns true if found
@@ -81,31 +80,7 @@ bool Dictionary::isValid(string word) {
 
 	valid = binary_search(validWords.begin(), validWords.end(), word);
 
-    return valid;
-}
-
-//Looks for valid words that match with 'line' and then eliminates the last element of 'line'
-//to check all possible matches for the current coordinates
-//If there is a match, this method stores the word in a map in which the key is a string with the coordinates of the first letter of the word,
-//and the value is a vector of strings with each string being a possible word to start on those coordinates
-void Dictionary::storeSuggestions(string coordinates, string line)
-{
-
-	while (!line.empty()) {
-
-		for (const string &word : validWords) {
-		
-			if (wildcardMatch(word.c_str(), line.c_str())) {
-
-				if (!isCurrentWord(word)) {
-
-					suggestions.insert(pair<string, vector<string>>(coordinates, vector<string>()));
-					suggestions[coordinates].push_back(word);
-				}
-			}
-		}
-		line.erase(line.length() - 1);
-	} 
+	return valid;
 }
 
 //This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
@@ -113,11 +88,11 @@ void Dictionary::storeSuggestions(string coordinates, string line)
 void Dictionary::showClues()
 {
 	vector<string> synonyms;
-	string coord, word;
+	string coord, word, clue;
 	size_t index;
 
 	cout << "HORIZONTAL:" << endl;
-	for (const auto &it : currentWords) {
+	for (const auto &it : boardWords) {
 
 		if (it.first[2] == 'H') {
 			coord = it.first.substr(0, 2);
@@ -127,11 +102,15 @@ void Dictionary::showClues()
 			index = rand() % synonyms.size();
 
 			cout << coord << " - " << synonyms[index] << endl;
+
+			clue = synonyms[index];
+			coord.push_back('H');
+			clues.insert(pair<string, string>(coord, clue));
 		}
 	}
 
 	cout << "VERTICAL: " << endl;
-	for (const auto &it : currentWords) {
+	for (const auto &it : boardWords) {
 
 		if (it.first[2] == 'V') {
 			coord = it.first.substr(0, 2);
@@ -141,56 +120,39 @@ void Dictionary::showClues()
 			index = rand() % synonyms.size();
 
 			cout << coord << " - " << synonyms[index] << endl;
+
+			clue = synonyms[index];
+			coord.push_back('V');
+			clues.insert(pair<string, string>(coord, clue));
 		}
 	}
 }
 
-void Dictionary::clearSuggestions()
+void Dictionary::boardWords_insert(string coord, string word)
 {
-	suggestions.clear();
+	boardWords.insert(pair<string, string>(coord, word));
 }
 
-bool Dictionary::suggestions_is_empty()
+void Dictionary::showAnotherClue(string coord)
 {
-	if (suggestions.empty()) {
-		return true;
+	string previousClue = clues.find(coord)->second;
+	string word = boardWords.find(coord)->second;
+	vector<string> synonyms = synonymsList.find(word)->second;
+	int index = rand() % synonyms.size();
+
+	while (synonyms[index] == previousClue)
+	{
+		if (synonyms.size() == 1) {
+			cout << "The word on the position " << coord << " only has one synonym: " << endl;
+			cout << previousClue << endl;
+			return;
+		}
+		else
+			index = rand() % synonyms.size();
 	}
-	else { return false; }
-}
+	cout << "New clue:" << endl;
+	cout << coord << " - " << synonyms[index] << endl;
 
-void Dictionary::currentWords_insert(string coord, string word)
-{
-	currentWords.insert(pair<string, string>(coord, word));
-}
-
-void Dictionary::currentWords_erase(string coord)
-{
-	currentWords.erase(coord);
-}
-
-void Dictionary::currentWords_clear()
-{
-	currentWords.clear();
-}
-
-bool Dictionary::isCurrentWord(string word)
-{
-	for (const auto &it : currentWords) {
-		if (it.second == word)
-			return true;
-	}
-
-	return false;
-}
-
-void Dictionary::currentWords_send(ofstream &outStream)
-{
-	for (auto &it : currentWords) {
-		outStream << it.first << " " << it.second << endl;
-	}
-}
-
-unsigned int Dictionary::currentWords_size()
-{
-	return currentWords.size();
+	clues.erase(coord);
+	clues.insert(pair<string, string>(coord, synonyms[index]));
 }
