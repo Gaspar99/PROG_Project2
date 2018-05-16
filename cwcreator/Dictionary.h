@@ -26,6 +26,8 @@ public:
 	void currentWords_clear();
 	void currentWords_send(ofstream &outStream);
 	bool isCurrentWord(string word);
+	vector<string> getSuggestions(string coord);
+
 private:
 	map<string, vector<string>> synonymsList;
 	set<string> validWords;

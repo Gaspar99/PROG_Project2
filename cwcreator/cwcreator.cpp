@@ -12,7 +12,6 @@ int main()
 {
 	Puzzle puzzle1;
 
-    setcolor(WHITE);
     puzzle1.greetUser();
 
     while(true) {

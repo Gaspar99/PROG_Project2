@@ -137,10 +137,7 @@ void Dictionary::clearSuggestions()
 
 bool Dictionary::suggestions_is_empty()
 {
-	if (suggestions.empty()) {
-		return true;
-	}
-	else { return false; }
+	return suggestions.empty();
 }
 
 void Dictionary::currentWords_insert(string coord, string word)
@@ -173,4 +170,8 @@ void Dictionary::currentWords_send(ofstream &outStream)
 	for (auto &it : currentWords) {
 		outStream << it.first << " " << it.second << endl;
 	}
+}
+vector<string> Dictionary::getSuggestions(string coord)
+{
+	return suggestions[coord];
 }

@@ -26,6 +26,8 @@ void Puzzle::showMenu()
 {
     unsigned char option = '0';
 
+    setcolor(WHITE, BLACK);
+
     cout << string(11, '-') << endl;
     cout << "| OPTIONS |" << endl;
     cout << string(11, '-') << endl;
@@ -80,7 +82,9 @@ void Puzzle::createPuzzle()
             nRows = 0;
             nCols = 0;
 
-            cout << "Please insert numeric values only." << endl;
+            setcolor(LIGHTRED);
+            cerr << "Please insert numeric values only." << endl;
+            setcolor(WHITE);
         }
     }
 
@@ -156,7 +160,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
             } else if (dictionary.isCurrentWord(word)) {
                 setcolor(LIGHTRED);
-                cout << word << " was already inserted" << endl;
+                cerr << word << " was already inserted" << endl;
                 setcolor(WHITE);
 
             } else {
@@ -165,7 +169,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
             }
         } else {
             setcolor(LIGHTRED);
-            cout << word << " is too long." << endl;
+            cerr << word << " is too long or its limiter overwrites a character from an existing word." << endl;
             setcolor(WHITE);
         } 
     }
@@ -215,15 +219,27 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
 void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 {
-	string line, word;
-	string coordinates = "";
+    string line, word;
+    string coordinates = "";
 
     line = board.getLine(verCoord, horCoord, direction);
 
-	horCoord = to_lower(horCoord);
-	coordinates = coordinates + verCoord + horCoord + direction;
-	
+    horCoord = to_lower(horCoord);
+    coordinates = coordinates + verCoord + horCoord + direction;
+
+    horCoord = to_upper(horCoord);
+
     dictionary.storeSuggestions(coordinates, line);
+
+    Board::coord previousV(static_cast<const char &>(verCoord - 1), horCoord);
+    Board::coord previousH(verCoord, static_cast<const char &>(horCoord - 1));
+
+    if ((direction == 'V' && isalpha(board.getValueAt(previousV))) || (direction == 'H' && isalpha(board.getValueAt(previousH)))) {
+        setcolor(LIGHTRED);
+        cout << "Coordinate is too close to a letter, if you wish to add a matching word, insert a different coordinate." << endl;
+        setcolor(WHITE);
+        return;
+    }
 
 	if (!dictionary.suggestions_is_empty()) {
 		dictionary.showSuggestions();
@@ -232,9 +248,7 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 		cin >> word;
 		capitalize(word);
 
-		//insertWord(word, verCoord, horCoord, direction);
-
-		if (dictionary.isValid(word)) {
+		if (fits(word, verCoord, horCoord, direction)) {
 			Board::coord initialCoord(verCoord, to_upper(horCoord));
 
 			dictionary.currentWords_insert(coordinates, word);
@@ -242,10 +256,10 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 		}
 		else {
 			setcolor(LIGHTRED);
-			cout << "Invalid word." << endl;
+			cerr << "Invalid word or its limiter overwrites a character from an existing word" << endl;
 			setcolor(WHITE);
 		}
-		
+
 		dictionary.clearSuggestions();
 	}
 	else {
@@ -337,7 +351,7 @@ void Puzzle::handleWrite()
     outStream << board << endl;
 
 	dictionary.currentWords_send(outStream);
-
+    setcolor(WHITE);
     cout << "Writing finished." << endl;
 
     do {
@@ -480,7 +494,7 @@ void Puzzle::showInstructions()
         << endl;
 }
 
-bool Puzzle::fits(string word, char verCoord, char horCoord, char direction)
+bool Puzzle::fits(string &word, char verCoord, char horCoord, char direction)
 {
     Board::coord coordinate(verCoord, horCoord);
     switch (direction) {
@@ -489,14 +503,14 @@ bool Puzzle::fits(string word, char verCoord, char horCoord, char direction)
         Board::coord after(static_cast<const char &>(coordinate.first + word.length()), coordinate.second);
 
         return word.length() <= (board.getNumOfRows() - verCoord + 65) &&
-            ((!isalpha(board.getValueAt(after)) || !isalpha(board.getValueAt(previous))) || (board.getValueAt(after) == '\0' && board.getValueAt(previous) == '\0'));
+            ((!isalpha(board.getValueAt(after)) && !isalpha(board.getValueAt(previous))) || board.getValueAt(after) == '\0' || board.getValueAt(previous) == '\0');
     }
     case 'H': {
         Board::coord previous(coordinate.first, static_cast<const char &>(coordinate.second - 1));
         Board::coord after(coordinate.first, static_cast<const char &>(coordinate.second + word.length()));
 
         return word.length() <= (board.getNumOfRows() - horCoord + 65) &&
-            (!isalpha(board.getValueAt(after)) || !isalpha(board.getValueAt(previous)) || board.getValueAt(after) == '\0' || board.getValueAt(previous) == '\0');
+            ((!isalpha(board.getValueAt(after)) && !isalpha(board.getValueAt(previous))) || board.getValueAt(after) == '\0' || board.getValueAt(previous) == '\0');
     }
     default: break;
     }
