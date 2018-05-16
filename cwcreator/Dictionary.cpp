@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <cmath>
 #include "Board.h"
 #include "Dictionary.h"
 #include "utils.h"
@@ -115,17 +116,24 @@ void Dictionary::showSuggestions()
 	vector<string> mainWords;
 
 	for (const auto &suggestion : suggestions) {
-
 		cout << "Coordinates: " << suggestion.first << " - Words:" << endl;
 		mainWords = suggestion.second;
 
-		for (const string &word : mainWords) {
-			cout << setw(32);
-			cout << word << " - ";
-			synonyms = synonymsList.find(word)->second;
+		const int length = mainWords.size();
+		int i = min(10, length);
 
-			for (unsigned int i = 0; i < 5 && i < synonyms.size(); i++)	{ cout << synonyms[i] << ", "; }
-			cout << endl;
+		while (i > 0) {
+		    int index = rand() % mainWords.size();
+		    string word = mainWords[index];
+
+            cout << setw(32);
+            cout << word << " - ";
+            synonyms = synonymsList.find(word)->second;
+
+            for (unsigned int j = 0; j < 5 && j < synonyms.size(); j++)	{ cout << synonyms[j] << ", "; }
+            cout << endl;
+
+            --i;
 		}
 	}
 }

@@ -178,7 +178,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 		cout << "Insert '-' to remove a word;" << endl;
 		cout << "Insert 'R' to reset the board;" << endl;
 		cout << "Insert '?' to get a list of words suggestions on the position you chose;" << endl;
-		cout << "Insert '?A' to get a list of words suggestions on all positions of the board;" << endl;
+		cout << "Insert '?A' to get a list of words suggestions on all positions of the board (limited to 10);" << endl;
 		cout << endl << "Option (or valid word) ? ";
 		cin >> newWord;
 		capitalize(newWord);

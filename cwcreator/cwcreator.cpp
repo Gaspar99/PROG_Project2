@@ -10,6 +10,7 @@ using namespace std::chrono;
 
 int main()
 {
+    srand(static_cast<unsigned int>(time(nullptr)));
 	Puzzle puzzle1;
 
     puzzle1.greetUser();
