@@ -9,7 +9,7 @@ using namespace std::chrono;
 
 int main()
 {
-	srand(time(0));
+	srand(time(NULL));
 	Puzzle puzzle1;
 	
 	setcolor(WHITE);

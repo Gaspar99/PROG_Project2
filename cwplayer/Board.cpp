@@ -28,8 +28,8 @@ void Board::reset()
 		for (int j = 0; j < nCols; ++j) {
 			coord coord(static_cast<const char &>(i + 65), static_cast<const char &>(j + 65));
 
-			if (board[coord] != '.')
-				board[coord] = '#';
+			if (board[coord] != '#')
+				board[coord] = '.';
 		}
 	}
 }

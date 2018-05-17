@@ -65,7 +65,6 @@ void Player::saveData()
 	file << "Time taken to solve puzzle: " << time << " seconds.\n";;
 	
 	cout << "Your data was saved." << endl;
-	exit(0);
 }
 
 
