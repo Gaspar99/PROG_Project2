@@ -406,7 +406,7 @@ void Puzzle::handleWrite()
 			cerr << "Insert a valid option." << endl;
 			setcolor(WHITE);
 		}
-	} while (option != "yes" || option != "no");
+	} while (option != "yes" && option != "no");
 }
 
 void Puzzle::loadPuzzle()
@@ -569,6 +569,15 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 	coord.push_back(to_lower(column));
 	coord.push_back(direction);
 
+	if (dictionary.isInitialCoord(coord)) {
+		setcolor(LIGHTRED);
+		cerr << "The position " << coord << " is already occupied." << endl;
+		setcolor(WHITE);
+
+		handleAddWord();
+		exit(0);
+	}
+
 	//Eliminates the dots on the line, remaining just the word itself
 	pos = word.find('.');
 	while (pos != string::npos) {
@@ -577,7 +586,7 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 
 	if (word.empty()) {
 		setcolor(LIGHTRED);
-		cout << "There is not any word on the position " << coord << '.' << endl;
+		cerr << "There is not any word on the position " << coord << '.' << endl;
 		setcolor(WHITE);
 
 		handleAddWord();
@@ -615,7 +624,9 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 					dictionary.currentWords_insert(coord, wordToAdd);
 				}
 
-				cout << wordToAdd << " added to board words lits." << endl;
+				setcolor(LIGHTGREEN);
+				cout << wordToAdd << " added to board words list." << endl;
+				setcolor(WHITE);
 			}
 
 			else if (option == "no") {
@@ -626,7 +637,7 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 	}
 
 	else {
-		cout << "None valid word was automatically formed on the position " << coord << ":" << endl;
+		cout << "None valid word was automatically formed on the position " << coord << "." << endl;
 	}
 
 }

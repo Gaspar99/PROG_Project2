@@ -26,13 +26,14 @@ public:
 	void currentWords_clear();
 	void currentWords_send(ofstream &outStream);
 	bool isCurrentWord(string word);
+	bool isInitialCoord(string coord);
 	vector<string> getSuggestions(string coord);
 
 private:
 	map<string, vector<string>> synonymsList;
 	set<string> validWords;
 	map<string, vector<string>> suggestions;
-	multimap<string, string> currentWords;
+	map<string, string> currentWords;
 };
 
 #endif 

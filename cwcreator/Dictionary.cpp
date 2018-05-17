@@ -183,3 +183,8 @@ vector<string> Dictionary::getSuggestions(string coord)
 {
 	return suggestions[coord];
 }
+
+bool Dictionary::isInitialCoord(string coord)
+{
+	return (currentWords.find(coord) != currentWords.end());
+}
