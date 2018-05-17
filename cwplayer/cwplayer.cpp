@@ -1,6 +1,6 @@
 #include "Puzzle.h"
 #include "utils.h"
-#include <iostream>;
+#include <iostream>
 #include <chrono>
 #include <ctime>
 
@@ -9,6 +9,7 @@ using namespace std::chrono;
 
 int main()
 {
+	srand(time(0));
 	Puzzle puzzle1;
 	
 	setcolor(WHITE);

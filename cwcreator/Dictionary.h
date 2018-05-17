@@ -33,7 +33,7 @@ private:
 	map<string, vector<string>> synonymsList;
 	set<string> validWords;
 	map<string, vector<string>> suggestions;
-	map<string, string> currentWords;
+	multimap<string, string> currentWords;
 };
 
 #endif 

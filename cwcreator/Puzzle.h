@@ -32,6 +32,7 @@ private:
     void handleReset();
     bool parseCoordinates(char xCoord, char yCoord, char direction);
 	void showInstructions();
+	void checkAutomaticWords(char line, char column, char direction);
 
     bool matches(string word, string line);
     bool fits(string &word, char verCoord, char horC, char direction);
