@@ -4,6 +4,7 @@
 #include <limits>
 #include "Puzzle.h"
 #include "utils.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -231,6 +232,10 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 
 	else if (word == "R") {
 		handleReset();
+	}
+
+	else if (word == "+") {
+		checkAutomaticWords(verCoord, horCoord, direction);
 	}
 	else {
 		board.setWriteMode(1);
@@ -551,4 +556,77 @@ bool Puzzle::fits(string &word, char verCoord, char horCoord, char direction)
 bool Puzzle::matches(string word, string line)
 {
 	return wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str());
+}
+
+void Puzzle::checkAutomaticWords(char line, char column, char direction)
+{
+	vector<string> automaticWords;
+	string word = board.getLine(line, column, direction);
+	int pos;
+	string coord, option, wordToAdd;
+
+	coord.push_back(line);
+	coord.push_back(to_lower(column));
+	coord.push_back(direction);
+
+	//Eliminates the dots on the line, remaining just the word itself
+	pos = word.find('.');
+	while (pos != string::npos) {
+		word.erase(pos);
+	}	
+
+	if (word.empty()) {
+		setcolor(LIGHTRED);
+		cout << "There is not any word on the position " << coord << '.' << endl;
+		setcolor(WHITE);
+
+		handleAddWord();
+		exit(0);
+	}
+
+	while (!word.empty()) 
+	{
+		if (dictionary.isValid(word) && !dictionary.isCurrentWord(word)) {
+			automaticWords.push_back(word);
+		}
+
+		word.erase(word.length() - 1);
+	}
+
+	if (!automaticWords.empty()) {
+		cout << "Valid words automatically formed on the position " << coord << ":" << endl;
+
+		for (string autoWord : automaticWords) {
+			cout << autoWord << endl;
+		}
+
+		cout << "Do you want to add any of these words to the board word list (yes/no) ? ";
+
+		do
+		{
+			cin >> option;
+			if (option == "yes") 
+			{
+				cout << "Word ? ";
+				cin >> wordToAdd;
+
+				capitalize(wordToAdd);
+				if (binary_search(automaticWords.begin(), automaticWords.end(), wordToAdd)) {
+					dictionary.currentWords_insert(coord, wordToAdd);
+				}
+
+				cout << wordToAdd << " added to board words lits." << endl;
+			}
+
+			else if (option == "no") {
+				handleAddWord();
+				exit(0);
+			}
+		} while (option != "yes" && option != "no");
+	}
+
+	else {
+		cout << "None valid word was automatically formed on the position " << coord << ":" << endl;
+	}
+
 }
