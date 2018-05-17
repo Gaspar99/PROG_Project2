@@ -22,9 +22,9 @@ public:
 	void reset();
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
-    bool modifyMap(string word, coord initialCoord, char direction, int mode = 0, map<string, string> currentWords = {});
-	int addWord(string word, coord initialCoord, char direction);
-	bool removeWord(coord initialCoord, char direction, map<string, string> currentWords);
+    void modifyMap(string word, coord initialCoord, char direction, int mode = 0, multimap<string, string> currentWords = {});
+	void addWord(string word, coord initialCoord, char direction);
+	void removeWord(coord initialCoord, char direction, multimap<string, string> currentWords);
 
 	unsigned int getNumOfCols();
 	unsigned int getNumOfRows();
@@ -52,7 +52,7 @@ private:
     // Both vectors are initialized with null characters. Built into addWords.
     pair<vector<coord>, vector<coord>> generateCoordinates(unsigned int length, coord initialCoord, char direction);
 
-    bool isCurrentWord(string word, map<string, string> currentWords);
+    bool isCurrentWord(string word, multimap<string, string> currentWords);
     string getWord(coord initialCoordinate, char direction);
 };
 

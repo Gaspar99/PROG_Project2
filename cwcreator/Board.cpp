@@ -80,7 +80,7 @@ ostream &operator<<(ostream &out, Board &board)
     return out;
 }
 
-bool Board::modifyMap(string word, coord initialCoord, char direction, int mode, map<string, string> currentWords)
+void Board::modifyMap(string word, coord initialCoord, char direction, int mode, multimap<string, string> currentWords)
 {
     size_t wordLength = word.length();
     pair<vector<coord>, vector<coord>> coordsToModify = generateCoordinates(wordLength, initialCoord, direction);
@@ -105,12 +105,9 @@ bool Board::modifyMap(string word, coord initialCoord, char direction, int mode,
         else if (!isalpha(currentLetter) && mode == 1)
             currentLetter = '.';
     }
-
-    // Return true means the word was successfully added.
-    return true;
 }
 
-bool Board::removeWord(coord initialCoord, char direction, map<string, string> currentWords)
+void Board::removeWord(coord initialCoord, char direction, multimap<string, string> currentWords)
 {
     switch (direction) {
     case 'H': {
@@ -144,7 +141,7 @@ bool Board::removeWord(coord initialCoord, char direction, map<string, string> c
     }
 }
 
-int Board::addWord(string word, Board::coord initialCoord, char direction)
+void Board::addWord(string word, Board::coord initialCoord, char direction)
 {
     return modifyMap(word, initialCoord, direction, 0);
 }
@@ -157,7 +154,7 @@ Board::generateCoordinates(unsigned int wordLength, coord initialCoord, char dir
 
     switch (direction) {
     case 'V': {
-        int j = 0;
+        size_t j = 0;
         for (auto i = static_cast<unsigned char>(initialCoord.first); j < wordLength; ++i, ++j) {
             coord coord(i, initialCoord.second);
             wordCoords.push_back(coord);
@@ -166,7 +163,7 @@ Board::generateCoordinates(unsigned int wordLength, coord initialCoord, char dir
     }
 
     case 'H': {
-        int j = 0;
+        size_t j = 0;
         for (char i = initialCoord.second; j < wordLength; ++i, ++j) {
             coord coord(initialCoord.first, i);
             wordCoords.push_back(coord);
@@ -179,7 +176,7 @@ Board::generateCoordinates(unsigned int wordLength, coord initialCoord, char dir
 
     switch (direction) {
     case 'V': {
-        auto newCoord = static_cast<char>(initialCoord.first + wordLength - 1);
+        auto newCoord = static_cast<unsigned char>(initialCoord.first + wordLength - 1);
 
         if (newCoord < (nRows + 65)) {
             coord coord(++newCoord, initialCoord.second);
@@ -193,7 +190,7 @@ Board::generateCoordinates(unsigned int wordLength, coord initialCoord, char dir
         break;
     }
     case 'H': {
-        auto newCoord = static_cast<char>(initialCoord.second + wordLength - 1);
+        auto newCoord = static_cast<unsigned char>(initialCoord.second + wordLength - 1);
 
         if (newCoord < (nCols + 97)) {
             coord coord(initialCoord.first, ++newCoord);
@@ -294,7 +291,7 @@ char Board::getValueAt(Board::coord coordinate)
     return board[coordinate];
 }
 
-bool Board::isCurrentWord(string word, map<string, string> currentWords)
+bool Board::isCurrentWord(string word, multimap<string, string> currentWords)
 {
     for (const auto &it : currentWords) {
         if (word == it.second)

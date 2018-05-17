@@ -180,7 +180,7 @@ void Dictionary::currentWords_send(ofstream &outStream)
 	}
 }
 
-map<string, string> Dictionary::getCurrentWords()
+multimap<string, string> Dictionary::getCurrentWords()
 {
 	return currentWords;
 }

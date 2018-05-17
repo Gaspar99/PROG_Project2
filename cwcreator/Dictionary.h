@@ -27,7 +27,7 @@ public:
 	void currentWords_send(ofstream &outStream);
 	bool isCurrentWord(string word);
 
-	map<string, string> getCurrentWords();
+	multimap<string, string> getCurrentWords();
 
 private:
 	map<string, vector<string>> synonymsList;

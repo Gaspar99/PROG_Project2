@@ -221,7 +221,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 {
     string line, word;
-    string coordinates = "";
+    string coordinates;
 
     line = board.getLine(verCoord, horCoord, direction);
 
@@ -277,10 +277,7 @@ void Puzzle::handleSuggestAllWords()
 	string coordinates, word, line;
 	
     auto verCoord = static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
-    auto horCoord = static_cast<char>(65 + nCols - 1);; //Last character of the row in uppercase
-    char direction = 'H';
-    
-	Board::coord initialCoord(verCoord, horCoord);
+    auto horCoord = static_cast<char>(65 + nCols - 1); //Last character of the row in uppercase
 
     while (board.nextCoordinates(verCoord, horCoord)) {
 		char direction = 'H';

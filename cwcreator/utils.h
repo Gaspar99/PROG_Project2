@@ -18,6 +18,8 @@
 #define YELLOW 14
 #define WHITE 15
 
+#include <string>
+
 using namespace std;
 
 char to_upper(int ch);
