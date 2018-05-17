@@ -582,6 +582,7 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 	pos = word.find('.');
 	while (pos != string::npos) {
 		word.erase(pos);
+		pos = word.find('.');
 	}	
 
 	if (word.empty()) {
@@ -609,10 +610,9 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 			cout << autoWord << endl;
 		}
 
-		cout << "Do you want to add any of these words to the board word list (yes/no) ? ";
-
 		do
 		{
+			cout << "Do you want to add any of these words to the board word list (yes/no) ? ";
 			cin >> option;
 			if (option == "yes") 
 			{
@@ -620,18 +620,33 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 				cin >> wordToAdd;
 
 				capitalize(wordToAdd);
-				if (binary_search(automaticWords.begin(), automaticWords.end(), wordToAdd)) {
-					dictionary.currentWords_insert(coord, wordToAdd);
-				}
 
-				setcolor(LIGHTGREEN);
-				cout << wordToAdd << " added to board words list." << endl;
-				setcolor(WHITE);
+				if (find(automaticWords.begin(), automaticWords.end(), wordToAdd) != automaticWords.end()) {
+					dictionary.currentWords_insert(coord, wordToAdd);
+
+					setcolor(LIGHTGREEN);
+					cout << wordToAdd << " added to board words list." << endl;
+					setcolor(WHITE);
+				}
+				else {
+					setcolor(LIGHTRED);
+					cerr << "Invalid word. Please insert one of the automatically formed words shown above." << endl;
+					setcolor(WHITE);
+
+					handleAddWord();
+					exit(0);
+				}
 			}
 
 			else if (option == "no") {
 				handleAddWord();
 				exit(0);
+			}
+
+			else {
+				setcolor(LIGHTRED);
+				cerr << "Invalid option." << endl;
+				setcolor(LIGHTRED);
 			}
 		} while (option != "yes" && option != "no");
 	}
