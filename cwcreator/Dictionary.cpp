@@ -184,3 +184,8 @@ multimap<string, string> Dictionary::getCurrentWords()
 {
 	return currentWords;
 }
+
+bool Dictionary::isInitialCoord(string coord)
+{
+	return (currentWords.find(coord) != currentWords.end());
+}

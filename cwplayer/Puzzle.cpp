@@ -20,13 +20,28 @@ void Puzzle::greetUser()
     cout << string(greeting.length(), '=') << endl << endl;
 
 	cout << "Insert you Player Name: ";
-	cin >> playerName;
+
+	while (true) 
+	{
+		cin >> playerName;
+
+		if (!cin.fail()) { break; }
+		else {
+			cin.clear();
+			cin.ignore(1000, '\n');
+			setcolor(LIGHTRED);
+			cerr << "Invalid input. Player Name ? ";
+			setcolor(WHITE);
+		}
+	}
 
 	player = Player(playerName);
 
 	cout << "Hello " << playerName << "!" << endl;
 
-    cout << endl;
+	cout << endl;
+	showInstructions();
+	cout << endl;
 }
 
 void Puzzle::showMenu()
@@ -44,8 +59,8 @@ void Puzzle::showMenu()
 
     switch (option) {
     case '1': {
-		showInstructions();
 		loadBoard();
+		setcolor(WHITE);
 		dictionary.showClues();
 		player.setStartTime();
 		handleAddWord();
@@ -215,8 +230,8 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
         return;
     }
 
-	setcolor(WHITE);
     cout << board;
+	setcolor(WHITE);
 }
 
 // handleReset() calls member board function reset() to remove all words from the board (replace with .) and clears currentWords
@@ -224,8 +239,8 @@ void Puzzle::handleReset()
 {
     board.reset();
 
-	setcolor(WHITE);
     cout << board;
+	setcolor(WHITE);
 }
 
 void Puzzle::loadBoard()
@@ -246,7 +261,7 @@ void Puzzle::loadBoard()
 
 	if (!boardFile.is_open()) {
 		setcolor(LIGHTRED);
-		cerr << "Opening of board file failed. Does it exist? ";
+		cerr << "Opening of board file failed. Does it exist? " << endl;
 		setcolor(WHITE);
 		exit(1);
 	}
@@ -294,8 +309,8 @@ void Puzzle::loadBoard()
 		coord.clear();
 	}
 
-	setcolor(WHITE);
 	cout << board;
+	setcolor(WHITE);
 }
 
 // parseCoordinates returns true if there is a word in the coordinate inputed by the user 
@@ -341,7 +356,6 @@ void Puzzle::showInstructions()
     cout
         << "When the board is full you will be asked if you want to make another change. If no the game will check if you won!"
         << endl;
-	cout << endl;
 }
 
 int Puzzle::fits(string word, string coord)
@@ -371,10 +385,31 @@ bool Puzzle::boardIsFull()
 
 void Puzzle::checkInsertedWords()
 {
+	string option;
 	if (equalMaps()) {
 		player.setEndTime();
 		player.congratulate();
 		player.saveData();
+
+		cout << "Do you want to play again (yes/no) ? ";
+		
+		while (true) {
+			cin >> option;
+			if (option == "yes") {
+				showInstructions();
+				loadBoard();
+				dictionary.showClues();
+				player.setStartTime();
+				handleAddWord();
+				break;
+			}
+
+			else if (option != "no") {
+				setcolor(LIGHTRED);
+				cerr << "Invalid option." << endl;
+				setcolor(WHITE);
+			} 
+		} 
 	}
 }
 

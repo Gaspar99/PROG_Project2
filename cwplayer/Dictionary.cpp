@@ -31,6 +31,7 @@ void Dictionary::load(string dictionaryName)
 	string word;
 	unsigned int pos = 0;
 	unsigned int index = 0;
+	setcolor(WHITE);
 
 	dictionary.open(dictionaryName);
 
@@ -50,6 +51,7 @@ while (getline(dictionary, line)) {
 	capitalize(mainWord);
 	synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>()));
 	validWords.insert(mainWord);
+
 	pos = index + 2;
 
 	index = line.find(',', pos);
@@ -100,10 +102,10 @@ void Dictionary::showClues()
 
 			synonyms = synonymsList.find(word)->second;
 			index = rand() % synonyms.size();
-
-			cout << coord << " - " << synonyms[index] << endl;
-
 			clue = synonyms[index];
+
+			cout << coord << " - " << clue << endl;
+
 			coord.push_back('H');
 			clues.insert(pair<string, string>(coord, clue));
 		}
@@ -118,10 +120,10 @@ void Dictionary::showClues()
 
 			synonyms = synonymsList.find(word)->second;
 			index = rand() % synonyms.size();
-
-			cout << coord << " - " << synonyms[index] << endl;
-
 			clue = synonyms[index];
+
+			cout << coord << " - " << clue << endl;
+
 			coord.push_back('V');
 			clues.insert(pair<string, string>(coord, clue));
 		}

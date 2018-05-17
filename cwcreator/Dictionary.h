@@ -13,9 +13,9 @@ class Dictionary
 {
 public:
 	Dictionary();
-	explicit Dictionary(string dictionaryName);
+	Dictionary(string dictionaryName);
 
-	void load(const string &dictionaryName);
+	void load(string dictionaryName);
 	bool isValid(string word);
 	void storeSuggestions(string coordinates, string line);
 	void showSuggestions();
@@ -26,8 +26,8 @@ public:
 	void currentWords_clear();
 	void currentWords_send(ofstream &outStream);
 	bool isCurrentWord(string word);
-
-	multimap<string, string> getCurrentWords();
+	bool isInitialCoord(string coord);
+	vector<string> getSuggestions(string coord);
 
 private:
 	map<string, vector<string>> synonymsList;
