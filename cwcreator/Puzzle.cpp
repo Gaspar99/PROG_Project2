@@ -186,7 +186,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 		insertWord(newWord, verCoord, horCoord, direction);
 	}
     else if (word == "-") {
-        board.removeWord(initialCoord, direction);
+        board.removeWord(initialCoord, direction, dictionary.getCurrentWords());
 		dictionary.currentWords_erase(coord);
     }
 
@@ -520,3 +520,4 @@ bool Puzzle::matches(string word, string line)
 {
     return wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str());
 }
+

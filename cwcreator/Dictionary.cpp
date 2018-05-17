@@ -24,7 +24,7 @@ Dictionary::Dictionary(string dictionaryName)
 	load(dictionaryName);
 }
 
-void Dictionary::load(string dictionaryName)
+void Dictionary::load(const string &dictionaryName)
 {
 	ifstream dictionary;
 	string line;
@@ -179,7 +179,8 @@ void Dictionary::currentWords_send(ofstream &outStream)
 		outStream << it.first << " " << it.second << endl;
 	}
 }
-vector<string> Dictionary::getSuggestions(string coord)
+
+map<string, string> Dictionary::getCurrentWords()
 {
-	return suggestions[coord];
+	return currentWords;
 }
