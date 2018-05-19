@@ -276,6 +276,7 @@ bool Board::nextCoordinates(char &verCoord, char &horCoord)
     }
 }
 
+//Returns true if the board does not have any empty cell
 bool Board::isNotFull()
 {
     for (const auto &it : board)

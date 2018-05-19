@@ -133,6 +133,7 @@ void Engine::loadPuzzle()
     } while (option != "yes" || option != "no");
 }
 
+//Dialogue to start the creation of the puzzle
 void Engine::createPuzzle()
 {
     string inputFileName;
@@ -185,7 +186,13 @@ void Engine::addWordDialogue()
             exit(0);
         }
 
-        if (coordinateInBoard(initialCoord)) // Check if coordinates are in the board, if they are, show insert word dialogue
+		//Needed due to coordinates being in uppercase on the board map
+		initialCoord.first = utility.to_upper(initialCoord.first); 
+		initialCoord.second = utility.to_upper(initialCoord.second);
+		direction = utility.to_upper(direction);
+
+		// Checks if coordinates are in the board and if direction is valid. If they are, shows insert word dialogue
+        if (coordinateInBoard(initialCoord) && (direction =='V' || direction == 'H')) 
         {
             string word;
 
@@ -193,9 +200,6 @@ void Engine::addWordDialogue()
             cin >> word;
 
             utility.capitalize(word);
-            initialCoord.first = utility.to_upper(initialCoord.first);
-            initialCoord.second = utility.to_upper(initialCoord.second);
-            direction = utility.to_upper(direction);
 
             insertWordDialogue(word, initialCoord.first, initialCoord.second, direction);
         }
@@ -237,6 +241,12 @@ void Engine::insertWordDialogue(string word, char verCoord, char horCoord, char 
     coordinate.push_back(verCoord);
     coordinate.push_back(utility.to_lower(horCoord));
     coordinate.push_back(direction);
+
+	//Check if the coordinate is already occupied by another word
+	if (Dictionary::isInitialCoord(coordinate)) {
+		logger.error(coordinate, "AlreadyOccupied");
+		insertWordDialogue(word, verCoord, horCoord, direction);
+	}
 
     // Check if the word is in the dictionary
     if (isalpha(word[0]) && isValid(word)) {
@@ -304,10 +314,8 @@ void Engine::suggestWordsDialogue(char verCoord, char horCoord, char direction)
 
     line = getLine(verCoord, horCoord, direction);
 
-    horCoord = utility.to_lower(horCoord);
     coordinates.push_back(verCoord);
-    coordinates.push_back(verCoord);
-    coordinates.push_back(horCoord);
+    coordinates.push_back(utility.to_lower(horCoord));
     coordinates.push_back(direction);
 
     horCoord = utility.to_upper(horCoord);
@@ -340,7 +348,8 @@ void Engine::suggestWordsDialogue(char verCoord, char horCoord, char direction)
             logger.error("LimiterError");
         }
 
-        clearSuggestions();
+		clearSuggestions(); //Clears the suggestions map so when this method is called again,
+							//the suggestions will be calculated again for the given position
     }
     else {
         logger.special(coordinates, "NoValidWords");
@@ -355,8 +364,9 @@ void Engine::suggestAllWordsDialogue()
         static_cast<char>(64); //Character before 'A'. This way 'board.nextCoordinates' updates the coordinates to 'A' and 'a'.
     auto horCoord = static_cast<char>(65 + nCols - 1); //Last character of the row in uppercase
 
-    while (nextCoordinates(verCoord, horCoord)) {
-        char direction = 'H';
+    while (nextCoordinates(verCoord, horCoord)) {  //Goes through each position, gets the line and column and for each one of these
+												   //searches for word matches in the valid words list.
+		char direction = 'H';
 
         for (int i = 0; i < 2; i++) {
 
@@ -375,7 +385,8 @@ void Engine::suggestAllWordsDialogue()
     }
 
     showSuggestions();
-    clearSuggestions();
+    clearSuggestions(); //Clears the suggestions map so when this method is called again,
+					    //the suggestions will be calculated again, considering the current board words
 }
 
 void Engine::writeDialogue()
@@ -395,7 +406,7 @@ void Engine::writeDialogue()
         cin >> option;
 
         if (option == "yes") {
-            finish();
+            finish(); //Substitutes every dot for a '#'
             break;
         }
         else if (option != "no") {
@@ -409,7 +420,7 @@ void Engine::writeDialogue()
     outStream.open(fileName);
     writeBoard(outStream, 0);
 
-    currentWords_send(outStream);
+    currentWords_send(outStream); //Writes to outStream the position of every word added followed by the word itself
     logger.log("WriteFinished");
 
     do {
@@ -432,15 +443,16 @@ void Engine::writeDialogue()
 
 void Engine::resetAllDialogue()
 {
-    reset();
-    currentWords_clear();
-    writeBoard(cout, 1);
+    reset(); //puts dots on all cells
+    currentWords_clear(); //clears the info with the words added
+    writeBoard(cout, 1); //shows an empty board
 }
 
+//Checks if on a given position there is a valid word that was not yet added to the board
 void Engine::checkAutomaticWordsDialogue(char line, char column, char direction)
 {
-    vector<string> automaticWords;
-    string word = getLine(line, column, direction);
+    vector<string> automaticWords; //Vector with the valid words on the given position
+    string word = getLine(line, column, direction); 
     unsigned int pos;
     string coord, option, wordToAdd;
 
@@ -448,6 +460,7 @@ void Engine::checkAutomaticWordsDialogue(char line, char column, char direction)
     coord.push_back(utility.to_lower(column));
     coord.push_back(direction);
 
+	//Checks if the given position is already occupied by another word
     if (isInitialCoord(coord)) {
         logger.error(coord, "AlreadyOccupied");
 
@@ -462,6 +475,7 @@ void Engine::checkAutomaticWordsDialogue(char line, char column, char direction)
         pos = word.find('.');
     }
 
+	//Checks if after the elimination of the dots, there are chars on the line
     if (word.empty()) {
         logger.special(coord, "NoWord");
 
@@ -469,6 +483,7 @@ void Engine::checkAutomaticWordsDialogue(char line, char column, char direction)
         exit(0);
     }
 
+	//Goes through the line and checks if it can form any valid word that was not yet added
     while (!word.empty()) {
         if (isValid(word) && !isCurrentWord(word)) {
             automaticWords.push_back(word);
@@ -493,22 +508,27 @@ void Engine::checkAutomaticWordsDialogue(char line, char column, char direction)
                 cin >> wordToAdd;
 
                 utility.capitalize(wordToAdd);
-                if (binary_search(automaticWords.begin(), automaticWords.end(), wordToAdd)) {
+                if (find(automaticWords.begin(), automaticWords.end(), wordToAdd) != automaticWords.end()) {
                     currentWords_insert(coord, wordToAdd);
+					logger.header(wordToAdd, "AddedToList");
                 }
-
-                cout << wordToAdd << " added to board words list." << endl;
+				else {
+					logger.error("NotWordAbove");
+				}
             }
 
             else if (option == "no") {
                 addWordDialogue();
                 exit(0);
             }
+			else {
+				logger.error("InvalidOption");
+			}
         }
         while (option != "yes" && option != "no");
     }
 
     else {
-        cout << "None valid word was automatically formed on the position " << coord << ":" << endl;
+		logger.special(coord, "NoAuto");
     }
 }

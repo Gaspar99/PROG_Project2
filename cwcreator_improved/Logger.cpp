@@ -56,12 +56,15 @@ Logger::Logger()
     headers["CreatePuzzle"] = oss.str();
     oss.str(string());
 
+	headers["AddedToList"] = " added to board words list.";
+
     info["options"] = "1 - Create Puzzle\n2 - Resume Puzzle\n0 - Exit\nSelect an option: ";
 
-    oss << "Insert '-' to remove a word;" << endl
-        << "Insert 'R' to reset the board;" << endl
-        << "Insert '?' to get a list of words suggestions on the position you chose;" << endl
-        << "Insert '?A' to get a list of words suggestions on all positions of the board (limited to 10);" << endl
+	oss << "Insert '-' to remove a word;" << endl
+		<< "Insert 'R' to reset the board;" << endl
+		<< "Insert '?' to get a list of words suggestions on the position you chose;" << endl
+		<< "Insert '?A' to get a list of words suggestions on all positions of the board (limited to 10);" << endl
+		<< "Insert '+' to check if an automatically formed word on the given position is valid." << endl
         << endl
         << "Option (or valid word) ? ";
 
@@ -85,6 +88,7 @@ Logger::Logger()
     errors["NoWord"] = "There is not any word on the position ";
     errors["NoAuto"] = "No valid word was automatically formed on the position";
     errors["AlreadyOccupied"] = " is already occupied.";
+	errors["NotWordAbove"] = "Insert only one of the words shown above.";
     errors["BoardOpenFailed"] = "Opening of board file failed. Does it exist?";
 }
 
@@ -120,4 +124,11 @@ void Logger::header(const string &headerKey)
     setcolor(GREEN);
     cout << headers[headerKey] << endl;
     setcolor(WHITE);
+}
+
+void Logger::header(const std::string &word, const std::string &headerKey) 
+{
+	setcolor(GREEN);
+	cout << word << headers[headerKey] << endl;
+	setcolor(WHITE);
 }
