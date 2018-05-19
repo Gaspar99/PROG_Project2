@@ -31,7 +31,7 @@ public:
     // Checks
     bool isNotFull();
 
-    std::string getLine(char verCoord, char horCoord, char direction);
+    std::string getLine(char verCoord, char horCoord, char direction); // Returns the word in the perpendicular column or line
     bool nextCoordinates(char &verCoord, char &horCoord);
     std::ostream &writeBoard(std::ostream &out, int writeMode);
     void finish();

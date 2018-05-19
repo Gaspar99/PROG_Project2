@@ -301,6 +301,8 @@ bool Board::isCurrent(string word, multimap<string, string> currentWords)
 
     return false;
 }
+
+// Returns the word in the perpendicular column or line
 string Board::getWord(COORDINATE initialCoordinate, char direction)
 {
     string word;

@@ -43,6 +43,7 @@ private: // Engine is not supposed to be some class's parent
 
     // Prepares write to file
     void writeDialogue();
+    void loadPuzzle();
 };
 
 

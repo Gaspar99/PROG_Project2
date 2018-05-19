@@ -44,7 +44,7 @@ void Engine::showMenu()
         break;
     }
     case '2': {
-        //loadPuzzle();
+        loadPuzzle();
         break;
     }
     case '0': exit(0);
@@ -53,6 +53,84 @@ void Engine::showMenu()
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
+}
+
+void Engine::loadPuzzle()
+{
+    ifstream boardFile, dictionaryFile;
+    string boardFileName, dictionaryFileName, line, word;
+    COORDINATE initialCoord;
+    char direction;
+    string option, coord;
+
+    unsigned int nRows = 0;
+
+    cout << "Insert name of file to load board: ";
+    cin >> boardFileName;
+
+    boardFile.open(boardFileName);
+
+    if (!boardFile.is_open()) {
+        logger.error("BoardOpenFailed");
+
+        exit(1);
+    }
+
+    getline(boardFile, dictionaryFileName);
+
+    this->dictionaryFile = dictionaryFileName;
+
+    load(this->dictionaryFile);
+
+    boardFile.ignore(1000, '\n'); //ignores the second line of the file
+
+    while (getline(boardFile, line)) {
+        if (line.empty()) { //reached the end of the board
+            break;
+        }
+        else {
+            static unsigned int nCols = line.length() / 2;
+            nRows++;
+        }
+    }
+
+    while (!boardFile.eof()) {
+
+        boardFile >> initialCoord.first >> initialCoord.second >> direction >> word;
+
+        if (boardFile.fail()) {
+            boardFile.clear();
+            boardFile.ignore(1000, '\n');
+            break;
+        }
+
+        coord.push_back(initialCoord.first);
+        coord.push_back(utility.to_lower(initialCoord.second));
+        coord.push_back(direction);
+
+        initialCoord.second = utility.to_upper(initialCoord.second);
+        currentWords_insert(coord, word);
+        addWord(word, initialCoord, direction);
+
+        coord.clear();
+    }
+
+    writeBoard(cout, 1);
+
+    do {
+        cout << "Do you wish to continue the creation of this board? (yes/no): ";
+        cin >> option;
+
+        if (option == "yes") {
+            addWordDialogue();
+        }
+        else if (option == "no") {
+            exit(0);
+        }
+        else {
+            logger.error("InvalidOption");
+        }
+    } while (option != "yes" || option != "no");
 }
 
 void Engine::createPuzzle()

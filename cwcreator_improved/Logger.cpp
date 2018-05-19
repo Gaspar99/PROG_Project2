@@ -85,6 +85,7 @@ Logger::Logger()
     errors["NoWord"] = "There is not any word on the position ";
     errors["NoAuto"] = "No valid word was automatically formed on the position";
     errors["AlreadyOccupied"] = " is already occupied.";
+    errors["BoardOpenFailed"] = "Opening of board file failed. Does it exist?";
 }
 
 void Logger::error(const string &errorKey)
