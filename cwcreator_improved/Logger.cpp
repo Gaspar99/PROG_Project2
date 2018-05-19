@@ -37,6 +37,7 @@ Logger::Logger()
         << "The characters '?A' to receive a list of all possible words, and some of theirs synonyms, you can put on all positions."
         << endl
         << "The character 'R' to reset the puzzle." << endl
+		<< "The character '+' to check if an automatically formed word on the given position is valid." << endl
         << "Finally, when you are finished with the puzzle you can insert 'CTRL-Z' to end the creation and save the puzzle." << endl;
 
     info["instructions"] = oss.str();

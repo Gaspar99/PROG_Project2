@@ -245,16 +245,14 @@ void Engine::insertWordDialogue(string word, char verCoord, char horCoord, char 
     coordinate.push_back(utility.to_lower(horCoord));
     coordinate.push_back(direction);
 
-	//Check if the coordinate is already occupied by another word
-	if (Dictionary::isInitialCoord(coordinate)) {
-		logger.error(coordinate, "AlreadyOccupied");
-		insertWordDialogue(word, verCoord, horCoord, direction);
-	}
-
     // Check if the word is in the dictionary
     if (isalpha(word[0]) && isValid(word)) {
+		//Check if the coordinate is already occupied by another word
+		if (Dictionary::isInitialCoord(coordinate)) {
+			logger.error(coordinate, "AlreadyOccupied");
+		}
         // Check if the word fits in the board
-        if (fits(word, verCoord, horCoord, direction)) {
+        else if (fits(word, verCoord, horCoord, direction)) {
             // Check if the word doesnt match any letters currently on the board
             if (!matches(word, line)) {
                 logger.error(word, "NoMatch");
