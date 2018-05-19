@@ -64,6 +64,7 @@ void Engine::loadPuzzle()
     string option, coord;
 
     unsigned int nRows = 0;
+	unsigned int nCols;
 
     cout << "Insert name of file to load board: ";
     cin >> boardFileName;
@@ -89,10 +90,12 @@ void Engine::loadPuzzle()
             break;
         }
         else {
-            static unsigned int nCols = line.length() / 2;
+            nCols = line.length() / 2;
             nRows++;
         }
     }
+
+	makeBoard(nRows, nCols);
 
     while (!boardFile.eof()) {
 
@@ -418,7 +421,10 @@ void Engine::writeDialogue()
     cout << "Writing to " << fileName << endl;
 
     outStream.open(fileName);
+	outStream << dictionaryFile << endl;
+
     writeBoard(outStream, 0);
+	outStream << endl;
 
     currentWords_send(outStream); //Writes to outStream the position of every word added followed by the word itself
     logger.log("WriteFinished");
