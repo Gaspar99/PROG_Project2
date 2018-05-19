@@ -283,7 +283,7 @@ void Puzzle::handleSuggestWords(char verCoord, char horCoord, char direction)
 		cin >> word;
 		capitalize(word);
 
-		if (fits(word, verCoord, horCoord, direction)) {
+		if (fits(word, verCoord, horCoord, direction) && dictionary.isValid(word)) {
 			Board::coord initialCoord(verCoord, to_upper(horCoord));
 
 			dictionary.currentWords_insert(coordinates, word);
@@ -568,6 +568,15 @@ void Puzzle::checkAutomaticWords(char line, char column, char direction)
 	coord.push_back(line);
 	coord.push_back(to_lower(column));
 	coord.push_back(direction);
+
+	if (dictionary.isInitialCoord(coord)) {
+		setcolor(LIGHTRED);
+		cerr << "The position " << coord << " is already occupied." << endl;
+		setcolor(WHITE);
+
+		handleAddWord();
+		exit(0);
+	}
 
 	//Eliminates the dots on the line, remaining just the word itself
 	pos = word.find('.');
