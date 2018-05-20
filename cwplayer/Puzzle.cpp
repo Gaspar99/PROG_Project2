@@ -20,7 +20,7 @@ void Puzzle::greetUser()
     //Title
     setcolor(YELLOW);
     cout << greeting << endl;
-    cout << string(greeting.length(), '=') << endl << endl;
+    cout << string(greeting.length(), '=') << endl;
     setcolor(WHITE);
 
     cout << "Insert your name: ";
