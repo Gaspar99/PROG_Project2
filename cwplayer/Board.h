@@ -16,7 +16,7 @@ public:
 	typedef pair<char, char> coord;
 
 	// Constructor for the Board class which generates a map and its respective keys which represent coordinates on the board
-	// Default values for each coordinate is a . character
+	// Default values for each coordinate is a # character
 	Board(unsigned int nRows, unsigned int nColumns);
 
 	void reset();
@@ -26,11 +26,13 @@ public:
 	int addWord(string word, coord initialCoord, char direction);
 	bool removeWord(coord initialCoord, char direction, string insertedWord);
 
+	//Inserted dots on the positions occupied by words
 	void insertWhiteCells(string word, coord initialCoord, char);
 
-	unsigned int getNumOfCols();
+	unsigned int getNumOfCols(); 
 	unsigned int getNumOfRows();
 
+	//Returns the row or the column of the board depending on 'direction'
 	string getLine(char verCoord, char horCoord, char direction);
 
 private:
@@ -40,10 +42,9 @@ private:
 	unsigned int nRows; // number of rows in the board
 	unsigned int nCols; // number of columns in the board
 
-    // Returns a pair of vectors. The first vector contains the coordinates of the cells to be modified.
-    // The second one contains the coordinates of the previous cell and of the cell that comes after the word.
+    // Returns a vector of strings containing the coordinates of the cells to be modified.
     // If any of these coordinates is out of bounds, the corresponding position in the vector will be empty.
-    // Both vectors are initialized with null characters. Built into addWords.
+    // The vector is initialized with null characters. Built into addWords.
     vector<coord> generateCoords(unsigned int length, pair<char, char> initialCoord, char direction);
 
     bool isNotSurrounded(coord coordinate, char direction);

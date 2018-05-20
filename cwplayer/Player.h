@@ -12,6 +12,7 @@ class Player
 public:
 	Player();
 	Player(string playerName);
+	void setBoardFileName(string boardFileName);
 	void increaseCounter();
 	void setStartTime();
 	void setEndTime();
@@ -22,6 +23,7 @@ private:
 	unsigned int counter = 0; //counter of how many times the player asked for help
 	int startTime, endTime;
 	double time;
+	string boardFileName;
 };
 
 #endif 

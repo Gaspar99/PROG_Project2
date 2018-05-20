@@ -39,9 +39,7 @@ void Puzzle::greetUser()
 
 	cout << "Hello " << playerName << "!" << endl;
 
-	cout << endl;
 	showInstructions();
-	cout << endl;
 }
 
 void Puzzle::showMenu()
@@ -61,7 +59,9 @@ void Puzzle::showMenu()
     case '1': {
 		loadBoard();
 		setcolor(WHITE);
-		dictionary.showClues();
+
+		dictionary.calculateClues();
+
 		player.setStartTime();
 		handleAddWord();
         break;
@@ -86,6 +86,7 @@ void Puzzle::handleAddWord()
 	bool anotherChange = true;
 
     while (anotherChange) {
+		dictionary.showClues();
 		setcolor(WHITE);
         cout << "Position (LCD format) ?: ";
 
@@ -257,6 +258,8 @@ void Puzzle::loadBoard()
 	cout << "Insert name of file to load board: ";
 	cin >> boardFileName;
 
+	player.setBoardFileName(boardFileName);
+
 	boardFile.open(boardFileName);
 
 	if (!boardFile.is_open()) {
@@ -329,33 +332,30 @@ bool Puzzle::parseCoordinates(char verCoord, char horCoord, char direction)
 
 void Puzzle::showInstructions()
 {
-    cout << "INSTRUCTIONS:" << endl;
-    cout
-        << "In this Crosswords Puzzle Game, you are asked for the name of the file containing the board that you will try to solve."
-        << endl;
-    cout
-        << "An empty board will be shown to you containing only white and black cells."
-        << endl;
-    cout << "A list of clues will be presented containing the position of each word and a correponding random synonym."
-         << endl;
-	cout << "This list is divided into two section: Horizontal words and Vertical words."
-		<< endl;
-    cout << "For the position, you must write three characters (LCD - Line, Column and Direction) :" << endl;
-    cout << setw(3) << "The first one is the vertical coordinate and the second one is the horizontal coordinate."
-         << endl;
-    cout << setw(3) << "The third one indicates the direction that you want to insert the word. Horizontal or Vertical."
-         << endl;
-    cout
-        << "You are then asked for the word itself. You have a few options to help you. Insert:"
-        << endl;
-    cout << setw(3) << "A valid word to put it on the board." << endl;
-    cout << setw(3) << "The character '-' to remove the word that currently ocuppies the position you chose." << endl;
-    cout << setw(3) << "The character '?' to get another synonym for the word on the position you chose."
-         << endl;
-    cout << setw(3) << "The character 'R' to reset the puzzle." << endl;
-    cout
-        << "When the board is full you will be asked if you want to make another change. If no the game will check if you won!"
-        << endl;
+	cout << endl
+		<< "INSTRUCTIONS:" << endl
+		<< "In this Crosswords Puzzle Game, you are asked for the name of the file containing the board that you will try to solve."
+		<< endl
+		<< "An empty board will be shown to you containing only white and black cells."
+		<< endl
+		<< "A list of clues will be presented containing the position of each word and a correponding random synonym."
+		<< endl
+		<< "This list is divided into two section: Horizontal words and Vertical words."
+		<< endl
+		<< "For the position, you must write three characters (LCD - Line, Column and Direction) :" << endl
+		<< setw(3) << "The first one is the vertical coordinate and the second one is the horizontal coordinate."
+		<< endl
+		<< setw(3) << "The third one indicates the direction that you want to insert the word. Horizontal or Vertical."
+		<< endl
+		<< "You are then asked for the word itself. You have a few options to help you. Insert:"
+		<< endl
+		<< setw(3) << "A valid word to put it on the board." << endl
+		<< setw(3) << "The character '-' to remove the word that currently ocuppies the position you chose." << endl
+		<< setw(3) << "The character '?' to get another synonym for the word on the position you chose."
+		<< endl
+		<< setw(3) << "The character 'R' to reset the puzzle." << endl
+		<< "When the board is full you will be asked if you want to make another change. If no the game will check if you won!"
+		<< endl << endl;
 }
 
 int Puzzle::fits(string word, string coord)
@@ -404,11 +404,14 @@ void Puzzle::checkInsertedWords()
 				break;
 			}
 
-			else if (option != "no") {
+			else if (option == "no") {
+				exit(0);
+			} 
+			else {
 				setcolor(LIGHTRED);
 				cerr << "Invalid option." << endl;
 				setcolor(WHITE);
-			} 
+			}
 		} 
 	}
 }
@@ -420,7 +423,7 @@ string Puzzle::finalChecking()
 	{
 		word = it.second;
 		if (!dictionary.isValid(word)) {
-			return word;
+			return word; 
 		}
 	}
 	return "1"; //return "1" means that every word on the board is valid 

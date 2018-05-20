@@ -17,6 +17,7 @@ public:
 
 	void load(string dictionaryName);
 	bool isValid(string word);
+	void calculateClues();
 	void showClues();
 	void boardWords_insert(string coord, string word);
 	void showAnotherClue(string coord);
