@@ -19,7 +19,12 @@ Player::Player(const string &playerName)
 
 void Player::setBoardFileName(const string &boardFileName)
 {
-    this->boardFileName = boardFileName.substr(0, 4); //For the board b001.txt, this updates its name to b001
+    this->boardName = boardFileName.substr(0, 4); //For the board b001.txt, this updates its name to b001
+}
+
+string Player::getBoardName()
+{
+	return boardName;
 }
 
 void Player::increaseCounter()
@@ -55,7 +60,7 @@ void Player::saveData()
     ofstream file;
 
     ostringstream outFileName;
-    outFileName << boardFileName << "_p.txt";
+    outFileName << boardName << "_p.txt";
 
     string fileName = outFileName.str();
 

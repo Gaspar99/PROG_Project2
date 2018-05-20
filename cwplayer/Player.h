@@ -12,6 +12,7 @@ public:
     Player(const std::string &playerName);
 
     void setBoardFileName(const std::string &boardFileName);
+	std::string getBoardName();
     void increaseCounter();
     void setStartTime(); //Sets the time in which the player started the game
     void setEndTime(); //Sets the time in which the player ended the game
@@ -27,7 +28,7 @@ private:
     unsigned int counter = 0; //counter of how many times the player asked for help
     int startTime, endTime;
     double time;
-    std::string boardFileName;
+    std::string boardName;
 };
 
 #endif 

@@ -56,6 +56,7 @@ void Puzzle::showMenu()
     setcolor(WHITE);
 
     cout << "1 - Play CrossWords" << endl;
+	cout << "2 - See LeaderBoard" << endl;
     cout << "0 - Exit" << endl;
     cout << "Select an option: " << flush;
     cin >> option;
@@ -71,6 +72,14 @@ void Puzzle::showMenu()
         handleAddWord();
         break;
     }
+	case '2': {
+		string boardName = getBoardName();
+		boardName = boardName.substr(0, 4);
+		showLeaderBoards(boardName);
+
+		showMenu();
+		break;
+	}
     case '0': exit(0);
 
     default:setcolor(LIGHTRED);
@@ -262,8 +271,7 @@ void Puzzle::loadBoard()
     unsigned int nRows = 0;
     unsigned int nCols = 0;
 
-    cout << "Insert name of file to load board: ";
-    cin >> boardFileName;
+	boardFileName = getBoardName();
 
     player.setBoardFileName(boardFileName);
 
@@ -319,6 +327,16 @@ void Puzzle::loadBoard()
 
     cout << board;
     setcolor(WHITE);
+}
+
+string Puzzle::getBoardName()
+{
+	string boardFileName;
+
+	cout << "Insert name of file to load board: ";
+	cin >> boardFileName;
+
+	return boardFileName;
 }
 
 // parseCoordinates returns true if there is a word in the coordinate inputed by the user 
@@ -389,14 +407,16 @@ void Puzzle::checkInsertedWords()
 {
     string option;
     if (equalMaps()) {
+		string boardName = player.getBoardName();
         player.setEndTime();
         player.congratulate();
         player.saveData();
-
-        cout << "Do you want to play again (yes/no) ? ";
+		showLeaderBoards(boardName);
 
         while (true) {
+			cout << "Do you want to play again (yes/no) ? ";
             cin >> option;
+
             if (option == "yes") {
                 showInstructions();
                 loadBoard();
@@ -437,4 +457,71 @@ bool Puzzle::equalMaps()
             return false;
     }
     return true;
+}
+
+void Puzzle::showLeaderBoards(string& boardName)
+{
+	ifstream playersFile;
+	string option;
+
+	ostringstream outFileName;
+	outFileName << boardName << "_p.txt";
+	string playersFileName = outFileName.str();
+
+	playersFile.open(playersFileName);
+
+	if (!playersFile.is_open()) {
+		cout << "No player has completed the board " << boardName << " yet." << endl;
+
+		do {
+			cout << "Do you want to try to complete it (yes/no) ? " << endl;
+			cin >> option;
+			if (option == "yes") {
+				dictionary.calculateClues();
+				player.setStartTime();
+
+				handleAddWord();
+			}
+			else if (option != "no") {
+				setcolor(LIGHTRED);
+				cerr << "Invalid option." << endl;
+				setcolor(WHITE);
+			}
+		} while (option != "yes" && option != "no");
+		exit(0);
+	}
+
+	map<double, vector<string>> playersData;
+	string line, playerName, time, counter;
+	int colonPosition, semicolonPosition, counterPosition, timePosition;
+	double timeKey;
+
+	while (getline(playersFile, line))
+	{
+		colonPosition = line.find(':');
+		semicolonPosition = line.find(';');
+		playerName = line.substr(colonPosition + 1, semicolonPosition - colonPosition - 1);
+
+		counterPosition = line.find("times", semicolonPosition);
+		counter = line.substr(semicolonPosition + 9, 1);
+
+		semicolonPosition = line.find(';', counterPosition);
+		time = line.substr(semicolonPosition + 9, 6);
+		timeKey = atof(time.c_str());
+
+		playersData.insert(pair<double, vector<string>>(timeKey, vector<string>()));
+		playersData[timeKey].push_back(playerName);
+		playersData[timeKey].push_back(counter);
+		playersData[timeKey].push_back(time);
+	}
+
+	int rank = 1;
+	cout << "LEADERBOARD" << endl;
+	cout << "Rank" << setw(10) << "Name" << setw(10) << "Help" << setw(10) << "Time" << endl;
+
+	for (const auto &it : playersData) {
+		cout << rank << setw(13) << it.second[0] << setw(7) << it.second[1] << setw(14) << it.second[2] << endl;
+		rank++;
+	}
+
 }

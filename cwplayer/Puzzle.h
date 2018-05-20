@@ -23,6 +23,8 @@ private:
     std::map<std::string, std::string> boardWords;
 
     void loadBoard();
+	std::string getBoardName();
+	void showLeaderBoards(std::string &boardName);
 
     void handleAddWord();
     void insertWord(const std::string &word, char verCoord, char horCoord, char direction);
