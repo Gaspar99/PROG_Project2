@@ -122,7 +122,7 @@ void Logger::special(const string &coordinate, const string &errorKey)
 
 void Logger::header(const string &headerKey)
 {
-    setcolor(GREEN);
+    setcolor(YELLOW);
     cout << headers[headerKey] << endl;
     setcolor(WHITE);
 }

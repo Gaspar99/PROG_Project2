@@ -6,8 +6,6 @@
 #include "Dictionary.h"
 #include "Player.h"
 
-using namespace std;
-
 class Puzzle
 {
 public:
@@ -20,24 +18,24 @@ private:
     Board board;
     Dictionary dictionary;
 	Player player;
-    string dictionaryFile;
-	map<string, string> insertedWords;
-	map<string, string> boardWords;
+
+	std::map<std::string, std::string> insertedWords;
+	std::map<std::string, std::string> boardWords;
 
 	void loadBoard();
 
     void handleAddWord();
-	void insertWord(string word, char verCoord, char horCoord, char direction);
+	void insertWord(std::string word, char verCoord, char horCoord, char direction);
 
 	bool boardIsFull();
     void handleReset();
     bool parseCoordinates(char verCoord, char horCoord, char direction);
 	void showInstructions();
 	void checkInsertedWords();
-	string finalChecking();
+	std::string finalChecking();
 
-    int fits(string word, string coord);
-    bool matches(string word, string line);
+    int fits(std::string word, std::string coord);
+    bool matches(std::string word, std::string line);
 	bool equalMaps();
 };
 

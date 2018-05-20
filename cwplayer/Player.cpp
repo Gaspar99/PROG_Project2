@@ -40,12 +40,12 @@ void Player::congratulate()
 {
 	time = (double)(endTime - startTime) / CLOCKS_PER_SEC;
 
-	setcolor(GREEN);
+	setcolor(LIGHTGREEN);
 	cout << "Congratulations " << playerName << "!! You have succesfully solved the puzzle!" << endl;
 	setcolor(WHITE);
 
 	cout << "You asked for help " << counter << " times." << endl;
-	cout << "It took you " << time << " seconds to complete the puzzle." << endl;
+	cout << "It took you " << time << " seconds to complete the puzzle." << endl << endl;
 }
 
 void Player::saveData()

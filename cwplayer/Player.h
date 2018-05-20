@@ -5,25 +5,23 @@
 #include <string>
 #include <ctime>
 
-using namespace std;
-
 class Player
 {
 public:
 	Player();
-	Player(string playerName);
-	void setBoardFileName(string boardFileName);
+	Player(std::string playerName);
+	void setBoardFileName(std::string boardFileName);
 	void increaseCounter();
 	void setStartTime();
 	void setEndTime();
 	void congratulate();
 	void saveData();
 private:
-	string playerName;
+	std::string playerName;
 	unsigned int counter = 0; //counter of how many times the player asked for help
 	int startTime, endTime;
 	double time;
-	string boardFileName;
+	std::string boardFileName;
 };
 
 #endif 

@@ -7,26 +7,24 @@
 #include <set>
 #include "Board.h"
 
-using namespace std;
-
 class Dictionary
 {
 public:
 	Dictionary();
-	Dictionary(string dictionaryName);
+    Dictionary(std::string dictionaryName);
 
-	void load(const string &dictionaryName);
-	static bool isValid(string word);
+	void load(const std::string &dictionaryName);
+	static bool isValid(std::string word);
     void calculateClues();
 	void showClues();
-	void boardWords_insert(string coord, string word);
-	void showAnotherClue(string coord);
+	void boardWords_insert(std::string coord, std::string word);
+	void showAnotherClue(std::string coord);
 
 private:
-	map<string, vector<string>> synonymsList;
-	static set<string> validWords;
-	map<string, string> boardWords;
-	map<string, string> clues;
+	std::map<std::string, std::vector<std::string>> synonymsList;
+	static std::set<std::string> validWords;
+	std::map<std::string, std::string> boardWords;
+	std::map<std::string, std::string> clues;
 };
 
 #endif 
