@@ -34,7 +34,7 @@ void Engine::showMenu()
     unsigned char option = '0';
 
     logger.header("options");
-    logger.log("options");
+    logger.logInput("options");
 
     cin >> option;
 
@@ -64,7 +64,7 @@ void Engine::loadPuzzle()
     string option, coord;
 
     unsigned int nRows = 0;
-	unsigned int nCols;
+	unsigned int nCols = 0;
 
     cout << "Insert name of file to load board: ";
     cin >> boardFileName;
@@ -83,7 +83,7 @@ void Engine::loadPuzzle()
 
     load(this->dictionaryFile);
 
-    boardFile.ignore(1000, '\n'); //ignores the second line of the file
+    boardFile.ignore(numeric_limits<streamsize>::max(), '\n'); //ignores the second line of the file
 
     while (getline(boardFile, line)) {
         if (line.empty()) { //reached the end of the board
@@ -103,7 +103,7 @@ void Engine::loadPuzzle()
 
         if (boardFile.fail()) {
             boardFile.clear();
-            boardFile.ignore(1000, '\n');
+            boardFile.ignore(numeric_limits<streamsize>::max(), '\n');
             break;
         }
 
@@ -163,6 +163,7 @@ void Engine::createPuzzle()
     }
 
     makeBoard(nRows, nCols);
+    cout << endl;
     writeBoard(cout, 1);
 
     addWordDialogue();
@@ -201,6 +202,8 @@ void Engine::addWordDialogue()
 
             cout << "Insert a valid word ('e' for additional options): ";
             cin >> word;
+
+            cout << endl;
 
             utility.capitalize(word);
 

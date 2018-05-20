@@ -52,14 +52,14 @@ Logger::Logger()
 
     oss << endl << limiter3 << endl
         << title << endl
-        << limiter3 << endl;
+        << limiter3;
 
     headers["CreatePuzzle"] = oss.str();
     oss.str(string());
 
 	headers["AddedToList"] = " added to board words list.";
 
-    info["options"] = "1 - Create Puzzle\n2 - Resume Puzzle\n0 - Exit\nSelect an option: ";
+    input["options"] = "1 - Create Puzzle\n2 - Resume Puzzle\n0 - Exit\nSelect an option: ";
 
 	oss << "Insert '-' to remove a word;" << endl
 		<< "Insert 'R' to reset the board;" << endl
@@ -132,4 +132,8 @@ void Logger::header(const std::string &word, const std::string &headerKey)
 	setcolor(GREEN);
 	cout << word << headers[headerKey] << endl;
 	setcolor(WHITE);
+}
+void Logger::logInput(const std::string &inputKey)
+{
+    cout << input[inputKey];
 }

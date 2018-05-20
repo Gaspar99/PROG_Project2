@@ -181,6 +181,8 @@ void Dictionary::currentWords_clear()
     currentWords.clear();
 }
 
+multimap<string, string> Dictionary::currentWords;
+
 bool Dictionary::isCurrentWord(string word)
 {
     for (const auto &it : currentWords) {

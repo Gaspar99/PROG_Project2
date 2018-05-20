@@ -20,11 +20,13 @@ public:
     void special(const std::string &coordinate, const std::string &errorKey);
     void header(const std::string &headerKey);
 	void header(const std::string &word, const std::string &headerKey);
+	void logInput(const std::string &inputKey);
 
 private:
     std::map<std::string, std::string> errors;
     std::map<std::string, std::string> info;
     std::map<std::string, std::string> headers;
+	std::map<std::string, std::string> input;
 };
 
 

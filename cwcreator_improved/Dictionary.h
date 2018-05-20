@@ -21,7 +21,7 @@ public:
     void currentWords_erase(std::string coord);
     void currentWords_clear();
     void currentWords_send(std::ofstream &outStream);
-    bool isCurrentWord(std::string word);
+    static bool isCurrentWord(std::string word);
     bool isInitialCoord(std::string coord);
 
 private:
@@ -34,7 +34,7 @@ protected:
     std::map<std::string, std::vector<std::string>> synonymsList;
     std::set<std::string> validWords;
     std::map<std::string, std::vector<std::string>> suggestions;
-    std::multimap<std::string, std::string> currentWords;
+    static std::multimap<std::string, std::string> currentWords;
 };
 
 
