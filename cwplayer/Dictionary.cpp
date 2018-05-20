@@ -123,7 +123,7 @@ void Dictionary::showClues()
     }
 
     setcolor(YELLOW);
-    cout << "VERTICAL:" << endl;
+    cout << endl << "VERTICAL:" << endl;
     setcolor(WHITE);
 
     for (const auto &it : clues) {

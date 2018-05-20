@@ -524,7 +524,7 @@ void Puzzle::showLeaderBoards(string& boardName)
 	int rank = 1;
 	setcolor(YELLOW);
 	cout << endl << "LEADERBOARD" << endl;
-	cout << right << "Rank" << setw(10) << "Name" << setw(10) << "Help" << setw(10) << "Time" << endl;
+	cout << right << "Rank" << setw(10) << "Name" << setw(10) << "Help" << setw(15) << "Time (seconds)" << endl;
 	setcolor(WHITE);
 
 	for (const auto &it : playersData)
