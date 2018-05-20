@@ -79,7 +79,7 @@ void Puzzle::showMenu()
 
 void Puzzle::handleAddWord()
 {
-    Board::coord initialCoord;
+    COORDINATE initialCoord;
 	char direction;
 	string option;
 
@@ -159,7 +159,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
     string coord;
 	int fitsResult;
 
-    Board::coord initialCoord(verCoord, horCoord);
+    COORDINATE initialCoord(verCoord, horCoord);
 
     string line = board.getLine(initialCoord.first, initialCoord.second, direction);
 
@@ -206,8 +206,7 @@ void Puzzle::insertWord(string word, char verCoord, char horCoord, char directio
 		insertWord(newWord, verCoord, horCoord, direction);
 	}
     else if (word == "-") {
-		string insertedWord = insertedWords.find(coord)->second;
-        board.removeWord(initialCoord, direction, insertedWord);
+        board.removeWord(initialCoord, direction);
 		insertedWords.erase(coord);
     }
 
@@ -247,7 +246,7 @@ void Puzzle::loadBoard()
 {
 	ifstream boardFile, dictionaryFile;
 	string boardFileName, dictionaryFileName, line, word;
-	Board::coord initialCoord;
+	COORDINATE initialCoord;
 	char direction;
 	string option, coord;
 

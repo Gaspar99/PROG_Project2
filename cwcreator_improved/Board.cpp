@@ -110,7 +110,7 @@ void Board::modifyMap(string word, COORDINATE initialCoord, char direction, int 
 
         string wordLine = getWord(currentCoord, direction);
 
-        if ((!isalpha(currentLetter) && mode == 0) || (!isCurrent(wordLine, currentWords) && mode == 1))
+        if ((!isalpha(currentLetter) && mode == 0) || (Dictionary::isCurrentWord(wordLine) && mode == 1))
             currentLetter = word[i];
     }
 

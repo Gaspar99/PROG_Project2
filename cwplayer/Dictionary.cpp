@@ -9,11 +9,7 @@
 
 using namespace std;
 
-Dictionary::Dictionary() 
-{
-	synonymsList[""] = { "" };
-	validWords = {""};
-}
+Dictionary::Dictionary() = default;
 
 //Opens the dictionary and extracts its content to a map (synonymsList) and to a vector of strings (validWords)
 //The keys of the map are the main words and the values are vectors of strings with each string being a synonym of the main word
@@ -23,7 +19,7 @@ Dictionary::Dictionary(string dictionaryName)
 	load(dictionaryName);
 }
 
-void Dictionary::load(string dictionaryName)
+void Dictionary::load(const string &dictionaryName)
 {
 	ifstream dictionary;
 	string line;
@@ -76,6 +72,7 @@ while (getline(dictionary, line)) {
 }
 }
 
+set<string> Dictionary::validWords;
 //Searches for 'word' in the validWords vector. Returns true if found
 bool Dictionary::isValid(string word) {
 	bool valid;

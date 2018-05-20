@@ -15,14 +15,15 @@ public:
 	Dictionary();
 	Dictionary(string dictionaryName);
 
-	void load(string dictionaryName);
-	bool isValid(string word);
+	void load(const string &dictionaryName);
+	static bool isValid(string word);
 	void showClues();
 	void boardWords_insert(string coord, string word);
 	void showAnotherClue(string coord);
+
 private:
 	map<string, vector<string>> synonymsList;
-	set<string> validWords;
+	static set<string> validWords;
 	map<string, string> boardWords;
 	map<string, string> clues;
 };

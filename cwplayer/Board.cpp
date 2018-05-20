@@ -1,10 +1,13 @@
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 #include "Board.h"
 #include "utils.h"
 #include "Player.h"
+#include "Dictionary.h"
 
 using namespace std;
+using namespace BoardTypes;
 
 Board::Board(unsigned int nRows, unsigned int nColumns)
 {
@@ -16,7 +19,7 @@ Board::Board(unsigned int nRows, unsigned int nColumns)
 	for (int i = 0; i < nRows; ++i) {
 		for (int j = 0; j < nCols; ++j) {
 			// builds a string like "Aa", "Ab", etc
-			board.insert(pair<coord, char>(coord(static_cast<const char &>(i + 65),
+			board.insert(pair<COORDINATE, char>(COORDINATE(static_cast<const char &>(i + 65),
 				static_cast<const char &>(j + 65)), '#'));
 		}
 	}
@@ -26,7 +29,7 @@ void Board::reset()
 {
 	for (int i = 0; i < nRows; ++i) {
 		for (int j = 0; j < nCols; ++j) {
-			coord coord(static_cast<const char &>(i + 65), static_cast<const char &>(j + 65));
+			COORDINATE coord(static_cast<const char &>(i + 65), static_cast<const char &>(j + 65));
 
 			if (board[coord] != '#')
 				board[coord] = '.';
@@ -58,7 +61,7 @@ ostream &operator<<(ostream &out, Board &board)
 
 
 		for (unsigned int j = 0; j < board.nCols; ++j) {
-			Board::coord c(char(i + 65), char(j + 65));
+			COORDINATE c(char(i + 65), char(j + 65));
 
 			if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
 				out << " ";
@@ -81,32 +84,104 @@ ostream &operator<<(ostream &out, Board &board)
 	return out;
 }
 
-bool Board::modifyMap(string word, coord initialCoord, char direction, int mode)
+void Board::modifyMap(string word, COORDINATE initialCoord, char direction, int mode)
 {
 	size_t wordLength = word.length();
-	vector<coord> coordsToModify = generateCoords(wordLength, initialCoord, direction);
+	vector<COORDINATE> coordsToModify = generateCoords(wordLength, initialCoord, direction);
+
+	if (direction == 'H') { direction = 'V'; } else if (direction == 'V') { direction = 'H'; };
 
 	for (int i = 0; i < wordLength; ++i) {
-		coord currentCoord = coordsToModify[i];
+		COORDINATE currentCoord = coordsToModify[i];
 		char& currentLetter = board[currentCoord];
 
-		if ((!isalpha(currentLetter) && mode == 0) || isNotSurrounded(currentCoord, direction) && mode == 1)
+		string wordLine = getWord(currentCoord, direction);
+
+		if ((!isalpha(currentLetter) && mode == 0) || (!Dictionary::isValid(wordLine) && mode == 1))
 			currentLetter = word[i];
-
 	}
-
-	// Return true means the word was successfully added.
-	return true;
 }
 
-bool Board::removeWord(coord initialCoord, char direction, string insertedWord)
+void Board::removeWord(COORDINATE initialCoord, char direction)
 {
-	string coord, word;
+	switch (direction) {
+	case 'H': {
+		unsigned int i = 0;
 
-	word = string(insertedWord.length(), '.');
+		while (initialCoord.second + i <= (nCols + 65)) {
+			COORDINATE next(initialCoord.first, static_cast<const char &>(initialCoord.second + i));
+			if (board[next] == '#') break;
+			++i;
+		}
 
-	return modifyMap(word, initialCoord, direction, 1);
+		string word = string(i, '.');
 
+		return modifyMap(word, initialCoord, direction, 1);
+	}
+
+	case 'V': {
+		unsigned int i = 0;
+
+		while (initialCoord.first + i <= (nRows + 65)) {
+			COORDINATE next(static_cast<const char &>(initialCoord.first + i), initialCoord.second);
+			if (board[next] == '#') break;
+			++i;
+		}
+
+		string word = string(i, '.');
+
+		return modifyMap(word, initialCoord, direction, 1);
+	}
+	default:break;
+	}
+}
+
+string Board::getWord(COORDINATE initialCoordinate, char direction)
+{
+	string word;
+	COORDINATE initial = initialCoordinate;
+
+	switch (direction) {
+	case 'V': {
+		while (board[initial] != '#' && board[initial] != '\0') {
+			word.push_back(board[initial]);
+			--initial.first;
+		}
+		break;
+	}
+	case 'H': {
+		while (board[initial] != '#' && board[initial] != '\0') {
+			word.push_back(board[initial]);
+			--initial.second;
+		}
+		break;
+	}
+	default: break;
+	}
+
+	reverse(word.begin(), word.end());
+
+	switch (direction) {
+	case 'V': {
+		++initialCoordinate.first;
+		while (board[initialCoordinate] != '#' && board[initialCoordinate] != '\0') {
+			word.push_back(board[initialCoordinate]);
+			++initialCoordinate.first;
+		}
+		break;
+	}
+	case 'H': {
+		++initialCoordinate.second;
+		while (board[initialCoordinate] != '#' && board[initialCoordinate] != '\0') {
+			word.push_back(board[initialCoordinate]);
+			++initialCoordinate.second;
+		}
+		break;
+	}
+	default: break;
+	}
+
+	return word;
 }
 
 unsigned int Board::getNumOfCols()
@@ -119,21 +194,21 @@ unsigned int Board::getNumOfRows()
 	return nRows;
 }
 
-int Board::addWord(string word, Board::coord initialCoord, char direction)
+void Board::addWord(string word, COORDINATE initialCoord, char direction)
 {
 	return modifyMap(word, initialCoord, direction);
 }
 
-vector<Board::coord> Board::generateCoords(unsigned int wordLength, coord initialCoord, char direction)
+vector<COORDINATE> Board::generateCoords(unsigned int wordLength, COORDINATE initialCoord, char direction)
 {
-	vector<coord> wordCoords;
-	vector<coord> limitCoords;
+	vector<COORDINATE> wordCoords;
+	vector<COORDINATE> limitCoords;
 
 	switch (direction) {
 	case 'V': {
 		int j = 0;
 		for (char i = initialCoord.first; j < wordLength; ++i, ++j) {
-			coord coord(i, initialCoord.second);
+			COORDINATE coord(i, initialCoord.second);
 			wordCoords.push_back(coord);
 		}
 		break;
@@ -142,7 +217,7 @@ vector<Board::coord> Board::generateCoords(unsigned int wordLength, coord initia
 	case 'H': {
 		int j = 0;
 		for (char i = initialCoord.second; j < wordLength; ++i, ++j) {
-			coord coord(initialCoord.first, i);
+			COORDINATE coord(initialCoord.first, i);
 			wordCoords.push_back(coord);
 		}
 		break;
@@ -159,14 +234,14 @@ vector<Board::coord> Board::generateCoords(unsigned int wordLength, coord initia
 string Board::getLine(char verCoord, char horCoord, char direction)
 {
 	string line;
-	coord coordinate(verCoord, horCoord);
-	vector<coord> coordsToModify;
+	COORDINATE coordinate(verCoord, horCoord);
+	vector<COORDINATE> coordsToModify;
 
 	switch (direction) {
 	case 'H':
 		coordsToModify = generateCoords(nCols - horCoord + 65, coordinate, 'H');
 
-		for (coord c : coordsToModify) {
+		for (COORDINATE c : coordsToModify) {
 			line.push_back(board[c]);
 		}
 
@@ -174,7 +249,7 @@ string Board::getLine(char verCoord, char horCoord, char direction)
 	case 'V':
 		coordsToModify = generateCoords(nRows - verCoord + 65, coordinate, 'V');
 
-		for (coord c : coordsToModify) {
+		for (COORDINATE c : coordsToModify) {
 			line.push_back(board[c]);
 		}
 
@@ -186,36 +261,12 @@ string Board::getLine(char verCoord, char horCoord, char direction)
 	return line;
 }
 
-void Board::insertWhiteCells(string word, coord initialCoord, char direction)
+void Board::insertWhiteCells(string word, COORDINATE initialCoord, char direction)
 {
-	vector<coord> coordsToModify = generateCoords(word.length(), initialCoord, direction);
+	vector<COORDINATE> coordsToModify = generateCoords(word.length(), initialCoord, direction);
 
 	for (const auto &i : coordsToModify) {
 		board[i] = '.';
 	}
-
 }
 
-bool Board::isNotSurrounded(coord coordinate, char direction)
-{
-	switch (direction) {
-	case 'V': {
-		coord left(coordinate.first, static_cast<const char &>(coordinate.second - 1));
-		coord right(coordinate.first, static_cast<const char &>(coordinate.second + 1));
-
-		return (!isalpha(board[left]) && !isalpha(board[right]));
-		//return board[left] == '.' && (board[right] == '.' || board[right] == '\0') || (board[right] == '.' && board[left] == '\0');
-	}
-
-	case 'H': {
-		coord top(static_cast<const char &>(coordinate.first + 1), coordinate.second);
-		coord bottom(static_cast<const char &>(coordinate.first - 1), coordinate.second);
-
-		return (!isalpha(board[top]) && !isalpha(board[bottom]));
-		//return board[top] == '.' && (board[bottom] == '.' || board[bottom] == '\0') || (board[bottom] == '.' && board[top] == '\0');
-	}
-	default: break;
-	}
-
-	return false;
-}
