@@ -26,12 +26,12 @@ public:
 	void reset();
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
-    bool modifyMap(string word, coord initialCoord, char direction, int mode = 0);
-	int addWord(string word, coord initialCoord, char direction);
-	bool removeWord(coord initialCoord, char direction, string insertedWord);
+    void modifyMap(string word, COORDINATE initialCoord, char direction, int mode = 0);
+	void addWord(string word, COORDINATE initialCoord, char direction);
+    void removeWord(COORDINATE initialCoord, char direction);
 
 	//Inserted dots on the positions occupied by words
-	void insertWhiteCells(string word, coord initialCoord, char);
+	void insertWhiteCells(string word, COORDINATE initialCoord, char);
 
 	unsigned int getNumOfCols();
 	unsigned int getNumOfRows();
