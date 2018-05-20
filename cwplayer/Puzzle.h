@@ -25,7 +25,7 @@ private:
     void loadBoard();
 
     void handleAddWord();
-    void insertWord(std::string word, char verCoord, char horCoord, char direction);
+    void insertWord(const std::string &word, char verCoord, char horCoord, char direction);
 
     bool boardIsFull();
     void handleReset();
@@ -34,8 +34,8 @@ private:
     void checkInsertedWords();
     std::string finalChecking();
 
-    int fits(std::string word, std::string coord);
-    bool matches(std::string word, std::string line);
+    int fits(const std::string &word, const std::string &coord);
+    bool matches(const std::string &word, const std::string &line);
     bool equalMaps();
 };
 

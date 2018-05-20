@@ -9,8 +9,9 @@ class Player
 {
 public:
     Player();
-    Player(std::string playerName);
-    void setBoardFileName(std::string boardFileName);
+    Player(const std::string &playerName);
+
+    void setBoardFileName(const std::string &boardFileName);
     void increaseCounter();
     void setStartTime(); //Sets the time in which the player started the game
     void setEndTime(); //Sets the time in which the player ended the game

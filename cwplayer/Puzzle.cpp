@@ -160,7 +160,7 @@ void Puzzle::handleAddWord()
     }
 }
 
-void Puzzle::insertWord(string word, char verCoord, char horCoord, char direction)
+void Puzzle::insertWord(const string &word, char verCoord, char horCoord, char direction)
 {
     string newWord;
     string coord;
@@ -360,7 +360,7 @@ void Puzzle::showInstructions()
          << endl << endl;
 }
 
-int Puzzle::fits(string word, string coord)
+int Puzzle::fits(const string &word, const string &coord)
 {
     string boardWord;
 
@@ -375,7 +375,7 @@ int Puzzle::fits(string word, string coord)
         return 1;
 }
 
-bool Puzzle::matches(string word, string line)
+bool Puzzle::matches(const string &word, const string &line)
 {
     return wildcardMatch(word.c_str(), line.substr(0, word.length()).c_str());
 }

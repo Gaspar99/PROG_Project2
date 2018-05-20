@@ -25,8 +25,8 @@ public:
     void reset(); //Replaces every char with a dot
 
     // The following function adds a word to the board if mode == 0 and removes it if mode == 1
-    void modifyMap(std::string word, COORDINATE initialCoord, char direction, int mode = 0);
-    void addWord(std::string word, COORDINATE initialCoord, char direction);
+    void modifyMap(const std::string &word, COORDINATE initialCoord, char direction, int mode = 0);
+    void addWord(const std::string &word, COORDINATE initialCoord, char direction);
     void removeWord(COORDINATE initialCoord, char direction);
 
     //Inserts dots on the positions occupied by words

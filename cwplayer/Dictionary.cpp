@@ -14,7 +14,7 @@ Dictionary::Dictionary() = default;
 //Opens the dictionary and extracts its content to a map (synonymsList) and to a vector of strings (validWords)
 //The keys of the map are the main words and the values are vectors of strings with each string being a synonym of the main word
 //The validWords vector contains all the main words in the dictionary. This data base is useful to later check if a certain word is valid
-Dictionary::Dictionary(string dictionaryName)
+Dictionary::Dictionary(const string &dictionaryName)
 {
     load(dictionaryName);
 }
@@ -80,7 +80,7 @@ void Dictionary::load(const string &dictionaryName)
 //Searches for 'word' in the validWords vector. Returns true if found
 set<string> Dictionary::validWords;
 
-bool Dictionary::isValid(string word)
+bool Dictionary::isValid(const string &word)
 {
     bool valid;
 
@@ -128,12 +128,12 @@ void Dictionary::showClues()
     }
 }
 
-void Dictionary::boardWords_insert(string coord, string word)
+void Dictionary::boardWords_insert(const string &coord, const string &word)
 {
     boardWords.insert(pair<string, string>(coord, word));
 }
 
-void Dictionary::showAnotherClue(string coord)
+void Dictionary::showAnotherClue(const string &coord)
 {
     string previousClue = clues.find(coord)->second;
     string word = boardWords.find(coord)->second;

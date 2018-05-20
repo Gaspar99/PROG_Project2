@@ -12,12 +12,12 @@ Player::Player()
     playerName = "";
 }
 
-Player::Player(string playerName)
+Player::Player(const string &playerName)
 {
     this->playerName = playerName;
 }
 
-void Player::setBoardFileName(string boardFileName)
+void Player::setBoardFileName(const string &boardFileName)
 {
     this->boardFileName = boardFileName.substr(0, 4); //For the board b001.txt, this updates its name to b001
 }

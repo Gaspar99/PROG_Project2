@@ -94,7 +94,7 @@ ostream &operator<<(ostream &out, Board &board)
     return out;
 }
 
-void Board::modifyMap(string word, COORDINATE initialCoord, char direction, int mode)
+void Board::modifyMap(const string &word, COORDINATE initialCoord, char direction, int mode)
 {
     size_t wordLength = word.length();
     vector<COORDINATE> coordsToModify = generateCoords(wordLength, initialCoord, direction);
@@ -194,7 +194,7 @@ string Board::getWord(COORDINATE initialCoordinate, char direction)
     return word;
 }
 
-void Board::addWord(string word, COORDINATE initialCoord, char direction)
+void Board::addWord(const string &word, COORDINATE initialCoord, char direction)
 {
     return modifyMap(word, initialCoord, direction);
 }
