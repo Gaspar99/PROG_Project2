@@ -23,8 +23,7 @@ CWCREATOR:
         -> Class Utility - Defines useful functions that involve manipulation of strings and chars, colorization of the
                terminal/command line and string matching.
 
-
-- CWPLAYER:
+CWPLAYER:
     Extra functions:
         -> Added the possibilty to see a leaderboard with the information about the players that completed the puzzle:
              - This leaderboard is ranked considering the time each player took to complete the puzzle.
