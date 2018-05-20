@@ -25,3 +25,8 @@
              - On the main menu the user can choose the option to see a leaderboard of a certain board that he/she can choose, or, when the user
                 completes the puzzle successfully it will automatically be presented to him/her.
     - Code organization:
+        - The Dictionary class, like the one in the CWCRETOR, represents the dictionary with the main words and the corresponding synonyms stored on a map and functions to maniputalte it. 
+        - The class Board represents the board having a map with the positions and the corresponding content and functions to manipulate it: Insertion and removal of words, for example.
+        - The class Player represents the player, this is, the user, containg information like his/her name, the amount of times he/she asked for an alternative clue and the time taken to complete the puzzle. It also has functions to manipulate all this, for example, a fucntion to save the player's information into a file.
+        - The files utilis.h and utilis.cpp have the same role as the class Utilis from the CWCREATOR. 
+       
