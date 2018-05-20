@@ -109,7 +109,11 @@ void Dictionary::calculateClues()
 void Dictionary::showClues()
 {
     string coord, clue;
+
+    setcolor(YELLOW);
     cout << "HORIZONTAL:" << endl;
+    setcolor(WHITE);
+
     for (const auto &it : clues) {
         if (it.first[2] == 'H') {
             clue = it.second;
@@ -118,7 +122,10 @@ void Dictionary::showClues()
         }
     }
 
+    setcolor(YELLOW);
     cout << "VERTICAL:" << endl;
+    setcolor(WHITE);
+
     for (const auto &it : clues) {
         if (it.first[2] == 'V') {
             clue = it.second;

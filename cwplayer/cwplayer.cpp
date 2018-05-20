@@ -5,10 +5,10 @@
 #include <ctime>
 
 using namespace std;
-using namespace std::chrono;
 
 int main()
 {
+    clrscr();
     srand(static_cast<unsigned int>(time(NULL)));
     Puzzle puzzle1;
 

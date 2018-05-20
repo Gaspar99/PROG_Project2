@@ -31,7 +31,7 @@ void Puzzle::greetUser()
         if (!cin.fail()) { break; }
         else {
             cin.clear();
-            cin.ignore(1000, '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             setcolor(LIGHTRED);
             cerr << "Invalid input. Player Name ? ";
             setcolor(WHITE);
@@ -86,7 +86,7 @@ void Puzzle::showMenu()
         cerr << endl << "Please insert a valid option!" << endl;
         setcolor(WHITE);
         cin.clear();
-        cin.ignore(1000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
 }
 
@@ -107,7 +107,7 @@ void Puzzle::handleAddWord()
 
         if (cin.fail()) {
             cin.clear();
-            cin.ignore(1000, '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             setcolor(LIGHTRED);
             cerr << "Invalid input. " << endl;
             setcolor(WHITE);
@@ -134,11 +134,14 @@ void Puzzle::handleAddWord()
         else {
             setcolor(LIGHTRED);
             cerr << "Invalid position." << endl;
+            cout << board;
             setcolor(WHITE);
         }
 
         if (boardIsFull()) {
+            setcolor(LIGHTGREEN);
             cout << "Board is complete. Do you wish to make any changes (yes/no) ? ";
+            setcolor(WHITE);
 
             do {
                 cin >> option;
@@ -247,7 +250,7 @@ void Puzzle::insertWord(const string &word, char verCoord, char horCoord, char d
         return;
     }
 
-    cout << board;
+    cout << endl << board;
     setcolor(WHITE);
 }
 
@@ -288,7 +291,7 @@ void Puzzle::loadBoard()
 
     dictionary = Dictionary(dictionaryFileName);
 
-    boardFile.ignore(1000, '\n'); //ignores the second line of the file
+    boardFile.ignore(numeric_limits<streamsize>::max(), '\n'); //ignores the second line of the file
 
     while (getline(boardFile, line)) {
         if (line.empty()) { //reached the end of the board
@@ -308,7 +311,7 @@ void Puzzle::loadBoard()
 
         if (boardFile.fail()) {
             boardFile.clear();
-            boardFile.ignore(1000, '\n');
+            boardFile.ignore(numeric_limits<streamsize>::max(), '\n');
             break;
         }
 
@@ -443,7 +446,7 @@ string Puzzle::finalChecking()
     string word;
     for (const auto &it : insertedWords) {
         word = it.second;
-        if (!dictionary.isValid(word)) {
+        if (!Dictionary::isValid(word)) {
             return word;
         }
     }
@@ -471,7 +474,10 @@ void Puzzle::showLeaderBoards(string& boardName)
 	playersFile.open(playersFileName);
 
 	if (!playersFile.is_open()) {
-		cout << "No player has completed the board " << boardName << " yet." << endl;
+	    setcolor(LIGHTRED);
+	    cerr << "Unable to show leaderboard." << endl;
+		cerr << "No player has completed the board " << boardName << " yet." << endl;
+		setcolor(WHITE);
 
 		do {
 			cout << "Do you want to try to complete it (yes/no) ? " << endl;
@@ -493,7 +499,7 @@ void Puzzle::showLeaderBoards(string& boardName)
 
 	map<double, vector<string>> playersData;
 	string line, playerName, time, counter;
-	int colonPosition, semicolonPosition, counterPosition, timePosition;
+	unsigned int colonPosition, semicolonPosition, counterPosition;
 	double timeKey;
 
 	while (getline(playersFile, line))
@@ -516,12 +522,30 @@ void Puzzle::showLeaderBoards(string& boardName)
 	}
 
 	int rank = 1;
-	cout << "LEADERBOARD" << endl;
-	cout << "Rank" << setw(10) << "Name" << setw(10) << "Help" << setw(10) << "Time" << endl;
+	setcolor(YELLOW);
+	cout << endl << "LEADERBOARD" << endl;
+	cout << right << "Rank" << setw(10) << "Name" << setw(10) << "Help" << setw(10) << "Time" << endl;
+	setcolor(WHITE);
+
+	for (const auto &it : playersData)
+    {
+        double currentTime = it.first;
+        string name = it.second[0];
+
+        for (const auto &vit : playersData)
+            if (atof(vit.second[2].c_str()) < currentTime && vit.second[0] == name)
+                playersData.erase(currentTime);
+    }
+
+    float ten = 10.0;
+    float printLimit = min(ten, static_cast<float>(playersData.size()));
+    float i = 0;
 
 	for (const auto &it : playersData) {
+	    if (i == printLimit) break;
 		cout << rank << setw(13) << it.second[0] << setw(7) << it.second[1] << setw(14) << it.second[2] << endl;
 		rank++;
+		i++;
 	}
 
 }

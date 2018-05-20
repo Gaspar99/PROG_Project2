@@ -91,6 +91,8 @@ ostream &operator<<(ostream &out, Board &board)
         out << endl;
     }
 
+    out << endl;
+
     return out;
 }
 
