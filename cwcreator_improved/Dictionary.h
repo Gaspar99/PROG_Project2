@@ -28,6 +28,8 @@ private:
     Logger logger;
     Utility utility;
 
+	void showSynonyms(std::string word);
+
 protected:
     std::map<std::string, std::vector<std::string>> synonymsList;
     std::set<std::string> validWords;

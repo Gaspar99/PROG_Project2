@@ -418,6 +418,7 @@ void Puzzle::loadPuzzle()
 	string option, coord;
 
 	unsigned int nRows = 0;
+	unsigned int nCols;
 
 	cout << "Insert name of file to load board: ";
 	cin >> boardFileName;
@@ -444,10 +445,12 @@ void Puzzle::loadPuzzle()
 			break;
 		}
 		else {
-			static unsigned int nCols = line.length() / 2;
+			nCols = line.length() / 2;
 			nRows++;
 		}
 	}
+
+	board = Board(nRows, nCols);
 
 	while (!boardFile.eof()) {
 

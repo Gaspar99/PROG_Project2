@@ -19,7 +19,7 @@ public:
     void log(const std::string &infoKey);
     void special(const std::string &coordinate, const std::string &errorKey);
     void header(const std::string &headerKey);
-
+	void header(const std::string &word, const std::string &headerKey);
 
 private:
     std::map<std::string, std::string> errors;

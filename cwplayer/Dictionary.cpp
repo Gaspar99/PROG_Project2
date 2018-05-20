@@ -84,45 +84,42 @@ bool Dictionary::isValid(string word) {
 
 //This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
 //It also prints, at maximum, 4 synonyms of each one of those words
-void Dictionary::showClues()
+void Dictionary::calculateClues()
 {
 	vector<string> synonyms;
 	string coord, word, clue;
 	size_t index;
 
-	cout << "HORIZONTAL:" << endl;
 	for (const auto &it : boardWords) {
+		coord = it.first;
+		word = it.second;
+		synonyms = synonymsList.find(word)->second;
+		index = rand() % synonyms.size();
+		clue = synonyms[index];
+		clues.insert(pair<string, string>(coord, clue));
+	}
+}
 
+void Dictionary::showClues()
+{
+	string coord, clue;
+	cout << "HORIZONTAL:" << endl;
+	for (const auto &it : clues) 
+	{
 		if (it.first[2] == 'H') {
+			clue = it.second;
 			coord = it.first.substr(0, 2);
-			word = it.second;
-
-			synonyms = synonymsList.find(word)->second;
-			index = rand() % synonyms.size();
-			clue = synonyms[index];
-
 			cout << coord << " - " << clue << endl;
-
-			coord.push_back('H');
-			clues.insert(pair<string, string>(coord, clue));
 		}
 	}
 
-	cout << "VERTICAL: " << endl;
-	for (const auto &it : boardWords) {
-
+	cout << "VERTICAL:" << endl;
+	for (const auto &it : clues)
+	{
 		if (it.first[2] == 'V') {
+			clue = it.second;
 			coord = it.first.substr(0, 2);
-			word = it.second;
-
-			synonyms = synonymsList.find(word)->second;
-			index = rand() % synonyms.size();
-			clue = synonyms[index];
-
 			cout << coord << " - " << clue << endl;
-
-			coord.push_back('V');
-			clues.insert(pair<string, string>(coord, clue));
 		}
 	}
 }

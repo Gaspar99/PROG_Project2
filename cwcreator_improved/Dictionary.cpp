@@ -39,22 +39,27 @@ void Dictionary::load(const string &filename)
 
         synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>()));
         validWords.insert(mainWord);
-        pos = index + 2;
+        pos = index + 2; //Updates the position where line.find is going to start searching for a comma
 
         index = line.find(',', pos);
 
+		//Goes through the strings between comas and pushes them to the second element of the map
+		//When while loop ends, there is still a word after the last comma
+		//However there are some lines where this does not happen
         while (index != string::npos) {
             word = line.substr(pos, index - pos);
 
-            if (word[0] != '[') {
+            if (word[0] != '[') { //Ignores synonyms with [see 'another synonym']
                 utility.capitalize(word);
                 synonymsList[mainWord].push_back(word);
             }
 
-            pos = index + 2;
+            pos = index + 2; 
             index = line.find(',', pos);
         }
 
+		//If there is not a word after the comma, accesing the substring after it would cause an error
+		//Checks if the last character of the line is a comma to avoid an error when accessing the substring after the comma
         if (line[line.length() - 1] != ',') {
             word = line.substr(pos, line.length() - pos);
             utility.capitalize(word);
@@ -79,10 +84,13 @@ bool Dictionary::isValid(string word)
 //and the value is a vector of strings with each string being a possible word to start on those coordinates
 void Dictionary::storeSuggestions(string coordinates, string line)
 {
-    while (!line.empty()) {
-        for (const string &word : validWords) {
-            if (utility.wildcardMatch(word.c_str(), line.c_str())) {
-                if (!isCurrentWord(word)) {
+    while (!line.empty()) 
+	{
+        for (const string &word : validWords) 
+		{
+            if (utility.wildcardMatch(word.c_str(), line.c_str())) 
+			{
+                if (!isCurrentWord(word) && !isInitialCoord(coordinates)) {
                     suggestions.insert(pair<string, vector<string>>(coordinates, vector<string>()));
                     suggestions[coordinates].push_back(word);
                 }
@@ -93,11 +101,12 @@ void Dictionary::storeSuggestions(string coordinates, string line)
 }
 
 //This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
-//It also prints, at maximum, 4 synonyms of each one of those words
+//It also calls showSynonyms, defined below, to print, at maximum, 4 synonyms of each one of those words
 void Dictionary::showSuggestions()
 {
     vector<string> synonyms;
     vector<string> mainWords;
+	vector<string> shownSuggestions;
 
     for (const auto &suggestion : suggestions) {
         cout << "Coordinates: " << suggestion.first << " - Words:" << endl;
@@ -106,32 +115,57 @@ void Dictionary::showSuggestions()
         const int length = mainWords.size();
         int i = min(10, length);
 
-        while (i > 0) {
-            int index = rand() % mainWords.size();
-            string word = mainWords[index];
+		if (i == length)
+		{
+			for (string word : mainWords) {
+				showSynonyms(word);
+			}
+		}
 
-            cout << setw(32);
-            cout << word << " - ";
-            synonyms = synonymsList.find(word)->second;
+		else {
+			while (i > 0) 
+			{
+				int index = rand() % length;
+				string word = mainWords[index];
 
-            for (unsigned int j = 0; j < 5 && j < synonyms.size(); j++) { cout << synonyms[j] << ", "; }
-            cout << endl;
-
-            --i;
-        }
+				if (find(shownSuggestions.begin(), shownSuggestions.end(), word) == shownSuggestions.end()) {
+					showSynonyms(word);
+					shownSuggestions.push_back(word);
+				}
+				
+				--i;
+			}
+		}
     }
 }
 
+void Dictionary::showSynonyms(string word)
+{
+	vector<string> synonyms = synonymsList.find(word)->second;
+
+	cout << setw(32);
+	cout << word << " - ";
+
+	for (unsigned int j = 0; j < 5 && j < synonyms.size(); j++) 
+	{ cout << synonyms[j] << ", "; }
+
+	cout << endl;
+}
+
+//Necessary so every time the user asks for suggestions, it wont show the suggestions of the previous time he/she asked for them
 void Dictionary::clearSuggestions()
 {
     suggestions.clear();
 }
 
+//Necessary to give a proper message to the user in case there are no matches on the given position
 bool Dictionary::suggestions_is_empty()
 {
     return suggestions.empty();
 }
 
+//--------------------------------------------------------------------------------------------------
+//METHODS TO HANDLE THE CURRENT WORDS MAP
 void Dictionary::currentWords_insert(string coord, string word)
 {
     currentWords.insert(pair<string, string>(coord, word));
