@@ -17,26 +17,26 @@ public:
 private:
     Board board;
     Dictionary dictionary;
-	Player player;
+    Player player;
 
-	std::map<std::string, std::string> insertedWords;
-	std::map<std::string, std::string> boardWords;
+    std::map<std::string, std::string> insertedWords;
+    std::map<std::string, std::string> boardWords;
 
-	void loadBoard();
+    void loadBoard();
 
     void handleAddWord();
-	void insertWord(std::string word, char verCoord, char horCoord, char direction);
+    void insertWord(std::string word, char verCoord, char horCoord, char direction);
 
-	bool boardIsFull();
+    bool boardIsFull();
     void handleReset();
     bool parseCoordinates(char verCoord, char horCoord, char direction);
-	void showInstructions();
-	void checkInsertedWords();
-	std::string finalChecking();
+    void showInstructions();
+    void checkInsertedWords();
+    std::string finalChecking();
 
     int fits(std::string word, std::string coord);
     bool matches(std::string word, std::string line);
-	bool equalMaps();
+    bool equalMaps();
 };
 
 

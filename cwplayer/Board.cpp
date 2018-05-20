@@ -65,20 +65,20 @@ ostream &operator<<(ostream &out, Board &board)
             if (board.board[c] == '#' && c != pair<char, char>(char(i), char(i + 32))) {
                 out << " ";
 
-                #if defined(_WIN32)
-                    setcolor(BLACK, WHITE);
-                #elif defined(__unix__) || defined(__linux__) || defined(__APPLE__)
-                    setcolor(BLACK, WHITE_B);
-                #endif
+#if defined(_WIN32)
+                setcolor(BLACK, WHITE);
+#elif defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+                setcolor(BLACK, WHITE_B);
+#endif
 
                 out << setw(1) << '#';
             }
             else if (board.board[c] == '#') {
-                #if defined(_WIN32)
-                    setcolor(BLACK, WHITE);
-                #elif defined(__unix__) || defined(__linux__) || defined(__APPLE__)
-                    setcolor(BLACK, WHITE_B);
-                #endif
+#if defined(_WIN32)
+                setcolor(BLACK, WHITE);
+#elif defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+                setcolor(BLACK, WHITE_B);
+#endif
 
                 out << left << setw(1) << '#' << right;
             }

@@ -21,42 +21,45 @@ using namespace std;
 // https://www.codeproject.com/Articles/188256/A-Simple-Wildcard-Matching-Function
 bool wildcardMatch(const char *str, const char *strWild)
 {
-	// We have a special case where string is empty ("") and the mask is "*".
-	// We need to handle this too. So we can't test on !*str here.
-	// The loop breaks when the match string is exhausted.
-	while (*strWild) {
-		// Single wildcard character
-		if (*strWild == '.') {
-			// Matches any character except empty string
-			if (!*str)
-				return false;
-			// OK next
-			++str;
-			++strWild;
-		}
-		else {
-			// Standard compare of 2 chars. Note that *str might be 0 here,
-			// but then we never get a match on *strWild
-			// that has always a value while inside this loop.
-			if (toupper(*str++) != toupper(*strWild++))
-				return false;
-		}
-	}
-	// Have a match? Only if both are at the end...
-	return !*str && !*strWild;
+    // We have a special case where string is empty ("") and the mask is "*".
+    // We need to handle this too. So we can't test on !*str here.
+    // The loop breaks when the match string is exhausted.
+    while (*strWild) {
+        // Single wildcard character
+        if (*strWild == '.') {
+            // Matches any character except empty string
+            if (!*str)
+                return false;
+            // OK next
+            ++str;
+            ++strWild;
+        }
+        else {
+            // Standard compare of 2 chars. Note that *str might be 0 here,
+            // but then we never get a match on *strWild
+            // that has always a value while inside this loop.
+            if (toupper(*str++) != toupper(*strWild++))
+                return false;
+        }
+    }
+    // Have a match? Only if both are at the end...
+    return !*str && !*strWild;
 }
 
-char to_upper(int ch) {
+char to_upper(int ch)
+{
     return static_cast<unsigned char>(toupper(ch));
 }
 
-char to_lower(int ch) {
+char to_lower(int ch)
+{
     return static_cast<unsigned char>(tolower(ch));
 }
 
 void capitalize(string &word)
 {
-    transform(word.begin(), word.end(), word.begin(), [] (unsigned char c) { return toupper(c); } );
+    transform(word.begin(), word.end(), word.begin(), [](unsigned char c)
+    { return toupper(c); });
 }
 
 #if defined(_WIN32)

@@ -54,7 +54,7 @@
 char to_upper(int ch);
 char to_lower(int ch);
 bool wildcardMatch(const char *str, const char *strWild);
-void capitalize(std::string& word);
+void capitalize(std::string &word);
 void clrscr();
 void gotoxy(int x, int y);
 

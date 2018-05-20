@@ -9,16 +9,16 @@ using namespace std::chrono;
 
 int main()
 {
-	srand(static_cast<unsigned int>(time(NULL)));
-	Puzzle puzzle1;
-	
-	setcolor(WHITE);
-	puzzle1.greetUser();
+    srand(static_cast<unsigned int>(time(NULL)));
+    Puzzle puzzle1;
 
-	while (true) {
-		puzzle1.showMenu();
-		exit(0);
-	}
+    setcolor(WHITE);
+    puzzle1.greetUser();
+
+    while (true) {
+        puzzle1.showMenu();
+        exit(0);
+    }
 }
 
 
