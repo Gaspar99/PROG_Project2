@@ -48,14 +48,17 @@ while (getline(dictionary, line)) {
 	synonymsList.insert(pair<string, vector<string>>(mainWord, vector<string>()));
 	validWords.insert(mainWord);
 
-	pos = index + 2;
+	pos = index + 2; //Updates the position where line.find is going to start searching for a comma
 
 	index = line.find(',', pos);
 
+	//Goes through the strings between comas and pushes them to the second element of the map
+	//When while loop ends, there is still a word after the last comma
+	//However there are some lines where this does not happen
 	while (index != string::npos) {
 		word = line.substr(pos, index - pos);
 
-		if (word[0] != '[') {
+		if (word[0] != '[') { //Ignores synonyms with [see 'another synonym']
 			capitalize(word);
 			synonymsList[mainWord].push_back(word);
 		}
@@ -64,6 +67,8 @@ while (getline(dictionary, line)) {
 		index = line.find(',', pos);
 	}
 
+	//If there is not a word after the comma, accesing the substring after it would cause an error
+	//Checks if the last character of the line is a comma to avoid an error when accessing the substring after the comma
 	if (line[line.length() - 1] != ',') {
 		word = line.substr(pos, line.length() - pos);
 		capitalize(word);
@@ -72,8 +77,8 @@ while (getline(dictionary, line)) {
 }
 }
 
-set<string> Dictionary::validWords;
 //Searches for 'word' in the validWords vector. Returns true if found
+set<string> Dictionary::validWords;
 bool Dictionary::isValid(string word) {
 	bool valid;
 
@@ -82,8 +87,7 @@ bool Dictionary::isValid(string word) {
 	return valid;
 }
 
-//This method goes through the map created by 'storeSuggestions' and prints each coordinates and the corresponding words that can be put there.
-//It also prints, at maximum, 4 synonyms of each one of those words
+//Stores on a map the position of each word and the corresponding synonym
 void Dictionary::calculateClues()
 {
 	vector<string> synonyms;
@@ -99,6 +103,7 @@ void Dictionary::calculateClues()
 		clues.insert(pair<string, string>(coord, clue));
 	}
 }
+
 
 void Dictionary::showClues()
 {
@@ -136,15 +141,15 @@ void Dictionary::showAnotherClue(string coord)
 	vector<string> synonyms = synonymsList.find(word)->second;
 	int index = rand() % synonyms.size();
 
-	while (synonyms[index] == previousClue)
+	while (synonyms[index] == previousClue) //This avoids showing the same synonym twice in a row
 	{
-		if (synonyms.size() == 1) {
+		if (synonyms.size() == 1) { //In case the word has only one synonym the while loop would not end
 			cout << "The word on the position " << coord << " only has one synonym: " << endl;
 			cout << previousClue << endl;
 			return;
 		}
 		else
-			index = rand() % synonyms.size();
+			index = rand() % synonyms.size(); //Updates index to another random number 
 	}
 	cout << "New clue:" << endl;
 	cout << coord << " - " << synonyms[index] << endl;

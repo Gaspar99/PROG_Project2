@@ -68,5 +68,3 @@ void Player::saveData()
 
 	cout << "Your data was saved." << endl;
 }
-
-

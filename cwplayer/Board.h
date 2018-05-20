@@ -23,14 +23,14 @@ public:
     // Default values for each coordinate is a . character
     Board(unsigned int nRows, unsigned int nColumns);
 
-	void reset();
+	void reset(); //Replaces every char with a dot
 
 	// The following function adds a word to the board if mode == 0 and removes it if mode == 1
     void modifyMap(string word, COORDINATE initialCoord, char direction, int mode = 0);
 	void addWord(string word, COORDINATE initialCoord, char direction);
     void removeWord(COORDINATE initialCoord, char direction);
 
-	//Inserted dots on the positions occupied by words
+	//Inserts dots on the positions occupied by words
 	void insertWhiteCells(string word, COORDINATE initialCoord, char);
 
 	unsigned int getNumOfCols();
